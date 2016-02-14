@@ -1,0 +1,91 @@
+---
+title       : Server Malfunction Rate Calculation
+subtitle    : 
+author      : Liang Dong
+job         : System Administrator
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Introduction
+
+```{r setup, echo=FALSE}
+library(ggplot2)
+```
+
+### Server Malfunction Rate Prediction
+
+The Debian servers installed with Open vSwtich Version 2.4.0 has some bugs interconnect to the Cisco Switch configured with keepalive message. Every 10 second, the Cisco Switch will dispatch a keepalive message to the server. The server ethernet port uplink will be malfunctioned (err-disable) by Cisco Switch if the bug has happened.
+
+The incident logs show there are 8 malfunction records in 22204800 keepalive message received on Debian servers.
+
+--- .class #id
+
+## Assumption
+
+Let's assuming that:
+
+* The keepalive message recieved on servers and malfunction events are iid (independent identically-distributed)
+
+* Server malfunction rate is constant, and it is proportional to keepalive message events.
+
+--- .class #id 
+
+## Poisson Distribution
+
+Then the malfunction follow the Poisson distribution, which we can calculate the malfunction rate base on the Poisson distribution.
+
+$$P = \frac{\lambda^ke^-k}{k!}$$
+
+The global variables are initialized as follow:
+
+```{r}
+HOURS <- 24
+MIN <- 60
+SEC <- 60
+INCIDENT <- 8
+KEEPALIVE_EVENT <- 22204800
+lambda <-  INCIDENT/KEEPALIVE_EVENT * (HOURS * MIN * SEC/10)
+```
+
+--- .class #id 
+
+## Malfunction Rate Calculation
+The incident rate of 50 servers in 30 days could be caculated:
+
+```{r, echo=FALSE}
+servers <- 50
+days <- 30
+```
+
+```{r}
+zero_rate <- ppois(1, lambda*servers*days) - dpois(1, lambda*servers*days)
+zero_rate
+```
+
+```{r}
+once_rate <- dpois(1, lambda*servers*days)
+once_rate
+```
+
+```{r}
+err_rate <- 1 - zero_rate
+err_rate
+```
+
+--- .class #id 
+
+## Conclusion
+
+So the rate for one malfunction of 50 servers in 30 days is `r once_rate`, rate for no malfunction is `r zero_rate`, and the rate for one or more malfunction is `r err_rate`. The PDF is plotted as follow:
+
+```{r, echo=FALSE}
+ggplot(data.frame(x=c(0:10)), aes(x, y=dpois(x, lambda*days*servers))) + geom_point(colour="blue") + geom_line(colour="blue")
+```
+
+
+
