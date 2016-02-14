@@ -25,7 +25,7 @@ The incident logs show there are 8 malfunction records in 22204800 keepalive mes
 
 ## Assumption
 
-Let's assuming that:
+Let's assume that:
 
 * The keepalive message recieved on servers and malfunction events are iid (independent identically-distributed)
 
@@ -54,7 +54,6 @@ lambda <-  INCIDENT/KEEPALIVE_EVENT * (HOURS * MIN * SEC/10)
 --- .class #id 
 
 ## Malfunction Rate Calculation
-
 The incident rate of 50 servers in 30 days could be caculated:
 
 
