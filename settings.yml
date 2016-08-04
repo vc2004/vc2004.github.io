@@ -57,7 +57,7 @@ writer:
 
 #: theme variables
 theme:
-    name: bootstrap3
+    name: minimal
 
     # theme variables are defined by theme creator
     # you can access theme in template with ``theme`` namespace
