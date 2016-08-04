@@ -3,19 +3,20 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2016-08-04T10:10:13+08:00</updated>
+    <updated>2016-08-04T14:07:32+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
-        <title type="html"><![CDATA[Networking Reading List]]></title>
+        <title type="html"><![CDATA[Networking Fundamental and Recent Advance Reading List]]></title>
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2016/recent-networking-advance-readlist.html"/>
         <published>2016-08-03T00:00:00+08:00</published>
-        <updated>2016-08-04T10:10:13+08:00</updated>
+        <updated>2016-08-04T14:07:32+08:00</updated>
         <id>http://vc2004.github.io/2016/recent-networking-advance-readlist.html</id>
         <category scheme="http://vc2004.github.io/tag/networking/" term="networking" label="networking" />
         <category scheme="http://vc2004.github.io/tag/sdn/" term="sdn" label="sdn" />
         <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
             <![CDATA[ <p>Complied by Liang Dong</p>
+<p>This is a small reading list about recent advance on networking. It also cover some basic fundamental knowledges of TCP/IP.</p>
 
 <h3 id="toc_0">Data Center Networking:</h3>
 <p>A Scalable, Commodity Data Center Network Architecture, Mohammad Al-Fares, Alexander Loukissas, Amin Vahdat, University of California, San Diego, Sigcomm 2008</p>

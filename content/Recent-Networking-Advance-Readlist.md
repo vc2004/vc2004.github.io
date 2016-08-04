@@ -1,4 +1,4 @@
-# Networking Reading List
+# Networking Fundamental and Recent Advance Reading List
 
 - date: 2016-08-03
 - category: Networking
@@ -7,6 +7,8 @@
 ----------------
 
 Complied by Liang Dong
+
+This is a small reading list about recent advance on networking. It also cover some basic fundamental knowledges of TCP/IP.
 
 ###Data Center Networking:
 
