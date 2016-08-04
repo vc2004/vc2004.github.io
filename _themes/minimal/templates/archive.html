@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{% if pagination.title == 'Archive' %}Archive{%- else %}{{pagination.title|string|title}}{%- endif %} - {{site.name}}{% endblock %}
+{% block title %}{% if pagination.title == 'Archive' %}{%- else %}{{pagination.title|string|title}}{%- endif %}  {{site.name}}{% endblock %}
 {% block pagetitle %}{% if pagination.title == 'Archive' %}Index{%- else %}{{pagination.title|string|title}}{%- endif %}{% endblock %}
 {% block canonical %}{{ content_url(pagination.root, '') }}{% endblock %}
 
