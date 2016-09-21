@@ -12,16 +12,12 @@ This post is testing if language other than english is working on this site. Als
 
 #### Statistical Learning by Stanford
 
-```
 https://statlearning.class.stanford.edu/
-```
 
 两个教授Trevor Hastie和Rob Tibshirani都是大牛, Prof Rob在 Lasso 和 Bootstrap Sampling 都有挺重要的贡献。
 
 #### Machine Learning on Coursera
 
-```
 https://www.coursera.org/learn/machine-learning
-```
 
 这个就不用多介绍了。。Ng 的牛课，Coursera 代表课之一，深入浅出。。我还想学一遍。。

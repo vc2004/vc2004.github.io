@@ -3,7 +3,7 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2016-09-21T14:26:07+08:00</updated>
+    <updated>2016-09-21T14:29:04+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
         <title type="html"><![CDATA[Linux Networking Optimisation Guide Part I]]></title>
@@ -162,7 +162,7 @@ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</cod
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2016/chinese-testing.html"/>
         <published>2016-09-01T00:00:00+08:00</published>
-        <updated>2016-09-21T11:25:04+08:00</updated>
+        <updated>2016-09-21T14:29:04+08:00</updated>
         <id>http://vc2004.github.io/2016/chinese-testing.html</id>
         <category scheme="http://vc2004.github.io/tag/r/" term="R" label="R" />
         <category scheme="http://vc2004.github.io/tag/statistic/" term="Statistic" label="Statistic" />
@@ -171,13 +171,11 @@ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</cod
 <p>This post is testing if language other than english is working on this site. Also some cool free open course for data science are recommended here.</p>
 
 <h4 id="toc_1">Statistical Learning by Stanford</h4>
-
-<pre><code>https://statlearning.class.stanford.edu/</code></pre>
+<p><a href="https://statlearning.class.stanford.edu/">statlearning.class.stanford.edu/</a></p>
 <p>两个教授Trevor Hastie和Rob Tibshirani都是大牛, Prof Rob在 Lasso 和 Bootstrap Sampling 都有挺重要的贡献。</p>
 
 <h4 id="toc_2">Machine Learning on Coursera</h4>
-
-<pre><code>https://www.coursera.org/learn/machine-learning</code></pre>
+<p><a href="https://www.coursera.org/learn/machine-learning">www.coursera.org/learn/machine-learning</a></p>
 <p>这个就不用多介绍了。。Ng 的牛课，Coursera 代表课之一，深入浅出。。我还想学一遍。。</p>
 ]]>
         </content>
