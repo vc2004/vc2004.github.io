@@ -3,7 +3,7 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2016-09-21T11:25:04+08:00</updated>
+    <updated>2016-09-21T14:26:07+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
         <title type="html"><![CDATA[Linux Networking Optimisation Guide Part I]]></title>
@@ -186,37 +186,44 @@ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</cod
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2016/recent-networking-advance-readlist.html"/>
         <published>2016-08-03T00:00:00+08:00</published>
-        <updated>2016-08-04T14:07:32+08:00</updated>
+        <updated>2016-09-21T14:26:07+08:00</updated>
         <id>http://vc2004.github.io/2016/recent-networking-advance-readlist.html</id>
         <category scheme="http://vc2004.github.io/tag/networking/" term="networking" label="networking" />
         <category scheme="http://vc2004.github.io/tag/sdn/" term="sdn" label="sdn" />
         <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
             <![CDATA[ <p>Complied by Liang Dong</p>
+
+<h3 id="toc_0">Update 2016-09-20</h3>
+<p>2016-09-20 Add two thesis about load balancing service in Cloud Networking</p>
+
+<h3 id="toc_1">Foreword</h3>
 <p>This is a small reading list about recent advance on networking. It also cover some basic fundamental knowledges of TCP/IP.</p>
 
-<h3 id="toc_0">Data Center Networking:</h3>
-<p>A Scalable, Commodity Data Center Network Architecture, Mohammad Al-Fares, Alexander Loukissas, Amin Vahdat, University of California, San Diego, Sigcomm 2008</p>
-<p>Jupiter Rising: A Decade of Clos Topologies and Centralized Control in Google’s Datacenter Network, Arjun Singh, Joon Ong, Amit Agarwal, Glen Anderson, Ashby Armistead, Roy Bannon, Seb Boving, Gaurav Desai, Bob Felderman, Paulie Germano, Anand Kanagala, Jeff Provost, Jason Simmons, Eiichi Tanda, Jim Wanderer, Urs Hölzle, Stephen Stuart, and Amin Vahdat. Sigcomm 2015.</p>
-<p>Inside the Social Network’s (Datacenter) Network, Arjun Roy, Hongyi Zeng, Jasmeet Bagga, George Porter, and Alex C. Snoeren, Sigcomm 2015</p>
-<p>Introducing data center fabric, the next-generation Facebook data centre network, Alexey Andreyev, Facebook</p>
+<h3 id="toc_2">Data Center Networking:</h3>
+<p><strong>A Scalable, Commodity Data Center Network Architecture</strong>, Mohammad Al-Fares, Alexander Loukissas, Amin Vahdat, University of California, San Diego, Sigcomm 2008</p>
+<p><strong>Jupiter Rising: A Decade of Clos Topologies and Centralized Control in Google’s Datacenter Network</strong>, Arjun Singh, Joon Ong, Amit Agarwal, Glen Anderson, Ashby Armistead, Roy Bannon, Seb Boving, Gaurav Desai, Bob Felderman, Paulie Germano, Anand Kanagala, Jeff Provost, Jason Simmons, Eiichi Tanda, Jim Wanderer, Urs Hölzle, Stephen Stuart, and Amin Vahdat. Sigcomm 2016.</p>
+<p><strong>Inside the Social Network’s (Datacenter) Network, Arjun Roy</strong>, Hongyi Zeng, Jasmeet Bagga, George Porter, and Alex C. Snoeren, Sigcomm 2015</p>
+<p><strong>Introducing data center fabric, the next-generation Facebook data centre network</strong>, Alexey Andreyev, Facebook</p>
 
-<h3 id="toc_1">Software Defined Networking:</h3>
-<p>Openflow: Enable Innovation in Campus Networks, Nick McKeown, Tom Anderson, Hari Balakrishnan, Guru Parulkar, Larry Peterson, Jennifer Rexford, Scott Shenker, Jonathan Turner, CCR 2008</p>
-<p>The Future of Networking, and the Past of Protocols - Scott Shenker</p>
-<p>The Design and Implementation of Open vSwitch, Ben Pfaff, Justin Pettit, Teemu Koponen, Ethan Jackson, Andy Zhou, Jarno Rajahalme, Jesse Gross, Alex Wang, Joe Stringer, and Pravin Shelar, VMware, Inc.; Keith Amidon, Awake Networks; Martín Casado, VMware, Inc, NSDI 2015</p>
-<p>B4: Experience with a Globally-Deployed Software Defined WAN, Sushant Jain, Alok Kumar, Subhasree Mandal, Joon Ong, Leon Poutievski, Arjun Singh, Subbaiah Venkata, Jim Wanderer, Junlan Zhou, Min Zhu, Jonathan Zolla, Urs Hölzle, Stephen Stuart and Amin Vahdat, Sigcomm 2013</p>
+<h3 id="toc_3">Software Defined Networking:</h3>
+<p><strong>Openflow: Enable Innovation in Campus Networks</strong>, Nick McKeown, Tom Anderson, Hari Balakrishnan, Guru Parulkar, Larry Peterson, Jennifer Rexford, Scott Shenker, Jonathan Turner, CCR 2008</p>
+<p><strong>The Future of Networking, and the Past of Protocols</strong> - Scott Shenker</p>
+<p><strong>The Design and Implementation of Open vSwitch</strong>, Ben Pfaff, Justin Pettit, Teemu Koponen, Ethan Jackson, Andy Zhou, Jarno Rajahalme, Jesse Gross, Alex Wang, Joe Stringer, and Pravin Shelar, VMware, Inc.; Keith Amidon, Awake Networks; Martín Casado, VMware, Inc, NSDI 2015</p>
+<p><strong>B4: Experience with a Globally-Deployed Software Defined WAN</strong>, Sushant Jain, Alok Kumar, Subhasree Mandal, Joon Ong, Leon Poutievski, Arjun Singh, Subbaiah Venkata, Jim Wanderer, Junlan Zhou, Min Zhu, Jonathan Zolla, Urs Hölzle, Stephen Stuart and Amin Vahdat, Sigcomm 2013</p>
 
-<h3 id="toc_2">Network Virtualisation:</h3>
-<p>VL2: A Scalable and Flexible Data Centre Network, Albert Greenberg, Srikanth Kandula,  David A. Maltz , James R. Hamilton, Changhoon Kim, Parveen Patel , Navendu Jain, Parantap Lahiri, Sudipta Sengupta, Microsoft Research, Sigcomm 2009</p>
-<p>Network Virtualization in Multi-tenant Datacenters, Teemu Koponen, Keith Amidon, Peter Balland, Martín Casado, Anupam Chanda, Bryan Fulton, Igor Ganichev, Jesse Gross, Natasha Gude, Paul Ingram, Ethan Jackson, Andrew Lambeth, Romain Lenglet, Shih-Hao Li, Amar Padmanabhan, Justin Pettit, Ben Pfaff, and Rajiv Ramanathan, VMware; Scott Shenker, International Computer Science Institute and the University of California, Berkeley; Alan Shieh, Jeremy Stribling, Pankaj Thakkar, Dan Wendlandt, Alexander Yip, and Ronghua Zhang, VMware, NSDI 2014.</p>
+<h3 id="toc_4">Network Virtualisation &amp; Cloud Networking:</h3>
+<p><strong>VL2: A Scalable and Flexible Data Centre Network</strong>, Albert Greenberg, Srikanth Kandula,  David A. Maltz , James R. Hamilton, Changhoon Kim, Parveen Patel , Navendu Jain, Parantap Lahiri, Sudipta Sengupta, Microsoft Research, Sigcomm 2009</p>
+<p><strong>Network Virtualization in Multi-tenant Datacenters</strong>, Teemu Koponen, Keith Amidon, Peter Balland, Martín Casado, Anupam Chanda, Bryan Fulton, Igor Ganichev, Jesse Gross, Natasha Gude, Paul Ingram, Ethan Jackson, Andrew Lambeth, Romain Lenglet, Shih-Hao Li, Amar Padmanabhan, Justin Pettit, Ben Pfaff, and Rajiv Ramanathan, VMware; Scott Shenker, International Computer Science Institute and the University of California, Berkeley; Alan Shieh, Jeremy Stribling, Pankaj Thakkar, Dan Wendlandt, Alexander Yip, and Ronghua Zhang, VMware, NSDI 2014</p>
+<p><strong>Maglev: A Fast and Reliable Software Network Load Balancer</strong>, Daniel E. Eisenbud, Cheng Yi, Carlo Contavalli, Cody Smith, Roman Kononov, Eric Mann-Hielscher, Ardas Cilingiroglu, and Bin Cheyney, Google Inc.; Wentao Shang, University of California, Los Angeles; Jinnah Dylan Hosein, SpaceX</p>
+<p><strong>Ananta: Cloud Scale Load Balancing</strong>, Parveen Patel, Deepak Bansal, Lihua Yuan, Ashwin Murthy, Albert Greenberg, David A. Maltz, Randy Kern, Hemant Kumar, Marios Zikos, Hongyu Wu, Changhoon Kim, Naveen Karri, Microsoft.</p>
 
-<h3 id="toc_3">Transport Protocols:</h3>
-<p>RFC 5681, TCP Congestion Control, IETF</p>
-<p>Data Center TCP (DCTCP), Mohammad Alizadeh, Albert Greenberg, David A. Maltz, Jitendra Padhye, Parveen Patel, Balaji Prabhakar, Sudipta Sengupta, Murari Sridharan, Sigcomm 2010</p>
-<p>Understanding TCP Incast Throughput Collapse in Datacenter Networks, Yanpei Chen, Rean Griffith, Junda Liu, Randy H. Katz, Anthony D. Joseph, Sigcomm 2009</p>
+<h3 id="toc_5">Transport Protocols:</h3>
+<p><strong>RFC 5681, TCP Congestion Control</strong>, IETF</p>
+<p><strong>Data Center TCP (DCTCP)</strong>, Mohammad Alizadeh, Albert Greenberg, David A. Maltz, Jitendra Padhye, Parveen Patel, Balaji Prabhakar, Sudipta Sengupta, Murari Sridharan, Sigcomm 2010</p>
+<p><strong>Understanding TCP Incast Throughput Collapse in Datacenter Networks</strong>, Yanpei Chen, Rean Griffith, Junda Liu, Randy H. Katz, Anthony D. Joseph, Sigcomm 2009</p>
 
-<h3 id="toc_4">Network Measurement:</h3>
-<p>Pingmesh: A Large-Scale System for Data CenterNetwork Latency Measurement and Analysis, Chuanxiong Guo, Lihua Yuan, Dong Xiang, Yingnong Dang, Ray Huang, Dave Maltz, Zhaoyi Liu, Vin Wang, Bin Pang, Hua Chen, Zhi-Wei Lin, Varugis Kurien, Microsoft, Midfin Systems, Sigcomm 2015</p>
+<h3 id="toc_6">Network Measurement:</h3>
+<p><strong>Pingmesh: A Large-Scale System for Data CenterNetwork Latency Measurement and Analysis</strong>, Chuanxiong Guo, Lihua Yuan, Dong Xiang, Yingnong Dang, Ray Huang, Dave Maltz, Zhaoyi Liu, Vin Wang, Bin Pang, Hua Chen, Zhi-Wei Lin, Varugis Kurien, Microsoft, Midfin Systems, Sigcomm 2015</p>
 ]]>
         </content>
     </entry><entry>
