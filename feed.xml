@@ -3,7 +3,7 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2016-09-21T14:29:04+08:00</updated>
+    <updated>2016-09-22T12:03:42+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
         <title type="html"><![CDATA[Linux Networking Optimisation Guide Part I]]></title>
@@ -162,7 +162,7 @@ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</cod
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2016/chinese-testing.html"/>
         <published>2016-09-01T00:00:00+08:00</published>
-        <updated>2016-09-21T14:29:04+08:00</updated>
+        <updated>2016-09-22T12:03:42+08:00</updated>
         <id>http://vc2004.github.io/2016/chinese-testing.html</id>
         <category scheme="http://vc2004.github.io/tag/r/" term="R" label="R" />
         <category scheme="http://vc2004.github.io/tag/statistic/" term="Statistic" label="Statistic" />
@@ -171,12 +171,16 @@ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</cod
 <p>This post is testing if language other than english is working on this site. Also some cool free open course for data science are recommended here.</p>
 
 <h4 id="toc_1">Statistical Learning by Stanford</h4>
-<p><a href="https://statlearning.class.stanford.edu/">statlearning.class.stanford.edu/</a></p>
-<p>两个教授Trevor Hastie和Rob Tibshirani都是大牛, Prof Rob在 Lasso 和 Bootstrap Sampling 都有挺重要的贡献。</p>
+<p><a href="https://statlearning.class.stanford.edu">statlearning.class.stanford.edu</a></p>
+<p>两个教授 Trevor Hastie 和 Rob Tibshirani 都是大牛, Prof Rob在 Lasso 和 Bootstrap Sampling 都有挺重要的贡献。</p>
 
 <h4 id="toc_2">Machine Learning on Coursera</h4>
 <p><a href="https://www.coursera.org/learn/machine-learning">www.coursera.org/learn/machine-learning</a></p>
 <p>这个就不用多介绍了。。Ng 的牛课，Coursera 代表课之一，深入浅出。。我还想学一遍。。</p>
+
+<h4 id="toc_3">Data Science Specialisation on Coursera</h4>
+<p><a href="https://www.coursera.org/specializations/jhu-data-science">www.coursera.org/specializations/jhu-data-science</a></p>
+<p>JHU 开的课，这个课总体来说还可以，但是有点小问题是有些课过于简单，有些课又过于复杂，不如前面两门。</p>
 ]]>
         </content>
     </entry><entry>
