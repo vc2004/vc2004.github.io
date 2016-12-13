@@ -14,7 +14,7 @@ In the following example, CPU 1-15, 17-31 are isolated, leaving CPU 0 and CPU 32
 
 ```
 
-vi /etc/default/grub
+#vi /etc/default/grub
 
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=5
@@ -22,7 +22,7 @@ GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash default_hugepagesz=1G hugepagesz=1G hugepages=16 hugepagesz=2M hugepages=2048 intel_iommu=off isolcpus=1-15,17-31"
 GRUB_CMDLINE_LINUX="clocksource=tsc ipv6.disable=1"
 
-update-grub
+#update-grub
 
 Generating grub configuration file ...
 Found linux image: /boot/vmlinuz-3.16.0-4-amd64
@@ -39,7 +39,8 @@ For those ethernet card which DO NOT support RSS or multiple queue, it is better
 In addition, if a particular traffic receiving on the server is dominant (GRE/UDP/specific TCP), RPS may have better performance than RSS.
 
 ```
-/etc/init.d/set_rps.sh status
+#/etc/init.d/set_rps.sh status
+
 /sys/class/net/eth0/queues/rx-0/rps_cpus 00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,000000ff
 /sys/class/net/eth0/queues/rx-0/rps_flow_cnt 4096
 /sys/class/net/eth1/queues/rx-0/rps_cpus 00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,000000ff
@@ -60,7 +61,8 @@ Tune to the maximum of pre-set on Rx setting. For example, configure to 2040 on 
 
 ```
 
-ethtool -g eth0
+#ethtool -g eth0
+
 Ring parameters for eth0:
 Pre-set maximums:
 RX:        2040
@@ -90,7 +92,8 @@ watch -n1 grep TX /proc/softirqs
 In the /proc/net/softnet_stat
 
 ```
-cat /proc/net/softnet_stat
+#cat /proc/net/softnet_stat
+
 a1f2d52e 0003bb1a 008bf81d 00000000 00000000 00000000 00000000 00000000 00000000 d2711d13 00000000
 aba687fe 00038122 008ac060 00000000 00000000 00000000 00000000 00000000 00000000 cb49f8b4 00000000
 ce145ec6 0003d512 008ae0bf 00000000 00000000 00000000 00000000 00000000 00000000 f08f0303 00000000
@@ -131,7 +134,7 @@ In kernel version 3.16, according the related code, the
 
 ```
 
-So the column names is processed, dropped, time_squeeze, <null>, <null>, <null>, <null>, <null>, cpu_collision, received_rps, flow_limit_count. And each row represent the different CPU.
+So the column names is processed, dropped, time_squeeze, null, null, null, null, null, cpu_collision, received_rps, flow_limit_count. And each row represent the different CPU.
 
 if the third column is increasing, increase the netdev_budget. The polling routine has a budget which determines the CPU time the code is allowed. This is required to prevent SoftIRQs from monopolizing the CPU. The 3rd column is the number of times ksoftirqd ran out of netdev_budget or CPU time when there was still work to be done (time_squeeze). The more messages the CPU get from the buffer (600), the more time the SoftIRQ spent on CPU to process more messages. It avoid buffer flows. 
 
