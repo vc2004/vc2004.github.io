@@ -142,40 +142,6 @@ net.core.netdev_max_backlog = 300000</code></pre>
 ]]>
         </content>
     </entry><entry>
-        <title type="html"><![CDATA[OVN Encapsulation and Geneve]]></title>
-        <author><name>Liang Dong</name></author>
-        <link href="http://vc2004.github.io/2016/ovn-metadata-geneve.html"/>
-        <published>2016-12-13T00:00:00+08:00</published>
-        <updated>2016-12-13T10:37:40+08:00</updated>
-        <id>http://vc2004.github.io/2016/ovn-metadata-geneve.html</id>
-        <category scheme="http://vc2004.github.io/tag/networking/" term="networking" label="networking" />
-        <category scheme="http://vc2004.github.io/tag/ovn/" term="ovn" label="ovn" />
-        <category scheme="http://vc2004.github.io/tag/geneve/" term="geneve" label="geneve" />
-        <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
-            <![CDATA[ <h3 id="toc_0">OVN Encapsulation</h3>
-<p>Hypervisor to Hypervisor traffic</p>
-
-<ul>
-<li>STT and Geneve Supported, this is because metadata is required</li>
-<li>STT is generally preferred because of TCP segmentation offload on hardware</li>
-</ul>
-<p>Hypervisor to Gateway traffic</p>
-
-<ul>
-<li>In addition to STT &amp; Geneve, VxLAN is also supported</li>
-</ul>
-
-<h3 id="toc_1">Why Geneve?</h3>
-<p>In OVN Architecture</p>
-
-<ul>
-<li>Only STT and Geneve support the large amounts of metadata (over 32 bits per packet) that  OVN  uses </li>
-<li>STT  and  Geneve  use  randomized UDP or TCP source ports that allows efficient distribution among  multiple  paths in environments that use ECMP in their underlay.</li>
-<li>NICs  are  available to offload STT and Geneve encapsulation and decapsulation.</li>
-</ul>
-]]>
-        </content>
-    </entry><entry>
         <title type="html"><![CDATA[Linux Networking Optimisation Guide Part I]]></title>
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2016/linux-networking-optimisation-guide.html"/>
