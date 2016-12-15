@@ -8,9 +8,10 @@
 
 Complied by Liang Dong
 
-### Update 2016-09-20 
+### Update 
 
-2016-09-20 Add two thesis about load balancing service in Cloud Networking
+* 2016-12-13 Add several paper about BBR congestion control and P4 Dataplane Programming
+* 2016-09-20 Add two thesis about load balancing service in Cloud Networking
 
 ### Foreword
 
@@ -36,6 +37,10 @@ This is a small reading list about recent advance on networking. It also cover s
 
 **B4: Experience with a Globally-Deployed Software Defined WAN**, Sushant Jain, Alok Kumar, Subhasree Mandal, Joon Ong, Leon Poutievski, Arjun Singh, Subbaiah Venkata, Jim Wanderer, Junlan Zhou, Min Zhu, Jonathan Zolla, Urs Hölzle, Stephen Stuart and Amin Vahdat, Sigcomm 2013
 
+###Dataplane Programming
+
+**P4: Programming Protocol-Independent Packet Processors**, Pat Bosshart, Dan Daly, Glen Gibb, Martin Izzard, Nick McKeown, Jennifer Rexford, Cole Schlesinger, Dan Talayco, Amin Vahdat, George Varghese, David Walker
+
 ###Network Virtualisation & Cloud Networking:
 
 **VL2: A Scalable and Flexible Data Centre Network**, Albert Greenberg, Srikanth Kandula,  David A. Maltz , James R. Hamilton, Changhoon Kim, Parveen Patel , Navendu Jain, Parantap Lahiri, Sudipta Sengupta, Microsoft Research, Sigcomm 2009
@@ -53,6 +58,10 @@ This is a small reading list about recent advance on networking. It also cover s
 **Data Center TCP (DCTCP)**, Mohammad Alizadeh, Albert Greenberg, David A. Maltz, Jitendra Padhye, Parveen Patel, Balaji Prabhakar, Sudipta Sengupta, Murari Sridharan, Sigcomm 2010
 
 **Understanding TCP Incast Throughput Collapse in Datacenter Networks**, Yanpei Chen, Rean Griffith, Junda Liu, Randy H. Katz, Anthony D. Joseph, Sigcomm 2009
+
+**Bufferbloat: Dark Buffers in the Internet, Networks without effective AQM may again be vulnerable to congestion collapse**, Jim Gettys, Bell Labs, Alcatel-Lucent; and Kathleen Nichols, Pollere Inc, ACMQueue Volume 9, issue 11
+
+**BBR: Congestion-Based Congestion Control, Measuring bottleneck bandwidth and round-trip propagation time**, Neal Cardwell, Yuchung Cheng, C. Stephen Gunn, Soheil Hassas Yeganeh, Van Jacobson, ACMQueue Volume 14, issue 5
 
 ###Network Measurement:
 

@@ -3,7 +3,7 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2016-12-13T10:15:37+08:00</updated>
+    <updated>2016-12-15T10:12:27+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
         <title type="html"><![CDATA[Linux Networking Optimisation Guide Part II (Cont.)]]></title>
@@ -139,6 +139,40 @@ receives packets faster than kernel can process them.</code></pre>
 
 <pre><code>sysctl -w net.core.netdev_max_backlog=300000
 net.core.netdev_max_backlog = 300000</code></pre>
+]]>
+        </content>
+    </entry><entry>
+        <title type="html"><![CDATA[OVN Encapsulation and Geneve]]></title>
+        <author><name>Liang Dong</name></author>
+        <link href="http://vc2004.github.io/2016/ovn-metadata-geneve.html"/>
+        <published>2016-12-13T00:00:00+08:00</published>
+        <updated>2016-12-13T10:37:40+08:00</updated>
+        <id>http://vc2004.github.io/2016/ovn-metadata-geneve.html</id>
+        <category scheme="http://vc2004.github.io/tag/networking/" term="networking" label="networking" />
+        <category scheme="http://vc2004.github.io/tag/ovn/" term="ovn" label="ovn" />
+        <category scheme="http://vc2004.github.io/tag/geneve/" term="geneve" label="geneve" />
+        <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
+            <![CDATA[ <h3 id="toc_0">OVN Encapsulation</h3>
+<p>Hypervisor to Hypervisor traffic</p>
+
+<ul>
+<li>STT and Geneve Supported, this is because metadata is required</li>
+<li>STT is generally preferred because of TCP segmentation offload on hardware</li>
+</ul>
+<p>Hypervisor to Gateway traffic</p>
+
+<ul>
+<li>In addition to STT &amp; Geneve, VxLAN is also supported</li>
+</ul>
+
+<h3 id="toc_1">Why Geneve?</h3>
+<p>In OVN Architecture</p>
+
+<ul>
+<li>Only STT and Geneve support the large amounts of metadata (over 32 bits per packet) that  OVN  uses </li>
+<li>STT  and  Geneve  use  randomized UDP or TCP source ports that allows efficient distribution among  multiple  paths in environments that use ECMP in their underlay.</li>
+<li>NICs  are  available to offload STT and Geneve encapsulation and decapsulation.</li>
+</ul>
 ]]>
         </content>
     </entry><entry>
@@ -324,15 +358,19 @@ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</cod
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2016/recent-networking-advance-readlist.html"/>
         <published>2016-08-03T00:00:00+08:00</published>
-        <updated>2016-09-21T14:26:07+08:00</updated>
+        <updated>2016-12-15T10:12:27+08:00</updated>
         <id>http://vc2004.github.io/2016/recent-networking-advance-readlist.html</id>
         <category scheme="http://vc2004.github.io/tag/networking/" term="networking" label="networking" />
         <category scheme="http://vc2004.github.io/tag/sdn/" term="sdn" label="sdn" />
         <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
             <![CDATA[ <p>Complied by Liang Dong</p>
 
-<h3 id="toc_0">Update 2016-09-20</h3>
-<p>2016-09-20 Add two thesis about load balancing service in Cloud Networking</p>
+<h3 id="toc_0">Update</h3>
+
+<ul>
+<li>2016-12-13 Add several paper about BBR congestion control and P4 Dataplane Programming</li>
+<li>2016-09-20 Add two thesis about load balancing service in Cloud Networking</li>
+</ul>
 
 <h3 id="toc_1">Foreword</h3>
 <p>This is a small reading list about recent advance on networking. It also cover some basic fundamental knowledges of TCP/IP.</p>
@@ -349,18 +387,23 @@ echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor</cod
 <p><strong>The Design and Implementation of Open vSwitch</strong>, Ben Pfaff, Justin Pettit, Teemu Koponen, Ethan Jackson, Andy Zhou, Jarno Rajahalme, Jesse Gross, Alex Wang, Joe Stringer, and Pravin Shelar, VMware, Inc.; Keith Amidon, Awake Networks; Martín Casado, VMware, Inc, NSDI 2015</p>
 <p><strong>B4: Experience with a Globally-Deployed Software Defined WAN</strong>, Sushant Jain, Alok Kumar, Subhasree Mandal, Joon Ong, Leon Poutievski, Arjun Singh, Subbaiah Venkata, Jim Wanderer, Junlan Zhou, Min Zhu, Jonathan Zolla, Urs Hölzle, Stephen Stuart and Amin Vahdat, Sigcomm 2013</p>
 
-<h3 id="toc_4">Network Virtualisation &amp; Cloud Networking:</h3>
+<h3 id="toc_4">Dataplane Programming</h3>
+<p><strong>P4: Programming Protocol-Independent Packet Processors</strong>, Pat Bosshart, Dan Daly, Glen Gibb, Martin Izzard, Nick McKeown, Jennifer Rexford, Cole Schlesinger, Dan Talayco, Amin Vahdat, George Varghese, David Walker</p>
+
+<h3 id="toc_5">Network Virtualisation &amp; Cloud Networking:</h3>
 <p><strong>VL2: A Scalable and Flexible Data Centre Network</strong>, Albert Greenberg, Srikanth Kandula,  David A. Maltz , James R. Hamilton, Changhoon Kim, Parveen Patel , Navendu Jain, Parantap Lahiri, Sudipta Sengupta, Microsoft Research, Sigcomm 2009</p>
 <p><strong>Network Virtualization in Multi-tenant Datacenters</strong>, Teemu Koponen, Keith Amidon, Peter Balland, Martín Casado, Anupam Chanda, Bryan Fulton, Igor Ganichev, Jesse Gross, Natasha Gude, Paul Ingram, Ethan Jackson, Andrew Lambeth, Romain Lenglet, Shih-Hao Li, Amar Padmanabhan, Justin Pettit, Ben Pfaff, and Rajiv Ramanathan, VMware; Scott Shenker, International Computer Science Institute and the University of California, Berkeley; Alan Shieh, Jeremy Stribling, Pankaj Thakkar, Dan Wendlandt, Alexander Yip, and Ronghua Zhang, VMware, NSDI 2014</p>
 <p><strong>Maglev: A Fast and Reliable Software Network Load Balancer</strong>, Daniel E. Eisenbud, Cheng Yi, Carlo Contavalli, Cody Smith, Roman Kononov, Eric Mann-Hielscher, Ardas Cilingiroglu, and Bin Cheyney, Google Inc.; Wentao Shang, University of California, Los Angeles; Jinnah Dylan Hosein, SpaceX</p>
 <p><strong>Ananta: Cloud Scale Load Balancing</strong>, Parveen Patel, Deepak Bansal, Lihua Yuan, Ashwin Murthy, Albert Greenberg, David A. Maltz, Randy Kern, Hemant Kumar, Marios Zikos, Hongyu Wu, Changhoon Kim, Naveen Karri, Microsoft.</p>
 
-<h3 id="toc_5">Transport Protocols:</h3>
+<h3 id="toc_6">Transport Protocols:</h3>
 <p><strong>RFC 5681, TCP Congestion Control</strong>, IETF</p>
 <p><strong>Data Center TCP (DCTCP)</strong>, Mohammad Alizadeh, Albert Greenberg, David A. Maltz, Jitendra Padhye, Parveen Patel, Balaji Prabhakar, Sudipta Sengupta, Murari Sridharan, Sigcomm 2010</p>
 <p><strong>Understanding TCP Incast Throughput Collapse in Datacenter Networks</strong>, Yanpei Chen, Rean Griffith, Junda Liu, Randy H. Katz, Anthony D. Joseph, Sigcomm 2009</p>
+<p><strong>Bufferbloat: Dark Buffers in the Internet, Networks without effective AQM may again be vulnerable to congestion collapse</strong>, Jim Gettys, Bell Labs, Alcatel-Lucent; and Kathleen Nichols, Pollere Inc, ACMQueue Volume 9, issue 11</p>
+<p><strong>BBR: Congestion-Based Congestion Control, Measuring bottleneck bandwidth and round-trip propagation time</strong>, Neal Cardwell, Yuchung Cheng, C. Stephen Gunn, Soheil Hassas Yeganeh, Van Jacobson, ACMQueue Volume 14, issue 5</p>
 
-<h3 id="toc_6">Network Measurement:</h3>
+<h3 id="toc_7">Network Measurement:</h3>
 <p><strong>Pingmesh: A Large-Scale System for Data CenterNetwork Latency Measurement and Analysis</strong>, Chuanxiong Guo, Lihua Yuan, Dong Xiang, Yingnong Dang, Ray Huang, Dave Maltz, Zhaoyi Liu, Vin Wang, Bin Pang, Hua Chen, Zhi-Wei Lin, Varugis Kurien, Microsoft, Midfin Systems, Sigcomm 2015</p>
 ]]>
         </content>

@@ -7,8 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="Thinking and Learning in Networking" />
     <meta name="application-name" content="Thinking and Learning in Networking" />
-    <title>  Thinking and Learning in Networking</title>
-    <meta name="keywords" content="" />
+    <title>OVN Encapsulation and Geneve - Thinking and Learning in Networking</title>
+    <meta name="keywords" content="networking,ovn,geneve" />
     <meta name="description" content="" />
     
     <link rel="alternate" type="application/rss+xml" href="/feed.xml" title="Thinking and Learning in Networking" />
@@ -34,28 +34,51 @@
     <a href="/about.html">About</a>
 </nav>
 
-<section>
-    <div id="main" class="hentry" role="main">
+<section><article id="main" class="hentry">
+	<h1>OVN Encapsulation and Geneve</h1>
+    <p class="sub_text">2016-12-13 by <i>Liang Dong</i>, in <a href="/networking/">Networking</a>
+    </p>
     
-            <section class="item">
-                <h1>2016</h1>
-                <ul>
-                    <li><a href="/2016/linux-networking-optimisation-guide-ii.html">Linux Networking Optimisation Guide Part II (Cont.)</a> <time class="updated">2016-12-13</time></li>
+	<h3 id="toc_0">OVN Encapsulation</h3>
+<p>Hypervisor to Hypervisor traffic</p>
+
+<ul>
+<li>STT and Geneve Supported, this is because metadata is required</li>
+<li>STT is generally preferred because of TCP segmentation offload on hardware</li>
+</ul>
+<p>Hypervisor to Gateway traffic</p>
+
+<ul>
+<li>In addition to STT &amp; Geneve, VxLAN is also supported</li>
+</ul>
+
+<h3 id="toc_1">Why Geneve?</h3>
+<p>In OVN Architecture</p>
+
+<ul>
+<li>Only STT and Geneve support the large amounts of metadata (over 32 bits per packet) that  OVN  uses </li>
+<li>STT  and  Geneve  use  randomized UDP or TCP source ports that allows efficient distribution among  multiple  paths in environments that use ECMP in their underlay.</li>
+<li>NICs  are  available to offload STT and Geneve encapsulation and decapsulation.</li>
+</ul>
+
     
-                    <li><a href="/2016/ovn-metadata-geneve.html">OVN Encapsulation and Geneve</a> <time class="updated">2016-12-13</time></li>
     
-                    <li><a href="/2016/linux-networking-optimisation-guide.html">Linux Networking Optimisation Guide Part I</a> <time class="updated">2016-09-21</time></li>
+	<p/>
+	<hr/>
     
-                    <li><a href="/2016/chinese-testing.html">测试一下中文，顺便推荐几门上过的 Data Science 公开课</a> <time class="updated">2016-09-01</time></li>
+    <div class="sub_text">
+        <span>Tags:
+            <a href="/tag/networking/">networking</a>,&nbsp;<a href="/tag/ovn/">ovn</a>,&nbsp;<a href="/tag/geneve/">geneve</a>
+		</span>
     
-                    <li><a href="/2016/recent-networking-advance-readlist.html">Networking Fundamental and Recent Advance Reading List</a> <time class="updated">2016-08-03</time></li>
+        
+    </div>
     
-                    <li><a href="/2016/hello-world.html">Hello World</a> <time class="updated">2016-08-01</time></li>
+
+	<p/>
+	
     
-                </ul>
-            </section>
-    </div><!-- #main -->
-</section>
+</article></section>
 
 <footer id="footer">
     <p><small>Hosted on GitHub Pages &mdash;<br/> Theme adopted from <a href="https://github.com/orderedlist">orderedlist</a></small></p>
