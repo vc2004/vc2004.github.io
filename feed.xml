@@ -3,14 +3,14 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2016-12-15T11:20:09+08:00</updated>
+    <updated>2016-12-15T11:22:46+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
         <title type="html"><![CDATA[OVN and Geneve]]></title>
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2016/ovn-and-geneve.html"/>
         <published>2016-12-15T00:00:00+08:00</published>
-        <updated>2016-12-15T11:20:09+08:00</updated>
+        <updated>2016-12-15T11:22:46+08:00</updated>
         <id>http://vc2004.github.io/2016/ovn-and-geneve.html</id>
         <category scheme="http://vc2004.github.io/tag/ovn/" term="ovn" label="ovn" />
         <category scheme="http://vc2004.github.io/tag/geneve/" term="geneve" label="geneve" />
@@ -117,6 +117,10 @@ put_encapsulation(enum mf_field_id mff_ovn_geneve,
      */
 
     MFF_TUN_ID,</code></pre>
+
+<h3 id="toc_6">Reference</h3>
+<p>OVN Architecture: <a href="http://openvswitch.org/support/dist-docs/ovn-architecture.7.html">openvswitch.org/support/dist-docs/ovn-architecture.7.html</a>
+OVN Repo: <a href="https://github.com/openvswitch/ovs/tree/master/ovn">github.com/openvswitch/ovs/tree/master/ovn</a></p>
 ]]>
         </content>
     </entry><entry>
