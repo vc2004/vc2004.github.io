@@ -1,0 +1,141 @@
+# OVN and Geneve
+
+- date: 2016-12-15
+- category: Networking
+- tags:  ovn, geneve, vxlan
+
+----------------
+
+本文浅谈一下 OVN 和 Geneve，以及一点点应用和 code
+
+### Encapsulation in OVN
+
+OVN 支持三种隧道模式，Geneve，STT 和 VxLAN，但是其中 VxLAN 并不是什么情况下就能用的，Hypervisor 到 Hypervisor 之间的隧道模式只能走 Geneve 和 STT，到 GW 和 Vtep GW 的隧道才能用 VxLAN，这是为什么呢？
+
+### Why Geneve & STT
+
+因为只有 STT 和 Geneve 支持携带大于 32bit 的 Metadata，VxLAN 并不支持这一特性。并且 STT 和 Geneve 支持使用随机的 UDP 和 TCP 源端口，这些包在 ECMP 里更容易被分布到不同的路径里，VxLAN 的固定端口很容易就打到一条路径上了。
+
+STT 由于是 fake 出来的 TCP 包，网卡只要支持 TSO，就很容易达到高性能。VxLAN 现在一般网卡也都支持 Offloading了，但是就笔者经验，可能还有各种各样的问题。Geneve 比较新，也有新网卡支持了.
+
+### Geneve in OVN
+
+OVSDB 里的 Geneve tunnel 长这样
+
+```
+        Port "ovn-711117-0"
+            Interface "ovn-711117-0"
+                type: geneve
+                options: {csum="true", key=flow, remote_ip="172.18.3.153"}
+                
+```
+
+key=flow 含义是 VNI 由 flow 来决定。
+
+拿一个 OVN 里的 Geneve 包来举例，
+
+![Geneve in OVN](https://github.com/vc2004/vc2004.github.io/raw/master/media/geneve.png)
+
+OVN 使用了 VNI 和 Options 来携带了 Metadata，其中
+
+#### Logical Datapath as VNI
+
+VNI 使用了 Logical Datapath，也就是 0xb1, 这个和 southbound database 里 datapath_binding 表里的 tunnel key 一致
+
+```
+_uuid               : 8fc46e14-1c0e-4129-a123-a69bf093c04e
+external_ids        : {logical-switch="182eaadd-2cc3-4ff3-9bef-3793bb2463ec", name="neutron-f3dc2e30-f3e8-472b-abf8-ed455fc928f4"}
+tunnel_key          : 177
+```
+
+#### Options 
+
+Options 里携带了一个 OVN 的 TLV，其中 Option Data 为 0001002，其中第一个0是保留位。后面的 001 和 002 是 Logical Inpurt Port 和 Logical Output Port，和 southbound database 里的 port_biding 表里的 tunnel key 一致。
+
+```
+_uuid              : e40c929d-1997-4fac-bad3-867996eebd03
+chassis            : 869e09ab-d47e-4f18-8562-e28692dc0b39
+datapath           : 8fc46e14-1c0e-4129-a123-a69bf093c04e
+logical_port       : "dedf0130-50eb-480d-9030-13b826093c4f"
+mac                : ["fa:16:3e:ae:9a:b6 192.168.7.13"]
+options            : {}
+parent_port        : []
+tag                : []
+tunnel_key         : 1
+type               : ""
+
+_uuid              : b410ed4b-de0f-4d66-9815-1ea56b0a833c
+chassis            : be5e84f9-3d01-431b-bdfa-208411c102c9
+datapath           : 8fc46e14-1c0e-4129-a123-a69bf093c04e
+logical_port       : "a3347aa1-a8fb-4e30-820c-04c7e1459dd3"
+mac                : ["fa:16:3e:01:73:be 192.168.7.14"]
+options            : {}
+parent_port        : []
+tag                : []
+tunnel_key         : 2
+type               : ""
+```
+
+### Show Me The Code
+
+在 ovn/controller/physical.h 中，定义 Class 为0x0102 和 type 0x80，可以看到和上图一致。
+
+```
+#define OVN_GENEVE_CLASS 0x0102  /* Assigned Geneve class for OVN. */
+#define OVN_GENEVE_TYPE 0x80     /* Critical option. */
+#define OVN_GENEVE_LEN 4
+```
+
+在 ovn/controller/physical.c 中，可以看到 ovn-controller 在 encapsulation 的时候，如果是 Geneve，会把 datapath的 tunnel key 放到 MFF_TUN_ID 里，outport 和 inport 放到 mff_ovn_geneve 里。
+
+```
+static void
+put_encapsulation(enum mf_field_id mff_ovn_geneve,
+                  const struct chassis_tunnel *tun,
+                  const struct sbrec_datapath_binding *datapath,
+                  uint16_t outport, struct ofpbuf *ofpacts)
+{
+    if (tun->type == GENEVE) {
+        put_load(datapath->tunnel_key, MFF_TUN_ID, 0, 24, ofpacts);
+        put_load(outport, mff_ovn_geneve, 0, 32, ofpacts);
+        put_move(MFF_LOG_INPORT, 0, mff_ovn_geneve, 16, 15, ofpacts);
+    } else if (tun->type == STT) {
+        put_load(datapath->tunnel_key | (outport << 24), MFF_TUN_ID, 0, 64,
+                 ofpacts);
+        put_move(MFF_LOG_INPORT, 0, MFF_TUN_ID, 40, 15, ofpacts);
+    } else if (tun->type == VXLAN) {
+        put_load(datapath->tunnel_key, MFF_TUN_ID, 0, 24, ofpacts);
+    } else {
+        OVS_NOT_REACHED();
+    }
+}
+```
+
+在头文件定义里，可以看到 MFF_TUN_ID 就是 VNI
+
+```
+    /* "tun_id" (aka "tunnel_id").
+     *
+     * The "key" or "tunnel ID" or "VNI" in a packet received via a keyed
+     * tunnel.  For protocols in which the key is shorter than 64 bits, the key
+     * is stored in the low bits and the high bits are zeroed.  For non-keyed
+     * tunnels and packets not received via a tunnel, the value is 0.
+     *
+     * Type: be64.
+     * Maskable: bitwise.
+     * Formatting: hexadecimal.
+     * Prerequisites: none.
+     * Access: read/write.
+     * NXM: NXM_NX_TUN_ID(16) since v1.1.
+     * OXM: OXM_OF_TUNNEL_ID(38) since OF1.3 and v1.10.
+     * Prefix lookup member: tunnel.tun_id.
+     */
+     
+    MFF_TUN_ID,
+ 
+ ```
+
+### Reference
+
+OVN Architecture: http://openvswitch.org/support/dist-docs/ovn-architecture.7.html
+OVN Repo: https://github.com/openvswitch/ovs/tree/master/ovn

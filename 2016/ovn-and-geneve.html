@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Thinking and Learning in Networking" />
+    <meta name="application-name" content="Thinking and Learning in Networking" />
+    <title>OVN and Geneve - Thinking and Learning in Networking</title>
+    <meta name="keywords" content="ovn,geneve,vxlan" />
+    <meta name="description" content="" />
+    
+    <link rel="alternate" type="application/rss+xml" href="/feed.xml" title="Thinking and Learning in Networking" />
+    <link rel="stylesheet" href="/static/css/styles.css?v=fc867" />
+    <link rel="stylesheet" href="/static/css/pygment_trac.css?v=a6c15" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div id="wrapper">   
+<header id="header" class="clear">
+    <h1>Thinking and Learning in Networking</h1>
+    <p>I'm <i>Liang DONG</i></p>
+    <p>Specialized in <b>Networking </b></p>
+    <p>Interested in <b>Travelling & Painting </b></p>
+    <p>Trying to learn <b>Data Science</b></p>
+    <p>写英文中文全看心情  :)</b></p>
+    <p class="view"><a href="https://github.com/vc2004">View My GitHub Profile</a></p>
+</header><!-- #header -->
+<nav id="nav" role="navigation">
+    <a href="/">Home</a>
+    <a href="/about.html">About</a>
+</nav>
+
+<section><article id="main" class="hentry">
+	<h1>OVN and Geneve</h1>
+    <p class="sub_text">2016-12-15 by <i>Liang Dong</i>, in <a href="/networking/">Networking</a>
+    </p>
+    
+	<p>本文浅谈一下 OVN 和 Geneve，以及一点点应用和 code</p>
+
+<h3 id="toc_0">Encapsulation in OVN</h3>
+<p>OVN 支持三种隧道模式，Geneve，STT 和 VxLAN，但是其中 VxLAN 并不是什么情况下就能用的，Hypervisor 到 Hypervisor 之间的隧道模式只能走 Geneve 和 STT，到 GW 和 Vtep GW 的隧道才能用 VxLAN，这是为什么呢？</p>
+
+<h3 id="toc_1">Why Geneve &amp; STT</h3>
+<p>因为只有 STT 和 Geneve 支持携带大于 32bit 的 Metadata，VxLAN 并不支持这一特性。并且 STT 和 Geneve 支持使用随机的 UDP 和 TCP 源端口，这些包在 ECMP 里更容易被分布到不同的路径里，VxLAN 的固定端口很容易就打到一条路径上了。</p>
+<p>STT 由于是 fake 出来的 TCP 包，网卡只要支持 TSO，就很容易达到高性能。VxLAN 现在一般网卡也都支持 Offloading了，但是就笔者经验，可能还有各种各样的问题。Geneve 比较新，也有新网卡支持了.</p>
+
+<h3 id="toc_2">Geneve in OVN</h3>
+<p>OVSDB 里的 Geneve tunnel 长这样</p>
+
+<pre><code>Port &quot;ovn-711117-0&quot;
+            Interface &quot;ovn-711117-0&quot;
+                type: geneve
+                options: {csum=&quot;true&quot;, key=flow, remote_ip=&quot;172.18.3.153&quot;}</code></pre>
+<p>key=flow 含义是 VNI 由 flow 来决定。</p>
+<p>拿一个 OVN 里的 Geneve 包来举例，</p>
+<p><img src="https://github.com/vc2004/vc2004.github.io/raw/master/media/geneve.png" alt="Geneve in OVN"/></p>
+<p>OVN 使用了 VNI 和 Options 来携带了 Metadata，其中</p>
+
+<h4 id="toc_3">Logical Datapath as VNI</h4>
+<p>VNI 使用了 Logical Datapath，也就是 0xb1, 这个和 southbound database 里 datapath_binding 表里的 tunnel key 一致</p>
+
+<pre><code>_uuid               : 8fc46e14-1c0e-4129-a123-a69bf093c04e
+external_ids        : {logical-switch=&quot;182eaadd-2cc3-4ff3-9bef-3793bb2463ec&quot;, name=&quot;neutron-f3dc2e30-f3e8-472b-abf8-ed455fc928f4&quot;}
+tunnel_key          : 177</code></pre>
+
+<h4 id="toc_4">Options</h4>
+<p>Options 里携带了一个 OVN 的 TLV，其中 Option Data 为 0001002，其中第一个0是保留位。后面的 001 和 002 是 Logical Inpurt Port 和 Logical Output Port，和 southbound database 里的 port_biding 表里的 tunnel key 一致。</p>
+
+<pre><code>_uuid              : e40c929d-1997-4fac-bad3-867996eebd03
+chassis            : 869e09ab-d47e-4f18-8562-e28692dc0b39
+datapath           : 8fc46e14-1c0e-4129-a123-a69bf093c04e
+logical_port       : &quot;dedf0130-50eb-480d-9030-13b826093c4f&quot;
+mac                : [&quot;fa:16:3e:ae:9a:b6 192.168.7.13&quot;]
+options            : {}
+parent_port        : []
+tag                : []
+tunnel_key         : 1
+type               : &quot;&quot;
+
+_uuid              : b410ed4b-de0f-4d66-9815-1ea56b0a833c
+chassis            : be5e84f9-3d01-431b-bdfa-208411c102c9
+datapath           : 8fc46e14-1c0e-4129-a123-a69bf093c04e
+logical_port       : &quot;a3347aa1-a8fb-4e30-820c-04c7e1459dd3&quot;
+mac                : [&quot;fa:16:3e:01:73:be 192.168.7.14&quot;]
+options            : {}
+parent_port        : []
+tag                : []
+tunnel_key         : 2
+type               : &quot;&quot;</code></pre>
+
+<h3 id="toc_5">Show Me The Code</h3>
+<p>在 ovn/controller/physical.h 中，定义 Class 为0x0102 和 type 0x80，可以看到和上图一致。</p>
+
+<pre><code>#define OVN_GENEVE_CLASS 0x0102  /* Assigned Geneve class for OVN. */
+#define OVN_GENEVE_TYPE 0x80     /* Critical option. */
+#define OVN_GENEVE_LEN 4</code></pre>
+<p>在 ovn/controller/physical.c 中，可以看到 ovn-controller 在 encapsulation 的时候，如果是 Geneve，会把 datapath的 tunnel key 放到 MFF_TUN_ID 里，outport 和 inport 放到 mff_ovn_geneve 里。</p>
+
+<pre><code>static void
+put_encapsulation(enum mf_field_id mff_ovn_geneve,
+                  const struct chassis_tunnel *tun,
+                  const struct sbrec_datapath_binding *datapath,
+                  uint16_t outport, struct ofpbuf *ofpacts)
+{
+    if (tun-&gt;type == GENEVE) {
+        put_load(datapath-&gt;tunnel_key, MFF_TUN_ID, 0, 24, ofpacts);
+        put_load(outport, mff_ovn_geneve, 0, 32, ofpacts);
+        put_move(MFF_LOG_INPORT, 0, mff_ovn_geneve, 16, 15, ofpacts);
+    } else if (tun-&gt;type == STT) {
+        put_load(datapath-&gt;tunnel_key | (outport &lt;&lt; 24), MFF_TUN_ID, 0, 64,
+                 ofpacts);
+        put_move(MFF_LOG_INPORT, 0, MFF_TUN_ID, 40, 15, ofpacts);
+    } else if (tun-&gt;type == VXLAN) {
+        put_load(datapath-&gt;tunnel_key, MFF_TUN_ID, 0, 24, ofpacts);
+    } else {
+        OVS_NOT_REACHED();
+    }
+}</code></pre>
+<p>在头文件定义里，可以看到 MFF_TUN_ID 就是 VNI</p>
+
+<pre><code>/* &quot;tun_id&quot; (aka &quot;tunnel_id&quot;).
+     *
+     * The &quot;key&quot; or &quot;tunnel ID&quot; or &quot;VNI&quot; in a packet received via a keyed
+     * tunnel.  For protocols in which the key is shorter than 64 bits, the key
+     * is stored in the low bits and the high bits are zeroed.  For non-keyed
+     * tunnels and packets not received via a tunnel, the value is 0.
+     *
+     * Type: be64.
+     * Maskable: bitwise.
+     * Formatting: hexadecimal.
+     * Prerequisites: none.
+     * Access: read/write.
+     * NXM: NXM_NX_TUN_ID(16) since v1.1.
+     * OXM: OXM_OF_TUNNEL_ID(38) since OF1.3 and v1.10.
+     * Prefix lookup member: tunnel.tun_id.
+     */
+
+    MFF_TUN_ID,</code></pre>
+
+    
+    
+	<p/>
+	<hr/>
+    
+    <div class="sub_text">
+        <span>Tags:
+            <a href="/tag/ovn/">ovn</a>,&nbsp;<a href="/tag/geneve/">geneve</a>,&nbsp;<a href="/tag/vxlan/">vxlan</a>
+		</span>
+    
+        
+    </div>
+    
+
+	<p/>
+	
+    
+</article></section>
+
+<footer id="footer">
+    <p><small>Hosted on GitHub Pages &mdash;<br/> Theme adopted from <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer><!-- #footer -->
+</div><!-- #wrapper -->
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-50656512-1', 'terryoy.github.io');
+ga('send', 'pageview');
+</script> <!-- google analytics -->
+
+</body>
+</html>
