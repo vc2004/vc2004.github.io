@@ -137,5 +137,5 @@ put_encapsulation(enum mf_field_id mff_ovn_geneve,
 
 ### Reference
 
-OVN Architecture: http://openvswitch.org/support/dist-docs/ovn-architecture.7.html
-OVN Repo: https://github.com/openvswitch/ovs/tree/master/ovn
+* OVN Architecture: http://openvswitch.org/support/dist-docs/ovn-architecture.7.html
+* OVN Repo: https://github.com/openvswitch/ovs/tree/master/ovn
