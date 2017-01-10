@@ -221,14 +221,26 @@ footer {
   }
   
   #nav {
-	margin-top: 5px;
+	margin-top: 10px;
+    line-height: 20px;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    float: none;
+    padding: 10px 0px;
   }
   
-  section {
-    border:1px solid #e5e5e5;
+  .main {
+    margin-bottom: 40px;
+  }
+  
+  article.hentry {
+    margin-top: 20px;
+  }
+
+  section.item {
+    border-bottom:1px solid #e5e5e5;
     border-width:1px 0;
-    padding:40px 0;
-    margin:0 0 20px;
+    padding:20px 0;
   }
   
   header a small {
@@ -294,3 +306,20 @@ footer {
 	font-size: 13px;
 }
 
+.feed {
+    line-height: 1.5;
+    vertical-align: top;
+}
+.feed::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    background: url('../img/feed-icon.png') center no-repeat;
+    background-size: cover;
+    margin-right: 3px;
+}
+
+.pagination {
+    margin-bottom: 20px;
+}

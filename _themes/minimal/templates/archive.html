@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{% if pagination.title == 'Archive' %}{%- else %}{{pagination.title|string|title}}{%- endif %}  {{site.name}}{% endblock %}
+{% block title %}{% if pagination.title == 'Archive' %}Archive{%- else %}{{pagination.title|string|title}}{%- endif %} - {{site.name}}{% endblock %}
 {% block pagetitle %}{% if pagination.title == 'Archive' %}Index{%- else %}{{pagination.title|string|title}}{%- endif %}{% endblock %}
 {% block canonical %}{{ content_url(pagination.root, '') }}{% endblock %}
 
@@ -23,4 +23,25 @@
                 </ul>
             </section>
     </div><!-- #main -->
+
+{% if pagination.has_prev or pagination.has_next %}
+    <nav class="pagination" role="pagination">
+        {% if pagination.has_prev %}
+            <a class="prev" href="{{ content_url(pagination.root, 'page', pagination.prev_num) }}">« newer</a>
+        {% else %}
+            <!--span class="prev">« newer</span-->
+        {% endif %}
+
+        <span class="current">
+            {{ pagination.page }} / {{ pagination.pages }}
+        </span>
+
+        {% if pagination.has_next %}
+            <a class="next" href="{{ content_url(pagination.root, 'page', pagination.next_num) }}">older »</a>
+        {% else %}
+            <!--span class="next">older »</span-->
+        {% endif %}
+    </nav>
+{% endif %}
+
 {% endblock %}
