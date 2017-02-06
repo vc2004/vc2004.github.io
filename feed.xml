@@ -3,9 +3,36 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2017-01-20T11:18:51+08:00</updated>
+    <updated>2017-02-06T10:39:44+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
+        <title type="html"><![CDATA[BBR 测试的一点感想]]></title>
+        <author><name>Liang Dong</name></author>
+        <link href="http://vc2004.github.io/2017/bbr.html"/>
+        <published>2017-02-06T00:00:00+08:00</published>
+        <updated>2017-02-06T10:39:44+08:00</updated>
+        <id>http://vc2004.github.io/2017/bbr.html</id>
+        <category scheme="http://vc2004.github.io/tag/networking/" term="networking" label="networking" />
+        <category scheme="http://vc2004.github.io/tag/tcp/" term="tcp" label="tcp" />
+        <category scheme="http://vc2004.github.io/tag/bbr/" term="BBR" label="BBR" />
+        <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
+            <![CDATA[ <h3 id="toc_0">BBR 测试的一点感想</h3>
+
+<ol>
+<li>BBR 只适合某些特定的场景，比如 DC 内不适用，适合的场景是长距离 Internet 中间比较多 bufferbloat 的情况。</li>
+<li>BBR hardcode 了无视20%以下的丢包，这个其实有比较大的问题，不知道最新的代码 patch 了没有。</li>
+</ol>
+
+<pre><code>+/* If lost/delivered ratio &gt; 20%, interval is &quot;lossy&quot; and we may be policed: */
++static const u32 bbr_lt_loss_thresh = 50;</code></pre>
+
+<ol>
+<li>比较重要的一点，BBR 在无视丢包的情况下，会竞争吃掉 CUBIC 和其他 BBR 的带宽。</li>
+<li>BBR 不应该和 Loss-based CUBIC 比较，实际上应该和Delay-based Vegas 比较，当然 Vegas 自己也有挺多的问题。</li>
+</ol>
+]]>
+        </content>
+    </entry><entry>
         <title type="html"><![CDATA[Linux Networking Optimisation Guide Part III (Cont.)]]></title>
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2017/linux-networking-optimisation-guide-iii.html"/>

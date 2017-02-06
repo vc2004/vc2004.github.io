@@ -7,8 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="Thinking and Learning in Networking" />
     <meta name="application-name" content="Thinking and Learning in Networking" />
-    <title>2017 - Thinking and Learning in Networking</title>
-    <meta name="keywords" content="" />
+    <title>BBR 测试的一点感想 - Thinking and Learning in Networking</title>
+    <meta name="keywords" content="networking,tcp,BBR" />
     <meta name="description" content="" />
     
     <link rel="alternate" type="application/rss+xml" href="/feed.xml" title="Thinking and Learning in Networking" />
@@ -33,23 +33,44 @@
     <a href="/about.html">About</a>
 </nav>
 
-<section>
-    <div id="main" class="hentry" role="main">
+<section><article id="main" class="hentry">
+	<h1>BBR 测试的一点感想</h1>
+    <p class="sub_text">2017-02-06 by <i>Liang Dong</i>, in <a href="/networking/">Networking</a>
+    </p>
     
-            <section class="item">
-                <h1>2017</h1>
-                <ul>
-                    <li><a href="/2017/bbr.html">BBR 测试的一点感想</a> <time class="updated">2017-02-06</time></li>
+	<h3 id="toc_0">BBR 测试的一点感想</h3>
+
+<ol>
+<li>BBR 只适合某些特定的场景，比如 DC 内不适用，适合的场景是长距离 Internet 中间比较多 bufferbloat 的情况。</li>
+<li>BBR hardcode 了无视20%以下的丢包，这个其实有比较大的问题，不知道最新的代码 patch 了没有。</li>
+</ol>
+
+<pre><code>+/* If lost/delivered ratio &gt; 20%, interval is &quot;lossy&quot; and we may be policed: */
++static const u32 bbr_lt_loss_thresh = 50;</code></pre>
+
+<ol>
+<li>比较重要的一点，BBR 在无视丢包的情况下，会竞争吃掉 CUBIC 和其他 BBR 的带宽。</li>
+<li>BBR 不应该和 Loss-based CUBIC 比较，实际上应该和Delay-based Vegas 比较，当然 Vegas 自己也有挺多的问题。</li>
+</ol>
+
     
-                    <li><a href="/2017/linux-networking-optimisation-guide-iii.html">Linux Networking Optimisation Guide Part III (Cont.)</a> <time class="updated">2017-01-20</time></li>
     
-                </ul>
-            </section>
-    </div><!-- #main -->
+	<p/>
+	<hr/>
+    
+    <div class="sub_text">
+        <span>Tags:
+            <a href="/tag/networking/">networking</a>,&nbsp;<a href="/tag/tcp/">tcp</a>,&nbsp;<a href="/tag/bbr/">BBR</a>
+		</span>
+    
+        
+    </div>
+    
 
-
-
-</section>
+	<p/>
+	
+    
+</article></section>
 
 <footer id="footer">
     <p><small>Hosted on GitHub Pages &mdash;<br/> Theme adopted from <a href="https://github.com/orderedlist">orderedlist</a></small></p>
