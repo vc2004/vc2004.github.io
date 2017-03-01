@@ -3,9 +3,125 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2017-02-06T10:43:29+08:00</updated>
+    <updated>2017-03-01T14:25:53+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
+        <title type="html"><![CDATA[OVS 新版本 2.7.0 功能]]></title>
+        <author><name>Liang Dong</name></author>
+        <link href="http://vc2004.github.io/2017/ovs-2.7.0.html"/>
+        <published>2017-03-01T00:00:00+08:00</published>
+        <updated>2017-03-01T14:25:53+08:00</updated>
+        <id>http://vc2004.github.io/2017/ovs-2.7.0.html</id>
+        <category scheme="http://vc2004.github.io/tag/open-vswitch/" term="Open vSwitch" label="Open vSwitch" />
+        <category scheme="http://vc2004.github.io/tag/ovn/" term="OVN" label="OVN" />
+        <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
+            <![CDATA[ <p>持续更新中</p>
+
+<h3 id="toc_0">Distributed NAT</h3>
+<p>OVN 2.7 支持 Distributed NAT，这是比较有意思的新 feature，需要测试一下。。</p>
+
+<pre><code>diff --git a/NEWS b/NEWS
+index 3006f77..89bb026 100644
+--- a/NEWS
++++ b/NEWS
+@@ -20,6 +20,16 @@ v2.7.0 - xx xxx xxxx
+        information regarding remote connection configuration.
+      * New appctl &quot;inject-pkt&quot; command in ovn-controller that allows
+        packets to be injected into the connected OVS instance.
++     * Distributed logical routers may now be connected directly to
++       logical switches with localnet ports, by specifying a
++       &quot;redirect-chassis&quot; on the distributed gateway port of the
++       logical router.  NAT rules may be specified directly on the
++       distributed logical router, and are handled either centrally on
++       the &quot;redirect-chassis&quot;, or in many cases are handled locally on
++       the hypervisor where the corresponding logical port resides.
++       Gratuitous ARP for NAT addresses on a distributed logical
++       router is not yet supported, but will be added in a future
++       version.</code></pre>
+<p>这个 commit 里描述了这个新功能</p>
+
+<pre><code>commit ec29ac9c2a44cf809ddd8716d7b4f209c8970385
+Author: Mickey Spiegel &lt;mickeys.dev@gmail.com&gt;
+Date:   Thu Jan 26 17:31:08 2017 -0800
+
+    ovn: distributed NAT flows
+
+    This patch implements the flows required in the ingress and egress
+    pipeline stages in order to support NAT on a distributed logical router.
+
+    NAT functionality is associated with the logical router gateway port.
+    The flows that carry out NAT functionality all have match conditions on
+    inport or outport equal to the logical router gateway port.  There are
+    additional flows that are used to redirect traffic when necessary,
+    using the tunnel key of a &quot;chassisredirect&quot; SB port binding in order to
+    redirect traffic to the instance of the logical router gateway port on
+    the centralized &quot;redirect-chassis&quot;.
+
+    North/south traffic subject to one-to-one &quot;dnat_and_snat&quot; is handled
+    in a distributed manner, with south-to-north traffic going to the
+    local instance of the logical router gateway port.  North/south
+    traffic subject to (possibly one-to-many) &quot;snat&quot; is handled in a
+    centralized manner, with south-to-north traffic going to the instance
+    of the logical router gateway port on the &quot;redirect-chassis&quot;.
+    North-to-south traffic is directed to the corresponding chassis by
+    limiting ARP responses to the appropriate instance of the logical
+    router gateway port on one chassis.  For centralized NAT rules, this
+    is the instance on the &quot;redirect-chassis&quot;.  For distributed NAT rules,
+    this is the chassis where the corresponding logical port resides, using
+    an ethernet address specified in the NB NAT rule to trigger upstream
+    MAC learning.
+
+    East/west NAT traffic is all handled in a centralized manner.  While it
+    is certainly possible to handle some of this traffic in a distributed
+    manner, the centralized approach keeps the NAT flows simpler and
+    cleaner.  The expectation is that east/west NAT traffic is not as
+    important to optimize as north/south NAT traffic, with most east/west
+    traffic not requiring NAT.
+
+    Automated tests are currently limited to only a single node.  The
+    single node automated tests cover both north/south and east/west
+    traffic flows.
+
+    Signed-off-by: Mickey Spiegel &lt;mickeys.dev@gmail.com&gt;
+    Signed-off-by: Gurucharan Shetty &lt;guru@ovn.org&gt;</code></pre>
+
+<h3 id="toc_1">DPDK non experimental</h3>
+<p>在 NEWS 里看到 DPDK 去掉了 experimental tag, commit log 里也看到很多相关 patch，这个应该是这个版本花大力气测试了.</p>
+
+<pre><code>- DPDK:
+      * New option 'n_rxq_desc' and 'n_txq_desc' fields for DPDK interfaces
+        which set the number of rx and tx descriptors to use for the given port.
+      * Support for DPDK v16.11.
+      * Support for rx checksum offload. Refer DPDK HOWTO for details.
+      * Port Hotplug is now supported.
+      * DPDK physical ports can now have arbitrary names. The PCI address of
+        the device must be set using the 'dpdk-devargs' option. Compatibility
+        with the old dpdk&lt;portid&gt; naming scheme is broken, and as such a
+        device will not be available for use until a valid dpdk-devargs is
+        specified.
+      * Virtual DPDK Poll Mode Driver (vdev PMD) support.
+      * Removed experimental tag.</code></pre>
+<p>值得一说的是 userspace conntrack 看起来还没有支持 fragmentation.</p>
+
+<h3 id="toc_2">Policy Routing</h3>
+<p>OVN 支持 Policy Routing 了，这无疑在云里有很大的作用。</p>
+<p>首先 Multi gateway router 可以根据 source IP 来分担 traffic 了。</p>
+<p>其次根据原文描述，对 K8S 有独特的作用</p>
+
+<pre><code>This is very useful for a specific use case of Kubernetes.
+    When traffic is initiated inside a container heading to outside world,
+    we want to be able to send such traffic outside the gateway router
+    residing in the same host as that of the container. Since each
+    host gets a specific subnet, we can use source IP address based
+    policy routing to decide on the gateway router.</code></pre>
+
+<h3 id="toc_3">Protected Port</h3>
+<p>还没想到有什么应用场景，要研究一下。</p>
+
+<h3 id="toc_4">其他新 feature 看到了再更新</h3>
+]]>
+        </content>
+    </entry><entry>
         <title type="html"><![CDATA[BBR 测试的一点感想]]></title>
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2017/bbr.html"/>
