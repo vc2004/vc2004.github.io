@@ -3,22 +3,24 @@
     <title>Thinking and Learning in Networking</title>
     <link href="http://vc2004.github.io/feed.xml" rel="self" />
     <link href="http://vc2004.github.io/" />
-    <updated>2017-03-01T14:25:53+08:00</updated>
+    <updated>2017-03-01T15:16:00+08:00</updated>
     <id>http://vc2004.github.io/</id>
     <entry>
         <title type="html"><![CDATA[OVS 新版本 2.7.0 功能]]></title>
         <author><name>Liang Dong</name></author>
         <link href="http://vc2004.github.io/2017/ovs-2.7.0.html"/>
         <published>2017-03-01T00:00:00+08:00</published>
-        <updated>2017-03-01T14:25:53+08:00</updated>
+        <updated>2017-03-01T15:16:00+08:00</updated>
         <id>http://vc2004.github.io/2017/ovs-2.7.0.html</id>
         <category scheme="http://vc2004.github.io/tag/open-vswitch/" term="Open vSwitch" label="Open vSwitch" />
         <category scheme="http://vc2004.github.io/tag/ovn/" term="OVN" label="OVN" />
         <content type="html" xml:base="http://vc2004.github.io/" xml:lang="en">
-            <![CDATA[ <p>持续更新中</p>
+            <![CDATA[ <h3 id="toc_0">本文持续更新中</h3>
 
-<h3 id="toc_0">Distributed NAT</h3>
-<p>OVN 2.7 支持 Distributed NAT，这是比较有意思的新 feature，需要测试一下。。</p>
+<h2 id="toc_1">OVN 的新功能</h2>
+
+<h3 id="toc_2">Distributed NAT</h3>
+<p>OVN 2.7 在原来版本 DVR 的基础上支持 Distributed NAT，这是比较有意思的新 feature，需要测试一下。。</p>
 
 <pre><code>diff --git a/NEWS b/NEWS
 index 3006f77..89bb026 100644
@@ -85,7 +87,21 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
     Signed-off-by: Mickey Spiegel &lt;mickeys.dev@gmail.com&gt;
     Signed-off-by: Gurucharan Shetty &lt;guru@ovn.org&gt;</code></pre>
 
-<h3 id="toc_1">DPDK non experimental</h3>
+<h3 id="toc_3">Policy Routing</h3>
+<p>OVN 支持 Policy Routing 了，这无疑在云里有很大的作用.</p>
+<p>首先 Multi gateway router 可以根据 source IP 来分担 traffic 了.</p>
+<p>其次根据原文描述，对 K8S 有独特的作用..</p>
+
+<pre><code>This is very useful for a specific use case of Kubernetes.
+    When traffic is initiated inside a container heading to outside world,
+    we want to be able to send such traffic outside the gateway router
+    residing in the same host as that of the container. Since each
+    host gets a specific subnet, we can use source IP address based
+    policy routing to decide on the gateway router.</code></pre>
+
+<h2 id="toc_4">OVS 的一些新功能</h2>
+
+<h3 id="toc_5">DPDK non experimental</h3>
 <p>在 NEWS 里看到 DPDK 去掉了 experimental tag, commit log 里也看到很多相关 patch，这个应该是这个版本花大力气测试了.</p>
 
 <pre><code>- DPDK:
@@ -101,24 +117,12 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
         specified.
       * Virtual DPDK Poll Mode Driver (vdev PMD) support.
       * Removed experimental tag.</code></pre>
-<p>值得一说的是 userspace conntrack 看起来还没有支持 fragmentation.</p>
+<p>值得一说的是 userspace conntrack 看起来还没有支持 fragmentation. (这块代码貌似都是从 freebsd 拉过来改的）</p>
 
-<h3 id="toc_2">Policy Routing</h3>
-<p>OVN 支持 Policy Routing 了，这无疑在云里有很大的作用。</p>
-<p>首先 Multi gateway router 可以根据 source IP 来分担 traffic 了。</p>
-<p>其次根据原文描述，对 K8S 有独特的作用</p>
-
-<pre><code>This is very useful for a specific use case of Kubernetes.
-    When traffic is initiated inside a container heading to outside world,
-    we want to be able to send such traffic outside the gateway router
-    residing in the same host as that of the container. Since each
-    host gets a specific subnet, we can use source IP address based
-    policy routing to decide on the gateway router.</code></pre>
-
-<h3 id="toc_3">Protected Port</h3>
+<h3 id="toc_6">Protected Port</h3>
 <p>还没想到有什么应用场景，要研究一下。</p>
 
-<h3 id="toc_4">其他新 feature 看到了再更新</h3>
+<h3 id="toc_7">其他新 feature 看到了再更新</h3>
 ]]>
         </content>
     </entry><entry>

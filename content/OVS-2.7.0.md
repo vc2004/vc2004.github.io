@@ -6,11 +6,13 @@
 
 ----------------
 
-持续更新中
+### 本文持续更新中
+
+## OVN 的新功能
 
 ### Distributed NAT
 
-OVN 2.7 支持 Distributed NAT，这是比较有意思的新 feature，需要测试一下。。
+OVN 2.7 在原来版本 DVR 的基础上支持 Distributed NAT，这是比较有意思的新 feature，需要测试一下。。
 
 ```
 diff --git a/NEWS b/NEWS
@@ -82,6 +84,26 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
     Signed-off-by: Gurucharan Shetty <guru@ovn.org>
 ```
 
+### Policy Routing
+
+OVN 支持 Policy Routing 了，这无疑在云里有很大的作用.
+
+首先 Multi gateway router 可以根据 source IP 来分担 traffic 了.
+
+其次根据原文描述，对 K8S 有独特的作用..
+
+
+```
+    This is very useful for a specific use case of Kubernetes.
+    When traffic is initiated inside a container heading to outside world,
+    we want to be able to send such traffic outside the gateway router
+    residing in the same host as that of the container. Since each
+    host gets a specific subnet, we can use source IP address based
+    policy routing to decide on the gateway router.
+```
+
+## OVS 的一些新功能
+
 ### DPDK non experimental
 
 在 NEWS 里看到 DPDK 去掉了 experimental tag, commit log 里也看到很多相关 patch，这个应该是这个版本花大力气测试了.
@@ -102,25 +124,7 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
       * Removed experimental tag.
 ```
 
-值得一说的是 userspace conntrack 看起来还没有支持 fragmentation.
-
-
-### Policy Routing
-
-OVN 支持 Policy Routing 了，这无疑在云里有很大的作用。
-
-首先 Multi gateway router 可以根据 source IP 来分担 traffic 了。
-
-其次根据原文描述，对 K8S 有独特的作用
-
-```
-    This is very useful for a specific use case of Kubernetes.
-    When traffic is initiated inside a container heading to outside world,
-    we want to be able to send such traffic outside the gateway router
-    residing in the same host as that of the container. Since each
-    host gets a specific subnet, we can use source IP address based
-    policy routing to decide on the gateway router.
-```
+值得一说的是 userspace conntrack 看起来还没有支持 fragmentation. (这块代码貌似都是从 freebsd 拉过来改的）
 
 ### Protected Port
 
