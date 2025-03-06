@@ -3,3 +3,7 @@ description: 书当快意读易尽，客有可人期不来
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:
   - jekyll-remote-theme
+
+header_pages:
+  - index.md
+  - about.md
