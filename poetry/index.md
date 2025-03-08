@@ -1,29 +1,21 @@
 ---
-layout: poetry
+layout: homepage
 title: 每日诗词
-permalink: /poetry/
 ---
 
 <div class="poetry-container">
-  {% assign poems = site.data.poems %}
-  {% assign today_seed = "now" | date: "%Y%m%d" | to_integer %}
-  {% assign poem_index = today_seed | modulo: poems.size %}
-  {% assign poem = poems[poem_index] %}
-  
-  <div class="poem-header">
-    <h2 class="poem-title">{{ poem.title }}</h2>
-    <p class="poem-info">【{{ poem.dynasty }}】{{ poem.author }}</p>
-  </div>
-
-  <div class="maxim-container">
-    <i class="fas fa-quote-left quote-left"></i>
-    <div class="maxim-grid">
-      {% assign lines = poem.content | newline_to_br | strip_newlines | split: '<br />' %}
-      {% for line in lines %}
-        <div class="maxim-line">{{ line | strip }}</div>
-      {% endfor %}
+  <div id="poem-content" class="poem-content">
+    <div class="poem-header">
+      <h2 id="poem-title" class="poem-title"></h2>
+      <p id="poem-info" class="poem-info"></p>
     </div>
-    <i class="fas fa-quote-right quote-right"></i>
+
+    <div class="maxim-container">
+      <i class="fas fa-quote-left quote-left"></i>
+      <div id="poem-lines" class="maxim-grid">
+      </div>
+      <i class="fas fa-quote-right quote-right"></i>
+    </div>
   </div>
 </div>
 
@@ -64,6 +56,12 @@ permalink: /poetry/
   text-align: center;
 }
 
+.maxim-line {
+  font-family: "LXGW WenKai", serif;
+  font-size: 1.2rem;
+  line-height: 2;
+}
+
 @media (prefers-color-scheme: dark) {
   .poem-title {
     color: #e2e8f0;
@@ -83,7 +81,43 @@ permalink: /poetry/
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // 这里可以添加加载诗词的 JavaScript 代码
-  // 例如通过 API 获取随机诗词
+  const poems = {{ site.data.poems | jsonify }};
+
+  function getDateString() {
+    const now = new Date();
+    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  }
+
+  function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  }
+
+  function displayDailyPoem() {
+    const dateStr = getDateString();
+    const hash = hashCode(dateStr);
+    const index = hash % poems.length;
+    const poem = poems[index];
+    
+    document.getElementById('poem-title').textContent = poem.title;
+    document.getElementById('poem-info').textContent = `【${poem.dynasty}】${poem.author}`;
+    
+    const linesContainer = document.getElementById('poem-lines');
+    linesContainer.innerHTML = '';
+    const lines = poem.content.trim().split('\n');
+    lines.forEach(line => {
+      const div = document.createElement('div');
+      div.className = 'maxim-line';
+      div.textContent = line.trim();
+      linesContainer.appendChild(div);
+    });
+  }
+
+  displayDailyPoem();
 });
 </script> 

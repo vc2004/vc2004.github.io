@@ -128,31 +128,18 @@
       </header>
       <section>
         <div class="poetry-container">
-  
-  
-  
-  
-  
-  <div class="poem-header">
-    <h2 class="poem-title">悯农</h2>
-    <p class="poem-info">【唐】李绅</p>
-  </div>
-
-  <div class="maxim-container">
-    <i class="fas fa-quote-left quote-left"></i>
-    <div class="maxim-grid">
-      
-      
-        <div class="maxim-line">锄禾日当午，</div>
-      
-        <div class="maxim-line">汗滴禾下土。</div>
-      
-        <div class="maxim-line">谁知盘中餐，</div>
-      
-        <div class="maxim-line">粒粒皆辛苦。</div>
-      
+  <div id="poem-content" class="poem-content">
+    <div class="poem-header">
+      <h2 id="poem-title" class="poem-title"></h2>
+      <p id="poem-info" class="poem-info"></p>
     </div>
-    <i class="fas fa-quote-right quote-right"></i>
+
+    <div class="maxim-container">
+      <i class="fas fa-quote-left quote-left"></i>
+      <div id="poem-lines" class="maxim-grid">
+      </div>
+      <i class="fas fa-quote-right quote-right"></i>
+    </div>
   </div>
 </div>
 
@@ -193,6 +180,12 @@
   text-align: center;
 }
 
+.maxim-line {
+  font-family: "LXGW WenKai", serif;
+  font-size: 1.2rem;
+  line-height: 2;
+}
+
 @media (prefers-color-scheme: dark) {
   .poem-title {
     color: #e2e8f0;
@@ -212,12 +205,48 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // 这里可以添加加载诗词的 JavaScript 代码
-  // 例如通过 API 获取随机诗词
+  const poems = [{"title":"静夜思","author":"李白","dynasty":"唐","content":"床前明月光，\n疑是地上霜，\n举头望明月，\n低头思故乡。\n"},{"title":"春晓","author":"孟浩然","dynasty":"唐","content":"春眠不觉晓，\n处处闻啼鸟。\n夜来风雨声，\n花落知多少。\n"},{"title":"登鹳雀楼","author":"王之涣","dynasty":"唐","content":"白日依山尽，\n黄河入海流。\n欲穷千里目，\n更上一层楼。\n"},{"title":"相思","author":"王维","dynasty":"唐","content":"红豆生南国，\n春来发几枝。\n愿君多采撷，\n此物最相思。\n"},{"title":"江雪","author":"柳宗元","dynasty":"唐","content":"千山鸟飞绝，\n万径人踪灭。\n孤舟蓑笠翁，\n独钓寒江雪。\n"},{"title":"望庐山瀑布","author":"李白","dynasty":"唐","content":"日照香炉生紫烟，\n遥看瀑布挂前川。\n飞流直下三千尺，\n疑是银河落九天。\n"},{"title":"咏柳","author":"贺知章","dynasty":"唐","content":"碧玉妆成一树高，\n万条垂下绿丝绦。\n不知细叶谁裁出，\n二月春风似剪刀。\n"},{"title":"回乡偶书","author":"贺知章","dynasty":"唐","content":"少小离家老大回，\n乡音无改鬓毛衰。\n儿童相见不相识，\n笑问客从何处来。\n"},{"title":"悯农","author":"李绅","dynasty":"唐","content":"锄禾日当午，\n汗滴禾下土。\n谁知盘中餐，\n粒粒皆辛苦。\n"},{"title":"清平调·其一","author":"李白","dynasty":"唐","content":"云想衣裳花想容，\n春风拂槛露华浓。\n若非群玉山头见，\n会向瑶台月下逢。\n"},{"title":"望天门山","author":"李白","dynasty":"唐","content":"天门中断楚江开，\n碧水东流至此回，\n两岸青山相对出，\n孤帆一片日边来。\n"},{"title":"送杜少府之任蜀州","author":"王勃","dynasty":"唐","content":"城阙辅三秦，\n风烟望五津，\n与君离别意，\n同是宦游人。\n"},{"title":"登高","author":"杜甫","dynasty":"唐","content":"风急天高猿啸哀，\n渚清沙白鸟飞回，\n无边落木萧萧下，\n不尽长江滚滚来。\n"},{"title":"山居秋暝","author":"王维","dynasty":"唐","content":"空山新雨后，\n天气晚来秋，\n明月松间照，\n清泉石上流。\n"},{"title":"鹿柴","author":"王维","dynasty":"唐","content":"空山不见人，\n但闻人语响，\n返景入深林，\n复照青苔上。\n"},{"title":"早发白帝城","author":"李白","dynasty":"唐","content":"朝辞白帝彩云间，\n千里江陵一日还，\n两岸猿声啼不住，\n轻舟已过万重山。\n"},{"title":"黄鹤楼送孟浩然之广陵","author":"李白","dynasty":"唐","content":"故人西辞黄鹤楼，\n烟花三月下扬州，\n孤帆远影碧空尽，\n唯见长江天际流。\n"},{"title":"送友人","author":"李白","dynasty":"唐","content":"青山横北郭，\n白水绕东城，\n此地一为别，\n孤蓬万里征。\n"},{"title":"夜宿山寺","author":"李白","dynasty":"唐","content":"危楼高百尺，\n手可摘星辰，\n不敢高声语，\n恐惊天上人。\n"},{"title":"望岳","author":"杜甫","dynasty":"唐","content":"岱宗夫如何，\n齐鲁青未了，\n造化钟神秀，\n阴阳割昏晓。\n"},{"title":"赠汪伦","author":"李白","dynasty":"唐","content":"李白乘舟将欲行，\n忽闻岸上踏歌声，\n桃花潭水深千尺，\n不及汪伦送我情。\n"},{"title":"绝句","author":"杜甫","dynasty":"唐","content":"两个黄鹂鸣翠柳，\n一行白鹭上青天，\n窗含西岭千秋雪，\n门泊东吴万里船。\n"},{"title":"枫桥夜泊","author":"张继","dynasty":"唐","content":"月落乌啼霜满天，\n江枫渔火对愁眠，\n姑苏城外寒山寺，\n夜半钟声到客船。\n"},{"title":"题都城南庄","author":"崔护","dynasty":"唐","content":"去年今日此门中，\n人面桃花相映红，\n人面不知何处去，\n桃花依旧笑春风。\n"},{"title":"游子吟","author":"孟郊","dynasty":"唐","content":"慈母手中线，\n游子身上衣，\n临行密密缝，\n意恐迟迟归，\n谁言寸草心，\n报得三春晖。\n"},{"title":"春夜喜雨","author":"杜甫","dynasty":"唐","content":"好雨知时节，\n当春乃发生，\n随风潜入夜，\n润物细无声。\n"},{"title":"清明","author":"杜牧","dynasty":"唐","content":"清明时节雨纷纷，\n路上行人欲断魂，\n借问酒家何处有，\n牧童遥指杏花村。\n"},{"title":"江南春","author":"杜牧","dynasty":"唐","content":"千里莺啼绿映红，\n水村山郭酒旗风，\n南朝四百八十寺，\n多少楼台烟雨中。\n"},{"title":"山行","author":"杜牧","dynasty":"唐","content":"远上寒山石径斜，\n白云生处有人家，\n停车坐爱枫林晚，\n霜叶红于二月花。\n"},{"title":"题李凝幽居","author":"贾岛","dynasty":"唐","content":"闲居少邻并，\n草径入荒园，\n鸟宿池边树，\n僧敲月下门。\n"},{"title":"四时田园杂兴·其七","author":"杨万里","dynasty":"宋","content":"天欲雨，\n山色暝。\n远村烟火，\n数点青青。\n"},{"title":"夏日田园杂兴","author":"杨万里","dynasty":"宋","content":"昼长睡起无情思，\n闲看儿童捉柳花。\n南亭水满清风起，\n碧藕红莲满院香。\n"},{"title":"寻隐者不遇","author":"杨万里","dynasty":"宋","content":"松下问童子，\n言师采药去。\n只在此山中，\n云深不知处。\n"},{"title":"晚春","author":"杨万里","dynasty":"宋","content":"三月残花落更开，\n小池新得雨中苔。\n底事春工无意绪，\n和风细雨不成雷。\n"},{"title":"二月十一日夜梦作东都早春绝句","author":"杨万里","dynasty":"宋","content":"道是春来早，\n如何未见春。\n小桃三四点，\n偏报有情人。\n"}];
+
+  function getDateString() {
+    const now = new Date();
+    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  }
+
+  function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  }
+
+  function displayDailyPoem() {
+    const dateStr = getDateString();
+    const hash = hashCode(dateStr);
+    const index = hash % poems.length;
+    const poem = poems[index];
+    
+    document.getElementById('poem-title').textContent = poem.title;
+    document.getElementById('poem-info').textContent = `【${poem.dynasty}】${poem.author}`;
+    
+    const linesContainer = document.getElementById('poem-lines');
+    linesContainer.innerHTML = '';
+    const lines = poem.content.trim().split('\n');
+    lines.forEach(line => {
+      const div = document.createElement('div');
+      div.className = 'maxim-line';
+      div.textContent = line.trim();
+      linesContainer.appendChild(div);
+    });
+  }
+
+  displayDailyPoem();
 });
 </script>
 
- 
+
 
         <div class="daily-links">
           <a href="/poetry/" class="daily-btn poetry-btn">
