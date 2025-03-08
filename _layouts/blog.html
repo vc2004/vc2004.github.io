@@ -44,6 +44,7 @@
             <ul>
               <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
               <li><a href="{{ '/blog/' | relative_url }}" {% if page.url contains '/blog/' %}class="active"{% endif %}>Blog</a></li>
+              <li><a href="{{ '/poetry/' | relative_url }}" {% if page.url contains '/poetry/' %}class="active"{% endif %}>每日诗词</a></li>
             </ul>
           </nav>
         </div>
@@ -172,6 +173,18 @@
           <h1>{{ page.title }}</h1>
           {{ content }}
         </div>
+
+        <div class="daily-poetry-link">
+          <a href="{{ '/poetry/' | relative_url }}" class="poetry-btn">
+            <i class="fas fa-book-open"></i> 每日诗词
+          </a>
+        </div>
+
+        <br>
+
+        {% if site.enable_footnote %}
+        <p><small>Powered by Jekyll and <a href="https://github.com/yaoyao-liu/minimal-light" target="_blank" rel="noopener">Minimal Light</a> theme.</small></p>
+        {% endif %}
       </section>
     </div>
     <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>

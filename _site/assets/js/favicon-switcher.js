@@ -61,4 +61,17 @@ function initSwitcher(delay) {
 }
 
 initSwitcher()
+
+// 监听系统颜色模式变化
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+  const darkModeOn = event.matches;
+  const favicon = document.querySelector("link[rel~='icon']");
+  if (!favicon) return;
+  
+  if (darkModeOn) {
+    favicon.href = document.documentElement.getAttribute('data-favicon-dark');
+  } else {
+    favicon.href = document.documentElement.getAttribute('data-favicon-light');
+  }
+});
 })()
