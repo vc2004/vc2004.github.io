@@ -859,13 +859,16 @@ footer {
   .blog-content blockquote {
     border-left-color: #4a5568;
     color: #a0aec0; } }
-.daily-poetry-link {
+.daily-links {
   position: fixed;
   right: 30px;
   top: 30px;
-  z-index: 100; }
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; }
 
-.poetry-btn {
+.daily-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -878,22 +881,101 @@ footer {
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-  .poetry-btn:hover {
+  .daily-btn:hover {
     color: #3b82f6;
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-  .poetry-btn i {
+  .daily-btn i {
     font-size: 1.1rem; }
 
+.hexagram-btn {
+  background: rgba(255, 255, 255, 0.95); }
+  .hexagram-btn:hover {
+    color: #805ad5; }
+
 @media (max-width: 768px) {
-  .daily-poetry-link {
+  .daily-links {
     position: static;
     margin: 20px 0;
-    text-align: center; } }
+    align-items: center; } }
 @media (prefers-color-scheme: dark) {
-  .poetry-btn {
+  .daily-btn {
     background: rgba(26, 32, 44, 0.9);
     color: #e2e8f0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
-    .poetry-btn:hover {
-      color: #60a5fa; } }
+    .daily-btn:hover {
+      color: #60a5fa; }
+
+  .hexagram-btn {
+    background: rgba(26, 32, 44, 0.95); }
+    .hexagram-btn:hover {
+      color: #b794f4; } }
+.hexagram-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  font-family: "LXGW WenKai", "霞鹜文楷", serif; }
+
+.hexagram-content {
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; }
+
+.hexagram-title {
+  font-size: 2rem;
+  color: #2d3748;
+  margin-bottom: 1rem; }
+
+.hexagram-symbol {
+  font-size: 4rem;
+  color: #805ad5;
+  margin: 1.5rem 0; }
+
+.hexagram-meaning {
+  font-size: 1.5rem;
+  color: #4a5568;
+  margin-bottom: 1.5rem; }
+
+.hexagram-description {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #4a5568;
+  text-align: justify; }
+
+@media (prefers-color-scheme: dark) {
+  .hexagram-content {
+    background: rgba(26, 32, 44, 0.9); }
+
+  .hexagram-title {
+    color: #e2e8f0; }
+
+  .hexagram-symbol {
+    color: #b794f4; }
+
+  .hexagram-meaning {
+    color: #cbd5e0; }
+
+  .hexagram-description {
+    color: #a0aec0; } }
+@media (max-width: 768px) {
+  .hexagram-content {
+    margin: 1rem;
+    padding: 1.5rem; }
+
+  .hexagram-title {
+    font-size: 1.75rem; }
+
+  .hexagram-symbol {
+    font-size: 3.5rem; }
+
+  .hexagram-meaning {
+    font-size: 1.25rem; }
+
+  .hexagram-description {
+    font-size: 1.1rem; } }

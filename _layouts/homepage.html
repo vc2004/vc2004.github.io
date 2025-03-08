@@ -173,9 +173,12 @@
       <section>
         {{ content }}
 
-        <div class="daily-poetry-link">
-          <a href="{{ '/poetry/' | relative_url }}" class="poetry-btn">
+        <div class="daily-links">
+          <a href="{{ '/poetry/' | relative_url }}" class="daily-btn poetry-btn">
             <i class="fas fa-book-open"></i> 每日诗词
+          </a>
+          <a href="{{ '/hexagram/' | relative_url }}" class="daily-btn hexagram-btn">
+            <i class="fas fa-yin-yang"></i> 每日卦象
           </a>
         </div>
 
