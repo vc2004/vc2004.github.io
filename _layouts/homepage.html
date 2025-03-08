@@ -57,9 +57,35 @@
         <email>{{ site.email }}</email>
         <br>
         {% endif %}
+        {% if site.location %}
+        <div class="location">
+          <i class="fas fa-map-marker-alt"></i> {{ site.location }}
+        </div>
+        {% endif %}
+        {% if site.phone %}
+        <div class="phone">
+          <i class="fas fa-phone"></i> {{ site.phone }}
+        </div>
+        {% endif %}
+        {% if site.languages %}
+        <div class="languages">
+          <i class="fas fa-language"></i> {{ site.languages | join: " / " }}
+        </div>
+        {% endif %}
+        {% if site.interests %}
+        <div class="interests">
+          <i class="fas fa-star"></i> {{ site.interests | join: " • " }}
+        </div>
+        {% endif %}
         {% if site.maxim %}
-        <maxim style="font-size:1.10rem;">{{ site.maxim }}</maxim>
-        <br>
+        <div class="maxim-container">
+          <i class="fas fa-quote-left quote-left"></i>
+          <div class="maxim-grid">
+            <div class="maxim-line">书当快意读易尽，</div>
+            <div class="maxim-line">客有可人期不来</div>
+          </div>
+          <i class="fas fa-quote-right quote-right"></i>
+        </div>
         {% endif %}
 
         <br>
@@ -90,8 +116,44 @@
         {% endif %}
 
         {% if site.twitter %}
-        <a style="margin: 0 0 0 0" href="{{ site.twitter }}">
+        <a style="margin: 0 5px 0 0" href="{{ site.twitter }}">
           <i class="fab fa-x-twitter"></i>
+        </a>
+        {% endif %}
+
+        {% if site.medium %}
+        <a style="margin: 0 5px 0 0" href="{{ site.medium }}">
+          <i class="fab fa-medium"></i>
+        </a>
+        {% endif %}
+
+        {% if site.scholar %}
+        <a style="margin: 0 5px 0 0" href="{{ site.scholar }}">
+          <i class="ai ai-google-scholar"></i>
+        </a>
+        {% endif %}
+
+        {% if site.researchgate %}
+        <a style="margin: 0 5px 0 0" href="{{ site.researchgate }}">
+          <i class="ai ai-researchgate"></i>
+        </a>
+        {% endif %}
+
+        {% if site.orcid %}
+        <a style="margin: 0 5px 0 0" href="{{ site.orcid }}">
+          <i class="ai ai-orcid"></i>
+        </a>
+        {% endif %}
+
+        {% if site.zhihu %}
+        <a style="margin: 0 5px 0 0" href="{{ site.zhihu }}">
+          <i class="fab fa-zhihu"></i>
+        </a>
+        {% endif %}
+
+        {% if site.weibo %}
+        <a style="margin: 0 5px 0 0" href="{{ site.weibo }}">
+          <i class="fab fa-weibo"></i>
         </a>
         {% endif %}
         </div>

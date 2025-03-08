@@ -8,12 +8,47 @@ Chief Engineer leading research in 4G/5G communications technologies research pr
 
 Self-learning data sciences.
 
-- **Networking:** S+
-- **Programming:** A
-- **Data Science:** A
-- **Arts:** A
-- **汉语言文学:** A
-
+<div class="skills-section">
+  <div class="skill-item">
+    <div class="skill-name">Networking</div>
+    <div class="skill-rating s-plus">
+      <span class="skill-level">S+</span>
+      <div class="skill-bar"></div>
+    </div>
+  </div>
+  
+  <div class="skill-item">
+    <div class="skill-name">Programming</div>
+    <div class="skill-rating a">
+      <span class="skill-level">A</span>
+      <div class="skill-bar"></div>
+    </div>
+  </div>
+  
+  <div class="skill-item">
+    <div class="skill-name">Data Science</div>
+    <div class="skill-rating b-plus">
+      <span class="skill-level">B+</span>
+      <div class="skill-bar"></div>
+    </div>
+  </div>
+  
+  <div class="skill-item">
+    <div class="skill-name">Arts</div>
+    <div class="skill-rating b">
+      <span class="skill-level">B</span>
+      <div class="skill-bar"></div>
+    </div>
+  </div>
+  
+  <div class="skill-item">
+    <div class="skill-name">汉语言文学</div>
+    <div class="skill-rating b-plus">
+      <span class="skill-level">B+</span>
+      <div class="skill-bar"></div>
+    </div>
+  </div>
+</div>
 
 ## Research Interests
 
