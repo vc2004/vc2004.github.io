@@ -10,6 +10,37 @@ languages: ["中文", "English", "Cantonese"]
 interests: ["Software Engineering", "System Architecture", "Cloud Computing"]
 maxim: 书当快意读易尽，客有可人期不来
 
+# Navigation
+nav_items:
+  - title: "Home"
+    url: "/"
+  - title: "Documentation"
+    url: "/docs/"
+    
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /docs/:path/
+  blog:
+    output: true
+    permalink: /blog/:path/
+
+# Default Settings
+defaults:
+  - scope:
+      path: "docs"
+      type: "docs"
+    values:
+      layout: "doc"
+      sidebar: true
+  - scope:
+      path: "blog"
+      type: "blog"
+    values:
+      layout: "doc"
+      sidebar: true
+
 # Social Media and Professional Profiles
 # If you don't need one of them, you can comment out or delete the corresponding line
 github_link: https://github.com/vc2004/
@@ -70,11 +101,11 @@ kramdown:
   syntax_highlighter: rouge
   syntax_highlighter_opts:
     css_class: 'highlight'
-    span:
-      line_numbers: false
     block:
       line_numbers: true
       start_line: 1
+  auto_ids: true
+  toc_levels: 1..6
 
 # The following files will be removed from the generated website.
 exclude:

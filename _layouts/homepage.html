@@ -38,12 +38,21 @@
   <body>
     <div class="wrapper">
       <header>
-        
+        <!-- Add Navigation Menu -->
+        <div class="nav-menu">
+          <nav>
+            <ul>
+              <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
+              <li><a href="{{ '/blog/' | relative_url }}" {% if page.url contains '/blog/' %}class="active"{% endif %}>Blog</a></li>
+            </ul>
+          </nav>
+        </div>
+
         {% if site.avatar %}
         <a class="image avatar"><img src="{{ site.avatar }}" alt="avatar" /></a>
         {% endif %}
 
-        <h1>{{ site.title }}</h1>
+        <h1>Liang DONG<br>(looking for a job)</h1>
 
         {% if site.position %}
         <position style="font-size:1.10rem;">{{ site.position }}</position>
