@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《致橡树》- 舒婷 (完整版)</title>
+    <style>
+        /* 引入思源宋体 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #f5f3ef;
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5em 0;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 600px; /* 适当加宽以容纳完整诗歌 */
+            height: auto; /* 高度自适应 */
+            background: #fdfdfd;
+            border: 1px solid #ddd;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.08);
+            padding: 2.5em;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid #588157; /* 象征生命力的绿色 */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5em;
+        }
+
+        .title {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+
+        .author {
+            font-size: 1.1em;
+            color: #666;
+            margin-top: 0.5em;
+        }
+        
+        .poem-section {
+            margin-bottom: 2em;
+        }
+
+        .poem-section p {
+            font-size: 1.05em;
+            line-height: 2.2;
+            color: #444;
+            letter-spacing: 0.05em;
+            margin: 0;
+        }
+        
+        /* 双栏布局容器 */
+        .two-column-layout {
+            display: flex;
+            gap: 2.5em; /* 栏间距 */
+            position: relative;
+        }
+
+        /* 中间的虚拟分割线 */
+        .two-column-layout::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: #eee;
+            transform: translateX(-50%);
+        }
+
+        .two-column-layout .column {
+            flex: 1;
+        }
+
+        /* 居中布局的诗节 */
+        .centered-layout {
+            text-align: center;
+        }
+        
+        /* 关键诗句强调 */
+        .highlight {
+            font-weight: 700;
+            color: #3a5a40; /* 更深的绿色 */
+            font-size: 1.15em !important;
+        }
+
+        /* 结尾的爱情定义 */
+        .final-statement {
+            margin-top: 1em;
+            padding-top: 1em;
+            border-top: 1px solid #eee;
+        }
+        
+        /* 印章样式 */
+        .seal {
+            position: absolute;
+            bottom: 2em;
+            right: 2em;
+            width: 2.8em;
+            height: 2.8em;
+            background-color: #c0392b;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3em;
+            font-weight: 700;
+            border-radius: 50%; /* 圆形印章 */
+        }
+        
+        /* 响应式设计：在窄屏幕上，双栏变为单栏 */
+        @media (max-width: 600px) {
+            .two-column-layout {
+                flex-direction: column;
+                gap: 0.5em;
+            }
+            .two-column-layout::before {
+                display: none; /* 隐藏中间线 */
+            }
+            .poem-section p {
+                line-height: 1.9;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card" id="card-xiangshu-full">
+        <div class="header">
+            <h1 class="title">致橡树</h1>
+            <p class="author">舒婷</p>
+        </div>
+
+        <!-- 第一部分：否定与不足 (双栏) -->
+        <div class="poem-section two-column-layout">
+            <div class="column">
+                <p>我如果爱你——<br>绝不像攀援的凌霄花，<br>借你的高枝炫耀自己；</p>
+                <p>我如果爱你——<br>绝不学痴情的鸟儿，<br>为绿荫重复单调的歌曲；</p>
+            </div>
+            <div class="column">
+                <p>也不止像泉源，<br>常年送来清凉的慰藉；<br>也不止像险峰，<br>增加你的高度，衬托你的威仪。</p>
+                <p>甚至日光，甚至春雨。</p>
+            </div>
+        </div>
+
+        <!-- 第二部分：宣言 (居中) -->
+        <div class="poem-section centered-layout">
+            <p class="highlight">不，这些都还不够！<br>我必须是你近旁的一株木棉，<br>作为树的形象和你站在一起。</p>
+        </div>
+
+        <!-- 第三部分：共存的状态 (居中) -->
+        <div class="poem-section centered-layout">
+            <p>根，紧握在地下；<br>叶，相触在云里。</p>
+            <p>每一阵风过，<br>我们都互相致意，<br>但没有人<br>听懂我们的言语。</p>
+        </div>
+
+        <!-- 第四部分：独立的形象 (双栏) -->
+        <div class="poem-section two-column-layout">
+            <div class="column">
+                <p>你有你的铜枝铁干，<br>像刀，像剑，<br>也像戟；</p>
+            </div>
+            <div class="column">
+                <p>我有我的红硕花朵，<br>像沉重的叹息，<br>又像英勇的火炬。</p>
+            </div>
+        </div>
+        
+        <!-- 第五部分：分担与共享，及最终的定义 (居中) -->
+        <div class="poem-section centered-layout">
+            <p>我们分担寒潮、风雷、霹雳；<br>我们共享雾霭、流岚、虹霓。</p>
+            <p>仿佛永远分离，<br>却又终身相依。</p>
+            <p class="final-statement highlight">这才是伟大的爱情，<br>坚贞就在这里：<br>爱——不仅爱你伟岸的身躯，<br>也爱你坚持的位置，足下的土地。</p>
+        </div>
+
+        <div class="seal"><span>爱</span></div>
+    </div>
+
+</body>
+</html>

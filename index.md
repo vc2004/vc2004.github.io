@@ -58,3 +58,20 @@ Self-learning data sciences.
 
 - **[Feb. 2020]** To be added
 
+## 重读经典
+
+- **[致橡树]** [舒婷《致橡树》](/essay/love.html) 
+
+<style>
+/* 为"重读经典"部分添加思源宋体 */
+h2:contains("重读经典") {
+  font-size: 1.2em !important;
+}
+
+h2:contains("重读经典") + ul,
+h2:contains("重读经典") + ul li,
+h2:contains("重读经典") + ul li a {
+  font-family: 'Noto Serif SC', serif !important;
+}
+</style>
+
