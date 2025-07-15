@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一只特立独行的猪 - 王小波</title>
+    <style>
+        /* 引入所需字体，Noto Serif SC作为基础，ZCOOL KuaiLe提供不羁的风格 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
+
+        /* 页面基础设置 */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f3ef;
+            /* 柔和的米色背景 */
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            /* 使用flex布局实现垂直水平居中 */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 卡片主体样式 */
+        .card {
+            width: 90%;
+            max-width: 500px;
+            aspect-ratio: 4 / 5;
+            padding: 2.5em;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+            /* --- 核心设计 --- */
+            background-color: #3d3d3d;
+            /* 深邃、反叛的黑色背景 */
+            color: #f5f5f5;
+            /* 基础文字使用亮灰色，与背景形成对比 */
+            border: 2px solid #f9bf2d;
+            /* 醒目的亮黄色边框，极具视觉冲击力 */
+            box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px) rotate(1deg);
+            /* 鼠标悬浮时轻微倾斜，增加动感 */
+            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        /* 标题样式 */
+        .title {
+            font-size: 2.2em;
+            color: #f9bf2d;
+            /* 与边框同色，作为视觉焦点 */
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            /* 使用“站酷快乐体”，增加不羁、幽默的感觉 */
+            margin: 0;
+        }
+
+        /* 作者样式 */
+        .author {
+            color: #ccc;
+            /* 使用浅灰色，不与标题抢风头 */
+            margin-top: 0.5em;
+        }
+
+        /* 引文样式 */
+        .quote {
+            color: #e0e0e0;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-top: 1.5em;
+            transform: rotate(-2deg);
+            /* 关键设计：将引文进行轻微旋转，打破常规的水平排版，呼应“特立独行” */
+        }
+
+        /* 印章样式 */
+        .seal {
+            position: absolute;
+            bottom: 2em;
+            right: 2em;
+            width: 2.8em;
+            height: 2.8em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: 700;
+
+            /* --- 核心设计 --- */
+            background-color: #f9bf2d;
+            /* 背景色与标题、边框一致 */
+            color: #3d3d3d;
+            /* 文字颜色与卡片背景一致，形成反色效果 */
+            border-radius: 0;
+            /* 坚持使用方形，更显硬朗 */
+            transform: rotate(5deg);
+            /* 与引文反向旋转，制造一种动态的、不安分的平衡感 */
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            .card {
+                padding: 1.5em;
+                aspect-ratio: unset;
+                height: auto;
+                min-height: 350px;
+            }
+
+            .title {
+                font-size: 1.8em;
+            }
+
+            .quote {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 《一只特立独行的猪》卡片HTML结构 -->
+    <div class="card" id="card-zhu">
+        <div>
+            <h1 class="title">一只特立独行的猪</h1>
+            <p class="author">王小波</p>
+            <p class="quote">我已经四十岁了，<br>除了这只猪，<br>还没见过谁敢于如此无视对生活的设置。</p>
+        </div>
+        <div class="seal"><span>行</span></div>
+    </div>
+
+</body>
+
+</html>

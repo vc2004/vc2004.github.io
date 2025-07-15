@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我与地坛 - 史铁生</title>
+    <style>
+        /* 引入思源宋体，这是保证设计质感的关键 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+        /* 页面基础设置 */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f3ef;
+            /* 一个柔和的米色背景，衬托卡片 */
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            /* 使用flex布局，轻松实现垂直水平居中 */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 卡片主体样式 */
+        .card {
+            width: 90%;
+            max-width: 500px;
+            aspect-ratio: 4 / 5;
+            /* 固定卡片比例，使其在不同屏幕上保持优雅 */
+            background-color: #ecebe9;
+            /* 模拟墙土、碑石的质朴颜色 */
+            border: none;
+            /* 去除边框，使其更像一个整体 */
+            box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.15);
+            /* 添加沉稳的阴影，增加立体感 */
+            padding: 2.5em;
+            box-sizing: border-box;
+            display: flex;
+            /* 卡片内部也使用flex布局 */
+            flex-direction: column;
+            justify-content: center;
+            /* 垂直居中内容 */
+            align-items: center;
+            /* 水平居中内容 */
+            text-align: center;
+            position: relative;
+            /* 为印章的绝对定位提供基准 */
+            overflow: hidden;
+            /* 防止内容溢出 */
+        }
+
+        /* 标题样式 */
+        .title {
+            font-size: 3em;
+            font-weight: 700;
+            color: #4e4a45;
+            /* 深沉、有力的标题颜色 */
+            margin: 0;
+        }
+
+        /* 作者样式 */
+        .author {
+            font-size: 1em;
+            color: #6d6863;
+            /* 比标题略浅的颜色 */
+            margin-top: 0.5em;
+            margin-bottom: 1.5em;
+        }
+
+        /* 分割线样式 */
+        hr {
+            width: 20%;
+            border: 0;
+            border-top: 1px solid #a19d9a;
+            /* 一条细细的、不张扬的分割线 */
+            margin: 2em auto;
+        }
+
+        /* 引文样式 */
+        .quote {
+            font-size: 1.1em;
+            line-height: 2;
+            color: #5a5551;
+            /* 与标题颜色协调的引文颜色 */
+            letter-spacing: 0.05em;
+            margin: 0;
+        }
+
+        /* 印章样式 */
+        .seal {
+            position: absolute;
+            bottom: 2em;
+            right: 2em;
+            width: 2.8em;
+            height: 2.8em;
+            background-color: #6d6863;
+            /* 与作者文字颜色一致 */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4em;
+            font-weight: 700;
+            border: 2px solid #f5f3ef;
+            /* 添加一个与页面背景色相同的描边，产生凹刻效果 */
+        }
+
+        /* 针对小屏幕的响应式调整 */
+        @media (max-width: 600px) {
+            .card {
+                padding: 1.5em;
+                aspect-ratio: unset;
+                /* 在小屏上取消固定比例，让高度自适应 */
+                height: auto;
+                min-height: 350px;
+            }
+
+            .title {
+                font-size: 2.5em;
+            }
+
+            .quote {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 《我与地坛》卡片HTML结构 -->
+    <div class="card" id="card-ditan">
+        <div>
+            <h1 class="title">我与地坛</h1>
+            <p class="author">史铁生</p>
+            <hr>
+            <p class="quote">死是一件不必急于求成的事，<br>死是一个必然会降临的节日。</p>
+        </div>
+        <div class="seal"><span>思</span></div>
+    </div>
+
+</body>
+
+</html>
