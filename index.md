@@ -63,6 +63,7 @@ Self-learning data sciences.
 - **[致橡树]** [舒婷《致橡树》](/essay/love.html) 
 - **[我与地坛]** [史铁生《我与地坛》](/essay/me_and_ditan.html)
 - **[一只特立独行的猪]** [王小波《一只特立独行的猪》](/essay/pig.html)
+- **[生死场]** [萧红《生死场》](/essay/birth_and_death.html)
 
 <style>
 /* 为"重读经典"部分添加思源宋体 */
