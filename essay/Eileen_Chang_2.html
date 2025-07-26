@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>张爱玲经典引文设计展 (第二辑 - 修订版)</title>
+    <style>
+        /* 引入所需字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #f0eade;
+            /* 保持系列的背景色 */
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 3em;
+            padding: 3em 1em;
+            box-sizing: border-box;
+        }
+
+        /* --- 卡片通用样式 --- */
+        .card {
+            width: 90%;
+            max-width: 450px;
+            min-width: 320px;
+            aspect-ratio: 4 / 5;
+            background: #ffffff;
+            box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.1);
+            padding: 2.5em;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .title {
+            font-weight: 700;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .quote {
+            font-size: 1.1em;
+            line-height: 2;
+            margin: 0;
+        }
+
+        .seal {
+            position: absolute;
+            bottom: 2em;
+            right: 2em;
+            width: 2.8em;
+            height: 2.8em;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        /* --- 各卡片专属样式 --- */
+
+        /* 设计一: 关于懂得 (悲) */
+        #card-ailing-bei {
+            background: radial-gradient(circle, #e3e3f3, #d9d9e9);
+            /* 柔和的蓝紫色水彩感 */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #card-ailing-bei .title {
+            color: #5c5c7a;
+        }
+
+        #card-ailing-bei .quote {
+            color: #6b6b8b;
+            font-size: 1.3em;
+            margin-top: 1em;
+        }
+
+        #card-ailing-bei .seal {
+            background-color: #8c8ca1;
+            border-radius: 50%;
+        }
+
+        /* 设计二: 关于等待 (遇) */
+        #card-ailing-yu {
+            background-color: #1a1a2e;
+            /* 深邃宇宙黑 */
+            background-image: radial-gradient(#ffffff 0.5px, transparent 0.5px),
+                radial-gradient(#ffffff 0.5px, #1a1a2e 0.5px);
+            background-size: 20px 20px, 100px 100px;
+            background-position: 0 0, 50px 50px;
+            color: #e0e6f1;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #card-ailing-yu .title {
+            color: #aab8d1;
+        }
+
+        #card-ailing-yu .quote {
+            margin-top: 1.5em;
+        }
+
+        #card-ailing-yu .seal {
+            background-color: #aab8d1;
+            color: #1a1a2e;
+        }
+
+        /* 设计三: 关于爱情的本质 (值) - 【已修改为火焰渐变背景】 */
+        #card-ailing-zhi {
+            background: linear-gradient(140deg, #b22222, #4a0000);
+            /* 从火砖红到深血红的渐变 */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #card-ailing-zhi .title {
+            color: #f5e9d8;
+            opacity: 0.8;
+        }
+
+        #card-ailing-zhi .quote {
+            color: #ffffff;
+            /* 使用纯白让引文更突出 */
+            font-weight: 700;
+            font-size: 1.3em;
+            margin-top: 1em;
+            letter-spacing: 0.1em;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+            /* 添加细微阴影增加立体感 */
+        }
+
+        #card-ailing-zhi .seal {
+            background-color: #f5e9d8;
+            /* 暖白色印章背景 */
+            color: #4a0000;
+            /* 印章文字用深红色 */
+        }
+
+        /* 设计四: 关于中年 (孤) */
+        #card-ailing-gu {
+            background-color: #d1d1d1;
+            /* 混凝土灰 */
+            justify-content: flex-end;
+            /* 文字沉在底部 */
+            align-items: center;
+            text-align: center;
+        }
+
+        #card-ailing-gu .title {
+            color: #5a5a5a;
+            position: absolute;
+            top: 2em;
+            left: 2em;
+        }
+
+        #card-ailing-gu .quote {
+            color: #4f4f4f;
+            width: 80%;
+            margin-bottom: 2em;
+        }
+
+        #card-ailing-gu .seal {
+            background-color: #707070;
+            border-radius: 2px;
+        }
+
+        /* 设计五: 关于城市 (城) */
+        #card-ailing-cheng {
+            background: #001f3f;
+            /* 午夜蓝 */
+            justify-content: center;
+            align-items: flex-start;
+            /* 左对齐 */
+        }
+
+        #card-ailing-cheng .title {
+            color: #f0eade;
+            opacity: 0.7;
+        }
+
+        #card-ailing-cheng .quote {
+            color: #d4c8ba;
+            margin-top: 1.5em;
+        }
+
+        #card-ailing-cheng .seal {
+            background-color: #f0eade;
+            color: #001f3f;
+            border-radius: 50%;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            body {
+                padding: 2em 1em;
+                gap: 2em;
+            }
+
+            .card {
+                aspect-ratio: unset;
+                height: auto;
+                min-height: 400px;
+                max-width: 100%;
+                padding: 2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 卡片一: 悲 -->
+    <div class="card" id="card-ailing-bei">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">因为懂得，所以慈悲。</p>
+        </div>
+        <div class="seal"><span>悲</span></div>
+    </div>
+
+    <!-- 卡片二: 遇 -->
+    <div class="card" id="card-ailing-yu">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">于千万人之中遇见你所要遇见的人，<br>于千万年之中，时间的无涯的荒野里，<br>没有早一步，也没有晚一步，<br>刚巧赶上了。</p>
+        </div>
+        <div class="seal"><span>遇</span></div>
+    </div>
+
+    <!-- 卡片三: 值 -->
+    <div class="card" id="card-ailing-zhi">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">爱，<br>就是不问值得不值得。</p>
+        </div>
+        <div class="seal"><span>值</span></div>
+    </div>
+
+    <!-- 卡片四: 孤 -->
+    <div class="card" id="card-ailing-gu">
+        <h2 class="title">张爱玲</h2>
+        <div>
+            <p class="quote">中年以后的男人，时常会觉得孤独，<br>因为他一睁开眼睛，<br>周围都是要依靠他的人，<br>却没有他可以依靠的人。</p>
+        </div>
+        <div class="seal"><span>孤</span></div>
+    </div>
+
+    <!-- 卡片五: 城 -->
+    <div class="card" id="card-ailing-cheng">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">“……不知道为什么，我总觉得上海的街道<br>有一种名分不定的忧伤，<br>同时却又是无比的安全。”</p>
+        </div>
+        <div class="seal"><span>城</span></div>
+    </div>
+
+</body>
+
+</html>

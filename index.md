@@ -66,6 +66,7 @@ Self-learning data sciences.
 - **[生死场]** [萧红《生死场》](/essay/birth_and_death.html)
 - **[张爱玲]** [张爱玲 Eileen Chang](/essay/Eileen_Chang.html)
 - **[张爱玲 cont.]** [张爱玲 Eileen Chang cont.](/essay/Eileen_Chang_1.html)
+- **[张爱玲 cont.2]** [张爱玲 Eileen Chang cont.2](/essay/Eileen_Chang_2.html)
 
 <style>
 /* 为"重读经典"部分添加思源宋体 */
