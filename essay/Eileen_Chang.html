@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>张爱玲经典引文设计展</title>
+    <style>
+        /* 引入所需字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #f0eade;
+            /* 更具年代感的背景色 */
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 3em;
+            padding: 3em 1em;
+            box-sizing: border-box;
+        }
+
+        /* --- 卡片通用样式 --- */
+        .card {
+            width: 90%;
+            max-width: 450px;
+            min-width: 320px;
+            aspect-ratio: 4 / 5;
+            background: #ffffff;
+            box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.1);
+            padding: 2.5em;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .title {
+            font-weight: 700;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .quote {
+            font-size: 1.1em;
+            line-height: 2;
+            margin: 0;
+        }
+
+        .seal {
+            position: absolute;
+            bottom: 2em;
+            right: 2em;
+            width: 2.8em;
+            height: 2.8em;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        /* --- 各卡片专属样式 --- */
+
+        /* 设计一: 关于人生 (袍) */
+        #card-ailing-pao {
+            background-color: #8B0000;
+            /* 丝绒般的暗红色 */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #f5e9e2;
+        }
+
+        #card-ailing-pao .title {
+            color: #f5e9e2;
+            opacity: 0.8;
+        }
+
+        #card-ailing-pao .quote {
+            font-size: 1.2em;
+        }
+
+        #card-ailing-pao .seal {
+            background-color: transparent;
+            border: 2px solid #d3c0b5;
+            color: #d3c0b5;
+        }
+
+        /* 设计二: 关于爱情 (择) */
+        #card-ailing-ze {
+            background: linear-gradient(to right, #fdfdfd 50%, #a52a2a 50%);
+            /* 白与红的分割 */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2em;
+        }
+
+        #card-ailing-ze .title {
+            color: #333;
+            position: absolute;
+            top: 1.5em;
+            text-shadow: 0 0 5px #fff;
+        }
+
+        #card-ailing-ze .quote {
+            color: #333;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+
+        #card-ailing-ze .seal {
+            background-color: #333;
+        }
+
+        /* 设计三: 关于成名 (名) */
+        #card-ailing-ming {
+            background-color: #1a1a1a;
+            border: 10px solid #ffd700;
+            /* 金色边框 */
+            box-sizing: border-box;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #ffd700;
+            /* 金色文字 */
+        }
+
+        #card-ailing-ming .title {
+            opacity: 0.8;
+        }
+
+        #card-ailing-ming .quote {
+            font-size: 1.2em;
+        }
+
+        #card-ailing-ming .seal {
+            background-color: #ffd700;
+            color: #1a1a1a;
+            border-radius: 2px;
+        }
+
+        /* 设计四: 关于时间 (缘) */
+        #card-ailing-yuan {
+            background-color: #fdf5e6;
+            /* 泛黄信纸色 */
+            border: 1px solid #e9e4d8;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        #card-ailing-yuan .title {
+            color: #7d6e5f;
+        }
+
+        #card-ailing-yuan .quote {
+            color: #8a7c6f;
+            margin-top: 2em;
+        }
+
+        #card-ailing-yuan .seal {
+            background-color: #b5a695;
+            border-radius: 50%;
+        }
+
+        /* 设计五: 关于孤独 (月) */
+        #card-ailing-yue {
+            background-color: #0f1c2e;
+            /* 深邃夜蓝色 */
+            color: #e0e7ef;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #card-ailing-yue .title {
+            color: #aabbcd;
+        }
+
+        #card-ailing-yue .quote {
+            margin-top: 2em;
+        }
+
+        #card-ailing-yue .seal {
+            background-color: #aabbcd;
+            color: #0f1c2e;
+            border-radius: 50%;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            body {
+                padding: 2em 1em;
+                gap: 2em;
+            }
+
+            .card {
+                aspect-ratio: unset;
+                height: auto;
+                min-height: 400px;
+                max-width: 100%;
+                padding: 2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 卡片一: 袍 -->
+    <div class="card" id="card-ailing-pao">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">生命是一袭华美的袍，<br>爬满了蚤子。</p>
+        </div>
+        <div class="seal"><span>袍</span></div>
+    </div>
+
+    <!-- 卡片二: 择 -->
+    <div class="card" id="card-ailing-ze">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">娶了红玫瑰，<br>红的变了墙上的一抹蚊子血，<br>白的还是“床前明月光”；<br>娶了白玫瑰，<br>白的便是衣服上的一粒饭粘子，<br>红的却是心口上的一颗朱砂痣。</p>
+        </div>
+        <div class="seal"><span>择</span></div>
+    </div>
+
+    <!-- 卡片三: 名 -->
+    <div class="card" id="card-ailing-ming">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">出名要趁早呀，<br>来得太晚的话，<br>快乐也不那么痛快。</p>
+        </div>
+        <div class="seal"><span>名</span></div>
+    </div>
+
+    <!-- 卡片四: 缘 -->
+    <div class="card" id="card-ailing-yuan">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">我们回不去了。</p>
+        </div>
+        <div class="seal"><span>缘</span></div>
+    </div>
+
+    <!-- 卡片五: 月 -->
+    <div class="card" id="card-ailing-yue">
+        <div>
+            <h2 class="title">张爱玲</h2>
+            <p class="quote">三十年前的月亮早已沉了下去，<br>三十年前的人也死了，<br>然而三十年前的故事还没完<br>——完不了。</p>
+        </div>
+        <div class="seal"><span>月</span></div>
+    </div>
+
+</body>
+
+</html>
