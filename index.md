@@ -58,6 +58,10 @@ Self-learning data sciences.
 
 - **[Feb. 2020]** To be added
 
+## Learning Notes
+
+- **[AWS Well-Architected Framework]** [AWS Well-Architected Framework](/learning/AWS_Well_Architecture.html)
+
 ## 重读经典
 
 - **[致橡树]** [舒婷《致橡树》](/essay/love.html) 

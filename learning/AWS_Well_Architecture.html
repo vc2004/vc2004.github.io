@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Well-Architected Framework - Bilingual Principles</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 30px;
+            padding: 30px;
+            margin: 0;
+        }
+
+        .card {
+            width: 380px;
+            min-height: 600px;
+            height: auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 8px solid;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .pillar-icon {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        .pillar-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .title-group {
+            text-align: left;
+        }
+
+        .card-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-subtitle {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            color: #888;
+            margin: 2px 0 0 0;
+        }
+
+        .card-body {
+            flex-grow: 1;
+        }
+
+        .card-summary {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .principles-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .principles-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-family: 'Roboto', 'Noto Sans SC', sans-serif;
+            font-size: 14.5px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .principles-list li .bullet {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .card-footer {
+            font-size: 12px;
+            font-weight: 500;
+            color: #aaa;
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Pillar Colors */
+        .op-ex {
+            border-color: #4A90E2;
+        }
+
+        .op-ex .card-title {
+            color: #4A90E2;
+        }
+
+        .op-ex .bullet {
+            fill: #4A90E2;
+        }
+
+        .security {
+            border-color: #D0021B;
+        }
+
+        .security .card-title {
+            color: #D0021B;
+        }
+
+        .security .bullet {
+            fill: #D0021B;
+        }
+
+        .reliability {
+            border-color: #F5A623;
+        }
+
+        .reliability .card-title {
+            color: #F5A623;
+        }
+
+        .reliability .bullet {
+            fill: #F5A623;
+        }
+
+        .perf-eff {
+            border-color: #BD10E0;
+        }
+
+        .perf-eff .card-title {
+            color: #BD10E0;
+        }
+
+        .perf-eff .bullet {
+            fill: #BD10E0;
+        }
+
+        .cost-opt {
+            border-color: #7ED321;
+        }
+
+        .cost-opt .card-title {
+            color: #7ED321;
+        }
+
+        .cost-opt .bullet {
+            fill: #7ED321;
+        }
+
+        .sustainability {
+            border-color: #1AAB8A;
+        }
+
+        .sustainability .card-title {
+            color: #1AAB8A;
+        }
+
+        .sustainability .bullet {
+            fill: #1AAB8A;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+                align-items: center;
+            }
+
+            .card {
+                width: 90vw;
+                max-width: 380px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card op-ex">
+        <div class="card-header">
+            <div class="pillar-icon"><svg viewBox="0 0 100 100" fill="#4A90E2">
+                    <path
+                        d="M96.7,56.2l-9.2-5.3c-0.4-1.6-1-3.2-1.7-4.7l5.3-9.2c1.2-2.1,0.5-4.7-1.5-5.9L80.4,26c-1.5-0.7-3.2-0.8-4.7-0.4 l-9.2,5.3c-1.6-0.7-3.2-1.3-4.7-1.7L56.2,10.1c-0.4-2.2-2.4-3.8-4.7-3.8h-11c-2.3,0-4.3,1.6-4.7,3.8l-5.3,9.2 c-1.6,0.4-3.2,1-4.7,1.7l-9.2-5.3c-1.5-0.4-3.2-0.2-4.7,0.4l-9.2,5.3c-2.1,1.2-2.8,3.8-1.5,5.9l5.3,9.2 c-0.7,1.5-1.3,3.2-1.7,4.7l-9.2,5.3c-2.2,0.4-3.8,2.4-3.8,4.7v11c0,2.3,1.6,4.3,3.8,4.7l9.2,5.3c0.4,1.6,1,3.2,1.7,4.7 l-5.3,9.2c-1.2,2.1-0.5,4.7,1.5,5.9l9.2,5.3c1.5,0.7,3.2,0.8,4.7,0.4l9.2-5.3c1.6,0.7,3.2,1.3,4.7,1.7l5.3,9.2 c0.4,2.2,2.4,3.8,4.7,3.8h11c2.3,0,4.3-1.6,4.7-3.8l5.3-9.2c1.6-0.4,3.2-1,4.7-1.7l9.2,5.3c1.5,0.4,3.2,0.2,4.7-0.4 l9.2-5.3c2.1-1.2,2.8-3.8,1.5-5.9l-5.3-9.2c0.7-1.5,1.3-3.2,1.7-4.7l9.2-5.3c2.2-0.4,3.8-2.4,3.8-4.7V56.2 C100.5,58.6,98.9,56.6,96.7,56.2z M50.8,68.9c-10,0-18.1-8.1-18.1-18.1s8.1-18.1,18.1-18.1s18.1,8.1,18.1,18.1S60.8,68.9,50.8,68.9z" />
+                </svg></div>
+            <div class="title-group">
+                <h2 class="card-title">卓越运营</h2>
+                <p class="card-subtitle">Operational Excellence</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-summary">让运维变得智能、高效、可预测。</p>
+            <ul class="principles-list">
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Perform operations as code</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Make frequent, small, reversible changes</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Refine operations procedures frequently</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Anticipate failure</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Learn from all operational failures</span></li>
+            </ul>
+        </div>
+        <div class="card-footer">AWS Well-Architected Framework</div>
+    </div>
+
+    <div class="card security">
+        <div class="card-header">
+            <div class="pillar-icon"><svg viewBox="0 0 100 100" fill="#D0021B">
+                    <path
+                        d="M50,5.5L10,25.8v28.9c0,22.1,16.8,41.1,40,45.3c23.2-4.2,40-23.2,40-45.3V25.8L50,5.5z M45.9,74.5 L24,52.6l6.1-6.1l15.8,15.8L70,30.5l6.1,6.1L45.9,74.5z" />
+                </svg></div>
+            <div class="title-group">
+                <h2 class="card-title">安全性</h2>
+                <p class="card-subtitle">Security</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-summary">建立纵深防御，从身份到数据，层层设防。</p>
+            <ul class="principles-list">
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Implement a strong identity foundation</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Enable traceability</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Apply security at all layers</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Automate security best practices</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Protect data in transit and at rest</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Keep people away from data</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Prepare for security events</span></li>
+            </ul>
+        </div>
+        <div class="card-footer">AWS Well-Architected Framework</div>
+    </div>
+
+    <div class="card reliability">
+        <div class="card-header">
+            <div class="pillar-icon"><svg viewBox="0 0 100 100" fill="#F5A623">
+                    <path
+                        d="M63.8,25.7c-5.8-5.8-15.2-5.8-21,0c-1.4,1.4-1.4,3.7,0,5.1c1.4,1.4,3.7,1.4,5.1,0c3-3,7.9-3,10.8,0 c1.4,1.4,3.7,1.4,5.1,0C65.2,29.4,65.2,27.1,63.8,25.7z M36.2,74.3c5.8,5.8,15.2,5.8,21,0c1.4-1.4,1.4-3.7,0-5.1 c-1.4-1.4-3.7-1.4-5.1,0c-3,3-7.9,3-10.8,0c-1.4-1.4-3.7-1.4-5.1,0C34.8,70.6,34.8,72.9,36.2,74.3z M84.5,36.2 c-1.4-1.4-3.7-1.4-5.1,0c-5.8,5.8-15.2,5.8-21,0c-1.4-1.4-3.7-1.4-5.1,0c-1.4,1.4-1.4,3.7,0,5.1c3,3,7.9,3,10.8,0 c5.8,5.8,15.2,5.8,21,0C85.9,39.8,85.9,37.6,84.5,36.2z M15.5,63.8c1.4,1.4,3.7,1.4,5.1,0c5.8-5.8,15.2-5.8,21,0 c1.4,1.4,3.7,1.4,5.1,0c1.4-1.4,1.4-3.7,0-5.1c-3-3-7.9-3-10.8,0c-5.8-5.8-15.2-5.8-21,0C14.1,60.2,14.1,62.4,15.5,63.8z M74.3,63.8c1.4,1.4,3.7,1.4,5.1,0c3-3,3-7.9,0-10.8c-1.4-1.4-3.7-1.4-5.1,0c-1.4,1.4-1.4,3.7,0,5.1 C72.9,59.6,72.9,62.4,74.3,63.8z M25.7,36.2c-1.4-1.4-3.7-1.4-5.1,0c-3,3-3,7.9,0,10.8c1.4,1.4,3.7,1.4,5.1,0 c1.4-1.4,1.4-3.7,0-5.1C27.1,40.4,27.1,37.6,25.7,36.2z" />
+                </svg></div>
+            <div class="title-group">
+                <h2 class="card-title">可靠性</h2>
+                <p class="card-subtitle">Reliability</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-summary">打造永不宕机的“不死鸟”系统，故障自愈。</p>
+            <ul class="principles-list">
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Automatically recover from failure</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Test recovery procedures</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Scale horizontally to increase availability</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Stop guessing capacity</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Manage change in automation</span></li>
+            </ul>
+        </div>
+        <div class="card-footer">AWS Well-Architected Framework</div>
+    </div>
+
+    <div class="card perf-eff">
+        <div class="card-header">
+            <div class="pillar-icon"><svg viewBox="0 0 100 100" fill="#BD10E0">
+                    <path
+                        d="M84.6,15.4c-1.9-1.9-4.5-3-7.1-3s-5.2,1.1-7.1,3L29.6,56.1c-1.2,1.2-1.8,2.7-1.8,4.4v13.7c0,3.3,2.7,6,6,6h13.7 c1.7,0,3.2-0.6,4.4-1.8L92.7,31.6c1.9-1.9,3-4.5,3-7.1S94.6,19.3,92.7,17.4L84.6,15.4z M19.2,37.5c-3.3,0-6,2.7-6,6v31.2 c0,3.3,2.7,6,6,6h31.2c3.3,0,6-2.7,6-6V61.1c0-1.6-0.6-3-1.8-4.2c-1.2-1.2-2.6-1.8-4.2-1.8c-3.3,0-6,2.7-6,6v7.5H25.2V43.5 h7.5c3.3,0,6-2.7,6-6S36,27.5,32.7,27.5H19.2V37.5z" />
+                </svg></div>
+            <div class="title-group">
+                <h2 class="card-title">性能效率</h2>
+                <p class="card-subtitle">Performance Efficiency</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-summary">用对的技术，跑出最快的速，发挥云的最大潜力。</p>
+            <ul class="principles-list">
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Democratize advanced technologies</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Go global in minutes</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Use serverless architectures</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Experiment more often</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Consider mechanical sympathy</span></li>
+            </ul>
+        </div>
+        <div class="card-footer">AWS Well-Architected Framework</div>
+    </div>
+
+    <div class="card cost-opt">
+        <div class="card-header">
+            <div class="pillar-icon"><svg viewBox="0 0 100 100" fill="#7ED321">
+                    <path
+                        d="M80,25H20c-5.5,0-10,4.5-10,10v30c0,5.5,4.5,10,10,10h60c5.5,0,10-4.5,10-10V35C90,29.5,85.5,25,80,25z M50,65 c-8.3,0-15-6.7-15-15s6.7-15,15-15s15,6.7,15,15S58.3,65,50,65z" />
+                    <path
+                        d="M50,40c-1.9,0-3.7,0.5-5.3,1.5l-4-4C43.6,35.7,46.7,35,50,35v5z M60,50c0-1.9-0.5-3.7-1.5-5.3l4-4 c1.8,2.9,2.5,6.4,2.5,10.3H60z M50,60c1.9,0,3.7-0.5,5.3-1.5l4,4C56.4,64.3,53.3,65,50,65V60z M40,50c0,1.9,0.5,3.7,1.5,5.3 l-4,4C35.7,56.4,35,53.3,35,50H40z M53.5,50h-7c0,1.9,1.6,3.5,3.5,3.5S53.5,51.9,53.5,50z" />
+                </svg></div>
+            <div class="title-group">
+                <h2 class="card-title">成本优化</h2>
+                <p class="card-subtitle">Cost Optimization</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-summary">精打细算，把钱花在刀刃上，实现价值最大化。</p>
+            <ul class="principles-list">
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Implement Cloud Financial Management</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Adopt a consumption model</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Measure overall efficiency</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Stop spending money on undifferentiated heavy lifting</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Analyze and attribute expenditure</span></li>
+            </ul>
+        </div>
+        <div class="card-footer">AWS Well-Architected Framework</div>
+    </div>
+
+    <div class="card sustainability">
+        <div class="card-header">
+            <div class="pillar-icon"><svg viewBox="0 0 100 100" fill="#1AAB8A">
+                    <path
+                        d="M89.3,51.5c-0.2-13.4-10.7-24.3-24-24.8c-2.1-10.4-11-18.2-22-18.2c-12.2,0-22.2,9.6-22.8,21.7 c-10.9,1.5-19.3,10.8-19.3,22.3c0,12.5,10.2,22.7,22.7,22.7h42.5c11.1,0,20.1-9,20.1-20.1C90.5,53.5,90,52.5,89.3,51.5z M68.8,47.4l-18,18c-0.8,0.8-1.8,1.2-2.8,1.2s-2-0.4-2.8-1.2l-9-9c-1.6-1.6-1.6-4.1,0-5.7s4.1-1.6,5.7,0l6.2,6.2l15.2-15.2 c1.6-1.6,4.1-1.6,5.7,0S70.3,45.8,68.8,47.4z" />
+                </svg></div>
+            <div class="title-group">
+                <h2 class="card-title">可持续性</h2>
+                <p class="card-subtitle">Sustainability</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-summary">拥抱绿色计算，为地球减负，实现技术与自然的和谐。</p>
+            <ul class="principles-list">
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Understand your impact</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Establish sustainability goals</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Maximize utilization</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Anticipate and adopt new, more efficient offerings</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Use managed services</span></li>
+                <li><svg class="bullet" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                        </path>
+                    </svg><span>Reduce the downstream impact</span></li>
+            </ul>
+        </div>
+        <div class="card-footer">AWS Well-Architected Framework</div>
+    </div>
+
+</body>
+
+</html>
