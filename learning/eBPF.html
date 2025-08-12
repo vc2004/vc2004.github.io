@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBPF 技术图解合集</title>
+    <style>
+        /* --- 全局样式 --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* --- 通用容器样式 --- */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            /* 使用最宽图的宽度以保持一致 */
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin: 0 auto 30px auto;
+            /* 水平居中，并为每个图之间添加底部间距 */
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            color: #212529;
+            margin-top: 0;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #adb5bd;
+            align-self: center;
+        }
+
+        .box {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .description {
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #495057;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- 图 1: eBPF 工作流的特定样式 --- */
+        h2.title-workflow {
+            border-bottom: 2px solid #0d6efd;
+        }
+
+        .workflow {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .space {
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .space-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .box-title {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .box-desc {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .verifier {
+            background-color: #fff0f0;
+            border-color: #e67e7e;
+        }
+
+        .verifier .box-title {
+            color: #c0392b;
+        }
+
+        .jit {
+            background-color: #e8f5e9;
+            border-color: #81c784;
+        }
+
+        .jit .box-title {
+            color: #2e7d32;
+        }
+
+        .final-step {
+            background-color: #e3f2fd;
+            border-color: #64b5f6;
+        }
+
+        .workflow .arrow {
+            font-size: 2em;
+        }
+
+        /* --- 图 2: eBPF vs iptables 的特定样式 --- */
+        h2.title-comparison {
+            border-bottom: 2px solid #6c757d;
+        }
+
+        .comparison {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 300px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .column-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .packet {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .comparison .arrow {
+            font-size: 1.5em;
+            margin: 5px 0;
+        }
+
+        .process-box {
+            border: 1px solid #adb5bd;
+            background-color: #f1f3f5;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+            width: 80%;
+            text-align: center;
+        }
+
+        .iptables-chain .process-box {
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+
+        .ebpf-path .process-box {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+        }
+
+        .ebpf-map {
+            background-color: #cfe2ff;
+            border-color: #b6d4fe;
+            font-style: italic;
+        }
+
+        .dots {
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .summary {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-size: 0.9em;
+            text-align: center;
+            width: 90%;
+        }
+
+        .summary b {
+            color: #d63384;
+        }
+
+        .ebpf-path .summary b {
+            color: #0a58ca;
+        }
+
+        /* --- 图 3 & 4: Cilium 图解的通用样式 --- */
+        .diagram {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pod {
+            background-color: #e3f2fd;
+            border-color: #90caf9;
+        }
+
+        .packet-label {
+            font-family: monospace;
+            background-color: #fff9c4;
+            border-color: #fff176;
+        }
+
+        .map-content {
+            font-family: monospace;
+            font-size: 0.9em;
+            text-align: left;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .diagram .arrow {
+            font-size: 1.5em;
+        }
+
+        /* --- 图 3: 服务负载均衡的特定样式 --- */
+        h2.title-lb {
+            border-bottom: 2px solid #198754;
+        }
+
+        .diagram-lb {
+            flex-direction: column;
+        }
+
+        .diagram-lb .box {
+            padding: 10px 15px;
+        }
+
+        .kernel-space {
+            width: 90%;
+            border: 2px dashed #198754;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .kernel-logic {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ebpf-program {
+            background-color: #d1e7dd;
+            border-color: #a3cfbb;
+            padding: 20px;
+        }
+
+        .diagram-lb .ebpf-map {
+            padding: 15px;
+        }
+
+        /* --- 图 4: 基于身份的安全策略的特定样式 --- */
+        h2.title-security {
+            border-bottom: 2px solid #dc3545;
+        }
+
+        .diagram-security {
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .pod-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .diagram-security .pod {
+            min-width: 180px;
+        }
+
+        .pod-labels {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+            font-family: monospace;
+        }
+
+        .kernel-process {
+            flex-grow: 1;
+            border: 2px dashed #dc3545;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step {
+            font-weight: bold;
+            background-color: #f8d7da;
+            color: #58151c;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .logic-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .diagram-security .ebpf-map {
+            width: 90%;
+        }
+
+        .diagram-security .arrow {
+            font-size: 2em;
+            padding: 0 20px;
+        }
+
+        .final-decision {
+            margin-top: 15px;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+
+        .allow {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        /* --- 响应式设计 --- */
+        @media (max-width: 768px) {
+
+            .steps,
+            .comparison,
+            .kernel-space {
+                flex-direction: column;
+            }
+
+            .steps .arrow,
+            .comparison .arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .diagram-security {
+                flex-direction: column;
+            }
+
+            .diagram-security .arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* --- 技术解析正文样式 --- */
+        h2.title-article {
+            border-bottom: 2px solid #6f42c1;
+            color: #6f42c1;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .article-intro {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #495057;
+        }
+
+        .article-content h3 {
+            color: #6f42c1;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .article-content h4 {
+            color: #495057;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .article-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .article-content ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .article-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .article-content strong {
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .article-content ul ul {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .article-content ul ul li {
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 技术解析正文 -->
+    <div class="container">
+        <h2 class="title-article">技术解析：eBPF 核心原理及其在 Cilium 中的实践</h2>
+
+        <div class="article-content">
+            <p class="article-intro">
+                本文旨在剖析 eBPF 的核心技术机制，并阐述 Cilium 项目如何利用这一机制来构建高性能的云原生网络、可观测性和安全解决方案。
+            </p>
+
+            <h3>第一部分：eBPF — 内核的可编程接口</h3>
+            <p>
+                eBPF (extended Berkeley Packet Filter)
+                是一种在操作系统内核中运行沙盒化程序的技术。它提供了一个安全、高效的接口，允许开发者在不修改内核源码或加载内核模块的情况下，动态地扩展内核功能。
+            </p>
+
+            <h4>1. eBPF 的工作流与安全模型</h4>
+            <p>
+                eBPF 的执行流程严谨且安全，主要包含以下步骤：
+            </p>
+            <ul>
+                <li><strong>编译：</strong>开发者使用 C 语言的一个受限子集编写程序，并通过 LLVM/Clang 工具链将其编译成 eBPF 字节码。</li>
+                <li><strong>加载与验证：</strong>用户空间程序通过 bpf() 系统调用将字节码加载到内核。在执行前，内核中的 <strong>验证器 (Verifier)</strong>
+                    会对字节码进行严格的静态分析。这是 eBPF 的安全核心，它确保：
+                    <ul>
+                        <li><strong>程序必须终止：</strong>通过分析程序的控制流图（CFG），禁止任何可能导致无限循环的后向跳转。</li>
+                        <li><strong>内存安全：</strong>程序不能访问任意内存地址。所有指针操作都受到严格追踪，只能访问来自上下文或 eBPF Map 的受限内存区域。</li>
+                        <li><strong>有限指令：</strong>程序的大小和复杂度受限，只能调用一组内核预定义的、稳定的辅助函数 (Helper Functions) 来与系统交互。</li>
+                    </ul>
+                </li>
+                <li><strong>即时编译 (JIT)：</strong>通过验证的字节码会被 JIT 编译器转换为目标机器的原生指令，以获得接近本地代码的执行效率。</li>
+                <li><strong>附加 (Attach)：</strong>最后，程序被附加到内核中的特定 <strong>钩子 (Hook)</strong> 上。当内核代码执行到该钩点时，附加的 eBPF
+                    程序便会被触发。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 图 1：eBPF 的工作流与安全模型 -->
+    <div class="container">
+        <h2 class="title-workflow">图 1：eBPF 的工作流与安全模型</h2>
+        <div class="workflow">
+            <div class="space">
+                <div class="space-title">1. 用户空间 (User Space)</div>
+                <div class="steps">
+                    <div class="box">
+                        <div class="box-title">C 代码</div>
+                        <div class="box-desc">使用受限 C 语言编写 eBPF 程序</div>
+                    </div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box">
+                        <div class="box-title">LLVM/Clang</div>
+                        <div class="box-desc">编译成 eBPF 字节码</div>
+                    </div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box">
+                        <div class="box-title">加载器</div>
+                        <div class="box-desc">通过 bpf() 系统调用将字节码加载到内核</div>
+                    </div>
+                </div>
+            </div>
+            <div class="arrow" style="text-align:center;">&darr;</div>
+            <div class="space">
+                <div class="space-title">2. 内核空间 (Kernel Space)</div>
+                <div class="steps">
+                    <div class="box verifier">
+                        <div class="box-title">验证器</div>
+                        <div class="box-desc"><b>安全核心</b>：进行严格的静态分析，确保程序不会死循环或非法访问内存</div>
+                    </div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box jit">
+                        <div class="box-title">JIT 编译器</div>
+                        <div class="box-desc"><b>性能保障</b>：将字节码编译为原生机器码，实现高效执行</div>
+                    </div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box final-step">
+                        <div class="box-title">附加到钩子</div>
+                        <div class="box-desc">程序被附加到 TC、kprobe 等内核钩点，等待事件触发</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h4>2. eBPF 的关键组件：钩子与地图</h4>
+            <p><strong>钩子 (Hooks)：</strong>这些是内核中预定义的事件点，eBPF 程序可以附加于此。关键的钩子类型包括：</p>
+            <ul>
+                <li><strong>网络 (TC/XDP)：</strong>附加在网络数据路径上，用于处理数据包。</li>
+                <li><strong>跟踪 (kprobes/uprobes/tracepoints)：</strong>附加在内核或用户空间函数上，用于性能分析和监控。</li>
+                <li><strong>安全 (LSM)：</strong>附加在 Linux 安全模块的钩子上，用于实现细粒度的访问控制。</li>
+            </ul>
+            <p><strong>地图 (eBPF Maps)：</strong>这是 eBPF 程序用于存储状态和与用户空间交换数据的核心机制。它们是存在于内核空间的高效键值存储，支持哈希表、数组、LPM 树（用于 IP
+                路由）等多种数据结构，为 eBPF 程序提供了状态化处理的能力。</p>
+
+            <h4>3. eBPF 在 TC 钩点上的优势</h4>
+            <p>
+                传统上，Linux 的流量控制（TC）子系统使用静态的过滤器（如 u32）来匹配和分类数据包。将 eBPF 程序附加到 TC 钩点（通过 cls_bpf）带来了革命性的优势：
+            </p>
+            <ul>
+                <li><strong>可编程性：</strong>开发者不再受限于固定的匹配字段，可以用 C 语言编写任意复杂的逻辑来处理数据包，实现传统过滤器无法完成的精细控制。</li>
+                <li><strong>高性能：</strong>eBPF 程序经 JIT 编译后以原生机器码执行，其性能远超解释执行的传统过滤器链。复杂规则可以被整合进一个 eBPF 程序，避免了多次遍历过滤器链的开销。
+                </li>
+                <li><strong>状态化：</strong>借助 eBPF Maps，TC 上的 eBPF 程序可以轻松地维护连接状态、策略计数器等信息，这对于实现有状态防火墙或复杂的负载均衡至关重要，而传统 TC
+                    过滤器是无状态的。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 图 2：TC 钩子上的 eBPF vs. 传统 iptables -->
+    <div class="container">
+        <h2 class="title-comparison">图 2：TC 钩子上的 eBPF vs. 传统 iptables</h2>
+        <div class="comparison">
+            <div class="column iptables-chain">
+                <div class="column-title">传统 iptables/TC 过滤器</div>
+                <div class="packet">&#128230;</div>
+                <div class="arrow">&darr;</div>
+                <div class="process-box">规则 1</div>
+                <div class="arrow">&darr;</div>
+                <div class="process-box">规则 2</div>
+                <div class="arrow">&darr;</div>
+                <div class="dots">...</div>
+                <div class="arrow">&darr;</div>
+                <div class="process-box">规则 N</div>
+                <div class="summary"><b>性能瓶颈</b>：数据包需要线性遍历可能很长的规则链，随着规则增多性能下降。</div>
+            </div>
+            <div class="column ebpf-path">
+                <div class="column-title">eBPF on TC Hook</div>
+                <div class="packet">&#128230;</div>
+                <div class="arrow">&darr;</div>
+                <div class="process-box">
+                    eBPF 程序 (JIT 编译)
+                    <div class="arrow" style="transform: none;">&harr;</div>
+                    <div class="process-box ebpf-map">eBPF Map (哈希表)</div>
+                </div>
+                <div class="arrow">&darr;</div>
+                <div class="process-box">直接转发/丢弃</div>
+                <div class="summary"><b>高性能</b>：可编程逻辑与高效的状态化存储 (eBPF Map) 结合，通过一次程序执行和 O(1) 查找完成决策。</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h3>第二部分：Cilium — eBPF 的云原生实践</h3>
+            <p>
+                Cilium 是一个开源项目，它将 eBPF 的能力发挥到极致，为 Kubernetes 等云原生环境提供了高性能的网络和安全。
+            </p>
+
+            <h4>1. 高性能网络与负载均衡</h4>
+            <p><strong>问题背景：</strong>Kubernetes 默认的 kube-proxy 组件使用 iptables 来实现服务（Service）的负载均衡。随着集群规模扩大，iptables
+                规则数量线性增长，导致数据包在内核中的处理路径变长，性能下降。</p>
+            <p><strong>Cilium 的 eBPF 方案：</strong></p>
+            <ul>
+                <li>Cilium 在每个节点的网络接口的 TC 钩子上附加 eBPF 程序。</li>
+                <li>它使用 eBPF 哈希地图来存储服务 IP 到后端 Pod IP 的映射关系。</li>
+                <li>当一个数据包到达时，eBPF 程序直接在 TC 钩点上被触发。它通过一次高效的地图查找（O(1) 复杂度）找到目标 Pod，并直接在内核中完成网络地址转换（DNAT），然后将数据包转发出去。</li>
+            </ul>
+            <p><strong>结果：</strong>此方案完全绕过了 iptables，实现了高效、可扩展的负载均衡，其性能不会随服务数量增加而衰减。</p>
+        </div>
+    </div>
+
+    <!-- 图 3：Cilium 服务负载均衡 (替代 kube-proxy) -->
+    <div class="container">
+        <h2 class="title-lb">图 3：Cilium 服务负载均衡 (替代 kube-proxy)</h2>
+        <div class="diagram diagram-lb">
+            <div class="box pod">Client Pod</div>
+            <div class="arrow">&darr;</div>
+            <div class="box packet-label">Packet (dst: Service_IP:80)</div>
+            <div class="arrow">&darr;</div>
+            <div class="kernel-space">
+                <div class="kernel-logic">
+                    <div class="box ebpf-program"><b>eBPF Program at TC Hook</b></div>
+                    <div class="description">eBPF 程序在 TC 钩点拦截数据包</div>
+                </div>
+                <div class="arrow" style="transform: none;">&harr;</div>
+                <div class="kernel-logic">
+                    <div class="box ebpf-map">
+                        <b>Service eBPF Map</b>
+                        <div class="map-content">
+                            <b>Key:</b> Service_IP:80<br>
+                            <b>Value:</b> [Pod_A_IP, Pod_B_IP]
+                        </div>
+                    </div>
+                    <div class="description">通过一次哈希查找，选择一个后端 Pod</div>
+                </div>
+            </div>
+            <div class="arrow">&darr;</div>
+            <div class="box packet-label" style="background-color: #d1e7dd;">Packet (dst: Pod_B_IP:80) &nbsp; <i>// DNAT
+                    performed</i></div>
+            <div class="arrow">&darr;</div>
+            <div class="box pod">Backend Pod B</div>
+        </div>
+        <div class="description"><b>结论</b>：Cilium 通过在内核中直接进行 Map 查找和地址转换 (DNAT)，绕过了 iptables 的性能瓶颈，实现了高效且可扩展的服务负载均衡。
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h4>2. 基于身份的网络安全策略</h4>
+            <p><strong>问题背景：</strong>传统的网络策略基于 IP 地址，但在 Pod IP 频繁变化的动态容器环境中，这种策略既脆弱又难以维护。</p>
+            <p><strong>Cilium 的 eBPF 方案：</strong></p>
+            <ul>
+                <li>Cilium 引入了 <strong>身份 (Identity)</strong> 的概念，它根据 Pod 的标签（如 app=api）为其分配一个稳定的、全集群唯一的数字身份。</li>
+                <li>网络策略被编译成"允许通信的身份对"，并存储在一个 eBPF 地图中。</li>
+                <li>当 eBPF 程序处理数据包时，它首先从 eBPF 地图中查询源和目的 IP 对应的身份。然后，它用这对身份查询策略地图，以确定是否允许通信。</li>
+            </ul>
+            <p><strong>结果：</strong>安全策略与不稳定的 IP 地址完全解耦，变得健壮且适应云原生环境。策略执行仅需几次高效的地图查找，性能远超遍历 iptables 规则链。</p>
+        </div>
+    </div>
+
+    <!-- 图 4：Cilium 基于身份的网络策略 -->
+    <div class="container">
+        <h2 class="title-security">图 4：Cilium 基于身份的网络策略</h2>
+        <div class="diagram diagram-security">
+            <div class="pod-container">
+                <div class="box pod">
+                    <b>Pod A</b> (IP: 10.0.1.10)
+                    <div class="pod-labels">labels: {app: frontend}</div>
+                </div>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div class="kernel-process">
+                <div class="logic-block">
+                    <div class="step">1</div>
+                    <div class="box ebpf-map">
+                        <b>IP-Identity Map</b>
+                        <div class="map-content">10.0.1.10 &rarr; <b>ID: 5001</b> (frontend)<br>10.0.2.20 &rarr; <b>ID:
+                                8008</b> (backend)</div>
+                    </div>
+                </div>
+                <div class="logic-block">
+                    <div class="step">2</div>
+                    <div class="box ebpf-map">
+                        <b>Policy Map</b>
+                        <div class="map-content">Key: {src_id:5001, dst_id:8008, port:80} &rarr; <b>ALLOW</b></div>
+                    </div>
+                </div>
+                <div class="final-decision allow">决策：允许</div>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div class="pod-container">
+                <div class="box pod">
+                    <b>Pod B</b> (IP: 10.0.2.20)
+                    <div class="pod-labels">labels: {app: backend}</div>
+                </div>
+            </div>
+        </div>
+        <div class="description"><b>结论</b>：eBPF 程序首先将数据包的源/目的 IP 转换为稳定的安全身份，然后查询策略地图来做决策。这使得安全策略与动态的 IP 地址解耦，更加健壮和高效。
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="article-content">
+            <h4>3. 可观测性</h4>
+            <p><strong>问题背景：</strong>理解微服务之间的复杂交互是诊断问题的关键，但传统工具往往难以提供细粒度的可见性。</p>
+            <p><strong>Cilium 的 eBPF 方案：</strong></p>
+            <ul>
+                <li>Cilium 利用 eBPF 探针（kprobes）和套接字钩子来无侵入地监控系统调用和网络操作。</li>
+                <li>eBPF 程序可以捕获网络流信息、DNS 查询、HTTP 请求/响应元数据等，并通过高效的环形缓冲区（ring buffer）将这些事件数据发送到用户空间。</li>
+            </ul>
+            <p><strong>结果：</strong>Cilium 提供了深度的、低开销的可观测性，帮助开发者理解应用行为和排查网络问题，而无需修改应用代码或使用 Sidecar 代理。</p>
+
+            <h3>结论</h3>
+            <p>
+                eBPF 为 Linux 内核提供了一个强大的、可编程的数据平面基础。Cilium 则是在此基础上构建的精密应用，它通过巧妙地运用 eBPF
+                的钩子、地图和验证器，解决了传统网络工具在性能、扩展性和安全性方面的诸多痛点，已成为现代云原生基础设施的关键组件。
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>
