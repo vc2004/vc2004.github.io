@@ -60,6 +60,7 @@ Self-learning data sciences.
 
 ## Learning Notes
 
+- **[eBPF 技术图解合集]** [eBPF 技术图解合集](/learning/eBPF.html)
 - **[AWS Well-Architected Framework]** [AWS Well-Architected Framework](/learning/AWS_Well_Architecture.html)
 
 ## 重读经典
