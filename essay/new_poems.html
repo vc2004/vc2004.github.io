@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国现代诗歌卡片展 (修订版)</title>
+    <style>
+        /* 引入所需字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #f0eade;
+            /* 柔和的展览背景色 */
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            flex-wrap: wrap;
+            /* 允许卡片换行 */
+            justify-content: center;
+            align-items: center;
+            gap: 3em;
+            /* 卡片间距 */
+            padding: 3em 1em;
+            box-sizing: border-box;
+        }
+
+        /* --- 卡片通用样式 --- */
+        .card {
+            width: 90%;
+            max-width: 450px;
+            min-width: 320px;
+            aspect-ratio: 4 / 5;
+            background: #ffffff;
+            box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.1);
+            padding: 2.5em;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .title {
+            font-weight: 700;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .quote {
+            font-size: 1.1em;
+            line-height: 2;
+            margin: 0;
+        }
+
+        .seal {
+            position: absolute;
+            bottom: 2em;
+            right: 2em;
+            width: 2.8em;
+            height: 2.8em;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        /* --- 各卡片专属样式 --- */
+
+        /* 1. 冯至: 奇 */
+        #card-fengzhi-qi {
+            background-color: #0b0c2a;
+            background-image:
+                radial-gradient(circle at 80% 20%, #ffffff 0.5px, transparent 0.5px),
+                radial-gradient(circle at 30% 70%, #ffffff 0.5px, transparent 0.5px),
+                linear-gradient(to bottom, #0b0c2a 0%, #4a2a5c 60%, #e87a5d 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #card-fengzhi-qi .title {
+            color: #f0eade;
+            opacity: 0.7;
+            margin-bottom: 1em;
+        }
+
+        #card-fengzhi-qi .quote {
+            color: #f5f5f5;
+            font-size: 1.25em;
+            line-height: 2.2;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+        }
+
+        #card-fengzhi-qi .seal {
+            background-color: #f0eade;
+            color: #0b0c2a;
+            border-radius: 50%;
+        }
+
+        /* 2. 穆旦: 赞 */
+        #card-mudan-zan {
+            background-color: #a37b4a;
+            background-image:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.08) 2px, transparent 2px),
+                linear-gradient(225deg, rgba(255, 255, 255, 0.08) 2px, transparent 2px),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.08) 2px, transparent 2px),
+                linear-gradient(315deg, rgba(255, 255, 255, 0.08) 2px, transparent 2px);
+            background-size: 40px 40px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #card-mudan-zan .content-box {
+            background: rgba(50, 38, 20, 0.6);
+            padding: 2em;
+            color: #e8d9c4;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        #card-mudan-zan .title {
+            opacity: 0.8;
+        }
+
+        #card-mudan-zan .quote {
+            margin-top: 1em;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        #card-mudan-zan .seal {
+            background-color: #e8d9c4;
+            color: #4b3823;
+        }
+
+        /* 3. 卞之琳: 景 - 【全新版式】 */
+        #card-bian-jing {
+            padding: 0;
+            /* 移除内边距，让面板填满卡片 */
+            flex-direction: row;
+            /* 改为水平布局 */
+        }
+
+        .panel {
+            width: 50%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 3em 2.5em;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .panel-left {
+            background: #e9eef2;
+            /* 冷色调的室外感 */
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .panel-left .title {
+            color: #34495e;
+        }
+
+        .panel-left .quote {
+            color: #566573;
+            margin-top: 1.5em;
+        }
+
+        .panel-right {
+            background: #fdfaf3;
+            /* 暖色调的室内感 */
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .panel-right .quote {
+            color: #7d6e5b;
+        }
+
+        #card-bian-jing .seal {
+            background-color: #34495e;
+            /* 使用左侧标题颜色，形成呼应 */
+            color: #fdfaf3;
+            /* 使用右侧背景颜色 */
+            border-radius: 2px;
+        }
+
+        /* 4. 戴望舒: 巷 */
+        #card-dai-xiang {
+            background: linear-gradient(to bottom, #d8d8eb, #b0b0d1, #8f8faf);
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        #card-dai-xiang .title {
+            color: #3d3d5c;
+        }
+
+        #card-dai-xiang .quote {
+            color: #2c2c4a;
+            margin-top: 1.5em;
+        }
+
+        #card-dai-xiang .highlight {
+            font-weight: bold;
+            color: #1a1a3a;
+        }
+
+        #card-dai-xiang .seal {
+            background-color: #3d3d5c;
+            border-radius: 50%;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            body {
+                padding: 2em 1em;
+                gap: 2em;
+            }
+
+            .card {
+                aspect-ratio: unset;
+                min-height: 400px;
+                max-width: 100%;
+            }
+
+            #card-bian-jing {
+                flex-direction: column;
+            }
+
+            /* 在小屏幕上，两个面板垂直堆叠 */
+            .panel {
+                width: 100%;
+                height: 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 冯至诗歌卡片: 奇 -->
+    <div class="card" id="card-fengzhi-qi">
+        <div>
+            <h2 class="title">冯至</h2>
+            <p class="quote">我们准备着深深地领受<br>那些意想不到的奇迹。</p>
+        </div>
+        <div class="seal"><span>奇</span></div>
+    </div>
+
+    <!-- 穆旦诗歌卡片: 赞 -->
+    <div class="card" id="card-mudan-zan">
+        <div class="content-box">
+            <h2 class="title">穆旦</h2>
+            <p class="quote">但如今，突然面对着坟墓，<br>我冷眼向过去稍稍回顾，<br>只见它曲折灌溉的悲喜<br>都消失在一片亘古的荒漠，<br>这才知道我的全部努力<br>不过完成了普通的生活。</p>
+        </div>
+        <div class="seal"><span>赞</span></div>
+    </div>
+
+    <!-- 卞之琳诗歌卡片: 景 (全新设计) -->
+    <div class="card" id="card-bian-jing">
+        <div class="panel panel-left">
+            <h2 class="title">卞之琳</h2>
+            <p class="quote">你站在桥上看风景，<br>看风景的人在楼上看你。</p>
+        </div>
+        <div class="panel panel-right">
+            <p class="quote">明月装饰了你的窗子，<br>你装饰了别人的梦。</p>
+        </div>
+        <div class="seal"><span>景</span></div>
+    </div>
+
+    <!-- 戴望舒诗歌卡片: 巷 -->
+    <div class="card" id="card-dai-xiang">
+        <div>
+            <h2 class="title">戴望舒</h2>
+            <p class="quote">在雨的哀曲里，<br>消了她的颜色，<br>散了她的芬芳，<br>消散了，甚至她的<br><span
+                    class="highlight">太息般的眼光，<br>丁香般的惆怅。</span></p>
+        </div>
+        <div class="seal"><span>巷</span></div>
+    </div>
+
+</body>
+
+</html>

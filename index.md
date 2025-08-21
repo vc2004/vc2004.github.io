@@ -72,6 +72,7 @@ Self-learning data sciences.
 - **[张爱玲]** [张爱玲 Eileen Chang](/essay/Eileen_Chang.html)
 - **[张爱玲 cont.]** [张爱玲 Eileen Chang cont.](/essay/Eileen_Chang_1.html)
 - **[张爱玲 cont.2]** [张爱玲 Eileen Chang cont.2](/essay/Eileen_Chang_2.html)
+- **[中国现代诗歌]** [中国现代诗歌](/essay/new_poems.html)
 
 <style>
 /* 为"重读经典"部分添加思源宋体 */
