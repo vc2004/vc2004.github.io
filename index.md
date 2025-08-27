@@ -50,13 +50,14 @@ Self-learning data sciences.
   </div>
 </div>
 
-## Research Interests
+## Development & Research Interests
 
-- **Networking I:** Linux Networking
-- **Networking II:** eBPF/XDP/DPDK
-- **Networking III:** Software Defined Wide Area Network (SD-WAN)
-- **Networking IV:** Software Defined Networking (SDN)
-- **Networking V:** OpenVSwitch/OVN
+- **Linux Networking**
+- **eBPF/XDP/DPDK** 
+- **Software Defined Wide Area Network (SD-WAN)** 
+- **Software Defined Networking (SDN)** 
+- **OpenVSwitch/OVN** 
+- **Cisco/Juniper** 
 
 ## Awards & Patents
 
