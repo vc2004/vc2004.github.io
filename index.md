@@ -58,6 +58,7 @@ Self-learning data sciences.
 - **Software Defined Networking (SDN)** 
 - **OpenVSwitch/OVN** 
 - **Cisco/Juniper** 
+- **2G-5G** 
 
 ## Awards & Patents
 
