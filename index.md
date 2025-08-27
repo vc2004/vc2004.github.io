@@ -55,7 +55,6 @@ Self-learning data sciences.
 - **Linux Networking**
 - **eBPF/XDP/DPDK** 
 - **Kubernetes/Docker** 
-- **Virtual Networking** 
 - **Software Defined Wide Area Network (SD-WAN)** 
 - **Software Defined Networking (SDN)** 
 - **OpenVSwitch/OVN** 
@@ -88,14 +87,16 @@ Self-learning data sciences.
 
 ## Old Blogs {#old-blogs}
 
+- **[eBPF Deep Dive: Architecture, Development, and a Practical Tutorial]** [eBPF Deep Dive: Architecture, Development, and a Practical Tutorial](/technology/ebpf/linux/kernel/deep%20dive/2025/07/06/ebpf-introduction-and-tutorial.html)
+- **[Transformer Architecture Deep Dive: From Attention to Modern LLMs]** [Transformer Architecture Deep Dive: From Attention to Modern LLMs](/machine%20learning/nlp/transformer/deep%20learning/llm/2025/01/15/transformer-architecture-deep-dive.html)
 - **[Welcome to My Blog]** [Welcome to My Blog](/2024/03/08/welcome.html)
-- **[TCP BBR: A New Congestion Control Algorithm]** [TCP BBR: A New Congestion Control Algorithm](/2024/03/01/bbr.html)
-- **[Linux Networking Optimization Guide - Part III]** [Linux Networking Optimization Guide - Part III](/2024/02/17/linux-networking-optimisation-guide-3.html)
-- **[Linux Networking Optimization Guide - Part II]** [Linux Networking Optimization Guide - Part II](/2024/02/16/linux-networking-optimisation-guide-2.html)
-- **[Linux Networking Optimization Guide - Part I]** [Linux Networking Optimization Guide - Part I](/2024/02/15/linux-networking-optimisation-guide.html)
-- **[OVS 2.7.0 Release Notes and Analysis]** [OVS 2.7.0 Release Notes and Analysis](/2024/02/10/ovs-2-7-0.html)
-- **[Understanding OVN and Geneve Protocol]** [Understanding OVN and Geneve Protocol](/2024/02/08/ovn-and-geneve.html)
-- **[Recent Advances in Networking: A Reading List]** [Recent Advances in Networking: A Reading List](/2024/02/05/recent-networking-advance-readlist.html)
+- **[TCP BBR: A New Congestion Control Algorithm]** [TCP BBR: A New Congestion Control Algorithm](/networking/performance/2024/03/01/bbr.html)
+- **[Linux Networking Optimization Guide - Part III]** [Linux Networking Optimization Guide - Part III](/linux/networking/2024/02/17/linux-networking-optimisation-guide-3.html)
+- **[Linux Networking Optimization Guide - Part II]** [Linux Networking Optimization Guide - Part II](/linux/networking/2024/02/16/linux-networking-optimisation-guide-2.html)
+- **[Linux Networking Optimization Guide - Part I]** [Linux Networking Optimization Guide - Part I](/linux/networking/2024/02/15/linux-networking-optimisation-guide.html)
+- **[OVS 2.7.0 Release Notes and Analysis]** [OVS 2.7.0 Release Notes and Analysis](/networking/sdn/2024/02/10/ovs-2-7-0.html)
+- **[Understanding OVN and Geneve Protocol]** [Understanding OVN and Geneve Protocol](/networking/sdn/2024/02/08/ovn-and-geneve.html)
+- **[Recent Advances in Networking: A Reading List]** [Recent Advances in Networking: A Reading List](/networking/research/2024/02/05/recent-networking-advance-readlist.html)
 
 <style>
 /* 为"重读经典"部分添加思源宋体 */
