@@ -82,6 +82,17 @@ Self-learning data sciences.
 - **[中国现代诗歌]** [中国现代诗歌](/essay/new_poems.html)
 - **[冯至《十四行诗之一》]** [冯至《十四行诗之一》](/essay/comet.html)
 
+## Old Blogs {#old-blogs}
+
+- **[Welcome to My Blog]** [Welcome to My Blog](/2024/03/08/welcome.html)
+- **[TCP BBR: A New Congestion Control Algorithm]** [TCP BBR: A New Congestion Control Algorithm](/2024/03/01/bbr.html)
+- **[Linux Networking Optimization Guide - Part III]** [Linux Networking Optimization Guide - Part III](/2024/02/17/linux-networking-optimisation-guide-3.html)
+- **[Linux Networking Optimization Guide - Part II]** [Linux Networking Optimization Guide - Part II](/2024/02/16/linux-networking-optimisation-guide-2.html)
+- **[Linux Networking Optimization Guide - Part I]** [Linux Networking Optimization Guide - Part I](/2024/02/15/linux-networking-optimisation-guide.html)
+- **[OVS 2.7.0 Release Notes and Analysis]** [OVS 2.7.0 Release Notes and Analysis](/2024/02/10/ovs-2-7-0.html)
+- **[Understanding OVN and Geneve Protocol]** [Understanding OVN and Geneve Protocol](/2024/02/08/ovn-and-geneve.html)
+- **[Recent Advances in Networking: A Reading List]** [Recent Advances in Networking: A Reading List](/2024/02/05/recent-networking-advance-readlist.html)
+
 <style>
 /* 为"重读经典"部分添加思源宋体 */
 h2:contains("重读经典") {
