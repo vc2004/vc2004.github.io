@@ -61,9 +61,9 @@ Self-learning data sciences.
 
 ## Awards & Patents
 
-- Geneva Gold * 2
-- Geneva Silver * 2
-- Asia Invention Silver * 1
+- Geneva 🥇 * 2
+- Geneva 🥈 * 2
+- Asia Invention 🥈 * 1
 - Patents * 6
 
 ## Learning Notes
