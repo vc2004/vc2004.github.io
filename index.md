@@ -52,15 +52,22 @@ Self-learning data sciences.
 
 ## Research Interests
 
-- **Networking:** Software Defined Networking (SDN)
+- **Networking I:** Linux Networking
+- **Networking II:** eBPF/XDP/DPDK
+- **Networking III:** Software Defined Wide Area Network (SD-WAN)
+- **Networking IV:** Software Defined Networking (SDN)
+- **Networking V:** OpenVSwitch/OVN
 
-## Awards
+## Awards & Patents
 
-- **[Feb. 2020]** To be added
+- Geneva Gold * 2
+- Geneva Silver * 2
+- Asia Invention Silver * 1
+- Patents * 6
 
 ## Learning Notes
 
-- **[eBPF 技术图解合集]** [eBPF 技术图解合集](/learning/eBPF.html)
+- **[eBPF 技术图解]** [eBPF 技术图解](/learning/eBPF.html)
 - **[AWS Well-Architected Framework]** [AWS Well-Architected Framework](/learning/AWS_Well_Architecture.html)
 
 ## 重读经典
