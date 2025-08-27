@@ -71,7 +71,7 @@ Self-learning data sciences.
 - **[eBPF 技术图解]** [eBPF 技术图解](/learning/eBPF.html)
 - **[AWS Well-Architected Framework]** [AWS Well-Architected Framework](/learning/AWS_Well_Architecture.html)
 
-## 重读经典
+## Revisit the Classic Literature
 
 - **[致橡树]** [舒婷《致橡树》](/essay/love.html) 
 - **[我与地坛]** [史铁生《我与地坛》](/essay/me_and_ditan.html)
