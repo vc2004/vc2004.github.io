@@ -54,6 +54,8 @@ Self-learning data sciences.
 
 - **Linux Networking**
 - **eBPF/XDP/DPDK** 
+- **Kubernetes/Docker** 
+- **Virtual Networking** 
 - **Software Defined Wide Area Network (SD-WAN)** 
 - **Software Defined Networking (SDN)** 
 - **OpenVSwitch/OVN** 
