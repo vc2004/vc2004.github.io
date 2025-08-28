@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>epoll 工作原理解析</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #2980b9;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        .diagram-area {
+            display: flex;
+            gap: 20px;
+            border: 2px solid #34495e;
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .space {
+            flex: 1;
+            padding: 20px;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .user-space {
+            background-color: #eafaf1;
+            border: 1px solid #a3e4d7;
+        }
+
+        .kernel-space {
+            background-color: #ebf5fb;
+            border: 1px solid #aed6f1;
+        }
+
+        .space-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .component {
+            background-color: #fff;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .component-title {
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .component-desc {
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+
+        .fds {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .fd {
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            background: #fdfefe;
+            font-size: 0.9em;
+        }
+
+        .ready-fd {
+            background: #d4efdf;
+            border-color: #27ae60;
+            font-weight: bold;
+        }
+
+        .arrow {
+            position: absolute;
+            color: #c0392b;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+            text-shadow: 1px 1px 2px white;
+        }
+
+        .step-circle {
+            background-color: #c0392b;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9em;
+            margin-right: 5px;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        #step1 {
+            top: 100px;
+            left: 45%;
+            transform: translateX(-50%);
+        }
+
+        #step2 {
+            top: 250px;
+            left: 45%;
+            transform: translateX(-50%);
+        }
+
+        #step3 {
+            top: 400px;
+            left: 45%;
+            transform: translateX(-50%);
+        }
+
+        #step4 {
+            bottom: 60px;
+            right: 2%;
+            writing-mode: vertical-rl;
+        }
+
+        #step5 {
+            top: 320px;
+            right: 40%;
+        }
+
+        #step6 {
+            top: 400px;
+            left: 55%;
+        }
+
+        .explanation-area h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .explanation-area ol,
+        .explanation-area ul {
+            padding-left: 25px;
+        }
+
+        .explanation-area li {
+            margin-bottom: 12px;
+        }
+
+        .explanation-area code {
+            background-color: #ecf0f1;
+            color: #c0392b;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+
+        .explanation-area strong {
+            color: #2980b9;
+        }
+
+        @media (max-width: 900px) {
+            .diagram-area {
+                flex-direction: column;
+            }
+
+            .arrow {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                writing-mode: initial;
+                margin: 15px auto;
+                width: fit-content;
+                justify-content: center;
+            }
+
+            #step4 {
+                writing-mode: initial;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- Diagram Section -->
+        <div class="container">
+            <h2>epoll 工作原理解析</h2>
+            <div class="diagram-area">
+                <!-- User Space -->
+                <div class="space user-space">
+                    <div class="space-title">用户空间</div>
+                    <div class="component">
+                        <div class="component-title">应用程序 (e.g. Nginx)</div>
+                        <div class="component-desc">管理大量网络连接</div>
+                        <div class="fds">
+                            <div class="fd">fd1</div>
+                            <div class="fd">fd2</div>
+                            <div class="fd">fd3</div>
+                            <div class="fd">...</div>
+                            <div class="fd">fdN</div>
+                        </div>
+                    </div>
+                    <div class="component" style="background-color: #fef9e7;">
+                        <div class="component-title">就绪的FD列表</div>
+                        <div class="component-desc">epoll_wait()返回的结果</div>
+                        <div class="fds">
+                            <div class="fd ready-fd">fd3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kernel Space -->
+                <div class="space kernel-space">
+                    <div class="space-title">内核空间</div>
+                    <div class="component">
+                        <div class="component-title">epoll 实例</div>
+                        <div class="component-desc">由 epoll_create() 创建</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">监视列表 (红黑树)</div>
+                        <div class="component-desc">epoll_ctl() 添加所有要监视的FD</div>
+                        <div class="fds">
+                            <div class="fd">fd1</div>
+                            <div class="fd">fd2</div>
+                            <div class="fd ready-fd">fd3</div>
+                            <div class="fd">...</div>
+                            <div class="fd">fdN</div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">就绪队列 (链表)</div>
+                        <div class="component-desc">存放已就绪的FD，等待被取走</div>
+                        <div class="fds">
+                            <div class="fd ready-fd">fd3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrows and Steps -->
+                <div class="arrow" id="step1"><span class="step-circle">1</span>epoll_create()</div>
+                <div class="arrow" id="step2"><span class="step-circle">2</span>epoll_ctl(ADD, fd1..fdN)</div>
+                <div class="arrow" id="step3"><span class="step-circle">3</span>epoll_wait() [应用阻塞]</div>
+                <div class="arrow" id="step4" style="color:#16a085;"><span class="step-circle"
+                        style="background:#16a085;">4</span>网络数据到达，fd3就绪</div>
+                <div class="arrow" id="step5" style="color:#16a085;"><span class="step-circle"
+                        style="background:#16a085;">5</span>内核将fd3放入就绪队列</div>
+                <div class="arrow" id="step6"><span class="step-circle">6</span>epoll_wait()返回，唤醒应用</div>
+            </div>
+        </div>
+
+        <!-- Explanation Section -->
+        <div class="container explanation-area">
+            <h3>epoll 机制详解</h3>
+            <p><code>epoll</code> 的核心思想是<strong>避免无效的轮询</strong>。它不像 <code>select</code> 或 <code>poll</code>
+                那样，每次都需要应用把所有要监视的FD列表告诉内核，而是让内核来“记住”这个列表，只有当FD真正就绪时，才通知应用程序。</p>
+            <p>整个过程可以分解为以下几个步骤：</p>
+            <ol>
+                <li>
+                    <strong><span class="step-circle">1</span> <code>epoll_create()</code> - 创建实例</strong>
+                    <p>应用程序调用 <code>epoll_create()</code>，请求内核创建一个 <code>epoll</code>
+                        实例。内核会在内部创建一个专属的数据结构，可以想象成一个“事件中心”，并返回一个指向这个实例的文件描述符（epollfd）。这个步骤只需要执行一次。</p>
+                </li>
+                <li>
+                    <strong><span class="step-circle">2</span> <code>epoll_ctl()</code> - 注册事件</strong>
+                    <p>应用程序通过 <code>epoll_ctl()</code> 将它关心的所有文件描述符（例如，成千上万个网络连接的 socket FD）注册到第一步创建的 <code>epoll</code>
+                        实例中。在内核中，这些FD会被添加到一个高效的数据结构中，通常是<strong>红黑树（Red-Black
+                            Tree）</strong>。这使得即使在有大量FD的情况下，添加、删除和查找的效率也很高。<br><strong>关键点</strong>：这个FD列表现在由内核维护，应用程序不需要在每次查询时都重复提交。
+                    </p>
+                </li>
+                <li>
+                    <strong><span class="step-circle">3</span> <code>epoll_wait()</code> - 等待事件</strong>
+                    <p>应用程序调用
+                        <code>epoll_wait()</code>，然后进入<strong>阻塞（睡眠）状态</strong>，等待内核的通知。它告诉内核：“如果我注册的任何一个FD有事件发生，请唤醒我。”
+                    </p>
+                </li>
+                <li>
+                    <strong><span class="step-circle" style="background:#16a085;">4</span> 事件发生</strong>
+                    <p>当一个外部事件发生时，例如，一个网络数据包到达网卡，并经过内核网络协议栈的处理，最终数据被放入了某个 socket（比如图中的 <code>fd3</code>）的接收缓冲区。这个 socket
+                        此时变为“可读”状态。</p>
+                </li>
+                <li>
+                    <strong><span class="step-circle" style="background:#16a085;">5</span> 内核处理</strong>
+                    <p>由于在步骤 ② 中，<code>fd3</code> 已经被注册到了 <code>epoll</code>
+                        实例中，内核知道有进程在关心它。内核会触发一个<strong>回调机制</strong>，将这个就绪的 <code>fd3</code> 添加到 <code>epoll</code>
+                        实例内部的另一个列表——<strong>就绪队列（Ready List）</strong>中。</p>
+                </li>
+                <li>
+                    <strong><span class="step-circle">6</span> 唤醒与返回</strong>
+                    <p>因为就绪队列现在不再为空，内核会<strong>唤醒</strong>在步骤 ③ 中阻塞的应用程序。<code>epoll_wait()</code> 函数返回，并将就绪队列中的所有FD（这里是
+                        <code>fd3</code>）拷贝给应用程序。应用程序得到一个只包含<strong>真正就绪</strong>的FD的列表，然后就可以只对这些FD进行读写操作，极大地提高了处理效率。
+                    </p>
+                </li>
+            </ol>
+
+            <h3>epoll 的优势总结</h3>
+            <ul>
+                <li><strong>高效</strong>：应用程序无需重复拷贝大量FD列表到内核。<code>epoll_wait()</code> 的返回只包含就绪的FD，其处理时间复杂度是
+                    O(就绪FD数量)，而不是 O(全部监视的FD数量)。</li>
+                <li><strong>内核驱动</strong>：由内核在事件发生时主动通知应用，而不是应用被动地轮询所有FD。</li>
+                <li><strong>支持海量连接</strong>：由于其高效的数据结构和事件驱动模型，<code>epoll</code> 能够轻松管理数十万甚至上百万的并发连接，是构建高性能网络服务的基石。</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
