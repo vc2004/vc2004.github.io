@@ -80,6 +80,7 @@ Self-learning data sciences.
 - **[我与地坛]** [史铁生《我与地坛》](/essay/me_and_ditan.html)
 - **[一只特立独行的猪]** [王小波《一只特立独行的猪》](/essay/pig.html)
 - **[生死场]** [萧红《生死场》](/essay/birth_and_death.html)
+- **[呼兰河传]** [萧红《呼兰河传》尾声](/essay/hulan_river.html)
 - **[张爱玲]** [张爱玲 Eileen Chang](/essay/Eileen_Chang.html)
 - **[张爱玲 cont.]** [张爱玲 Eileen Chang cont.](/essay/Eileen_Chang_1.html)
 - **[张爱玲 cont.2]** [张爱玲 Eileen Chang cont.2](/essay/Eileen_Chang_2.html)
