@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>艺术表达 - 不能忘</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a2e;
+            /* 深夜空蓝 */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            min-height: 400px;
+            background: linear-gradient(125deg, #16222A, #3A6073, #1a1a2e, #2c3e50);
+            background-size: 400% 400%;
+            animation: gradient-flow 20s ease infinite;
+
+            border: 1px solid #4a6a82;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            font-family: 'Noto Serif SC', serif;
+            color: #bdc3c7;
+            padding: 40px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradient-flow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container::after {
+            content: '不能忘';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28vw;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.05);
+            z-index: 0;
+            pointer-events: none;
+            letter-spacing: 0.1em;
+        }
+
+        .quote {
+            font-size: 1.5em;
+            line-height: 2;
+            margin: 0;
+            padding: 0;
+            max-width: 90%;
+            z-index: 1;
+            opacity: 0;
+            animation: fadeInText 3s 0.5s forwards;
+        }
+
+        .quote p {
+            margin: 0.5em 0;
+        }
+
+        .source {
+            font-size: 1em;
+            margin-top: 40px;
+            color: #7f8c8d;
+            z-index: 1;
+            opacity: 0;
+            animation: fadeInText 3s 1.5s forwards;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            border-right: 1px solid #7f8c8d;
+            padding-right: 10px;
+        }
+
+        @keyframes fadeInText {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            .quote {
+                font-size: 1.2em;
+                line-height: 1.8;
+            }
+
+            .source {
+                writing-mode: horizontal-tb;
+                position: static;
+                margin-top: 30px;
+                border: none;
+                padding: 0;
+                border-top: 1px solid #7f8c8d;
+                padding-top: 15px;
+                width: 100%;
+            }
+
+            /* 移动端适当放大但避免溢出 */
+            .container::after {
+                font-size: 22vmin;
+                letter-spacing: 0.02em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="quote">
+            <p>要是有些事我没说，地坛，你别以为是我忘了，</p>
+            <p>我什么也没忘，</p>
+            <p>但是有些事只适合收藏。</p>
+            <p>不能说，也不能想，却又不能忘。</p>
+        </div>
+        <div class="source">
+            —— 史铁生 《我与地坛》
+        </div>
+    </div>
+
+</body>
+
+</html>
