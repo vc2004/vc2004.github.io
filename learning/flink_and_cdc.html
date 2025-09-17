@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apache Flink 架构与 CDC 图解</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            text-align: center;
+            color: #005f73;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .diagram {
+            position: relative;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .component {
+            border: 2px solid #adb5bd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background-color: #ffffff;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .main-component {
+            border-color: #0077b6;
+            background-color: #e7f5ff;
+        }
+
+        .sub-component {
+            border-color: #48cae4;
+            background-color: #f0fcfd;
+            margin: 10px;
+        }
+
+        .task-component {
+            border-color: #fca311;
+            background-color: #fff8e1;
+            font-size: 0.9em;
+            padding: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .description {
+            font-size: 0.85em;
+            color: #555;
+        }
+
+        /* Runtime Architecture Layout */
+        #runtime-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .client {
+            width: 150px;
+        }
+
+        .flink-cluster {
+            border: 2px dashed #0077b6;
+            padding: 20px;
+            border-radius: 10px;
+            width: 95%;
+            background-color: #f8f9fa;
+        }
+
+        .cluster-label {
+            font-weight: bold;
+            color: #0077b6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .job-manager {
+            padding: 15px;
+            margin: 0 auto 40px auto;
+            max-width: 800px;
+        }
+
+        .job-manager-inner {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .task-managers {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .task-manager {
+            min-width: 250px;
+            flex: 1;
+        }
+
+        .task-slots {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .task-slot {
+            border: 2px solid #90be6d;
+            background-color: #f6fff0;
+            padding: 20px 10px;
+            border-radius: 5px;
+            min-width: 60px;
+        }
+
+        /* Dataflow Layout */
+        #dataflow-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            padding: 40px 10px;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flow-item {
+            width: 120px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50px;
+        }
+
+        .source {
+            background-color: #eaf4f4;
+            border: 2px solid #8ecae6;
+        }
+
+        .transform {
+            background-color: #fff1e6;
+            border: 2px solid #ffb5a7;
+        }
+
+        .sink {
+            background-color: #e0f2f1;
+            border: 2px solid #80cbc4;
+        }
+
+        /* CDC Diagram Layout */
+        #cdc-diagram {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .cdc-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 180px;
+        }
+
+        .cdc-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .cdc-db {
+            background-color: #023e8a;
+        }
+
+        .cdc-log {
+            background-color: #fca311;
+            font-size: 14px;
+        }
+
+        .cdc-flink {
+            background-color: #e63946;
+        }
+
+        .cdc-downstream {
+            background-color: #52b69a;
+        }
+
+        .cdc-arrow {
+            align-self: center;
+            font-size: 2.5em;
+            color: #adb5bd;
+            margin-top: 25px;
+        }
+
+        /* Arrows */
+        .arrow {
+            position: absolute;
+            stroke: #e63946;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .arrow-label {
+            position: absolute;
+            background-color: #fff;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #d62828;
+            border: 1px solid #f1faee;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .flow-arrow {
+            font-size: 2.5em;
+            color: #adb5bd;
+            line-height: 60px;
+        }
+
+        @media (max-width: 768px) {
+
+            .job-manager-inner,
+            .task-managers {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .task-manager {
+                width: 80%;
+            }
+
+            .arrow-label {
+                font-size: 10px;
+            }
+
+            .cdc-step {
+                flex-basis: 40%;
+            }
+
+            .cdc-arrow {
+                flex-basis: 100%;
+                transform: rotate(90deg);
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Apache Flink 架构与 CDC 图解</h1>
+        <p>Apache Flink 是一个为无界和有界数据流提供数据驱动、有状态计算的框架和分布式处理引擎。它的架构遵循主从模式（Master-Slave）。[3, 10] 下图详细解释了其核心组件和工作流程。</p>
+    </div>
+
+    <div class="container">
+        <h2>1. Flink 运行时架构 (Runtime Architecture)</h2>
+        <div class="diagram" id="runtime-diagram-container">
+            <svg id="svg-arrows" width="100%" height="100%"
+                style="position:absolute; top:0; left:0; pointer-events:none;"></svg>
+            <div id="runtime-diagram">
+                <!-- Client -->
+                <div id="client" class="component main-component">
+                    <div class="label">客户端 (Client)</div>
+                    <div class="description">用户编写代码，通过命令行或 Web UI 提交作业。</div>
+                </div>
+
+                <!-- Flink Cluster -->
+                <div class="flink-cluster">
+                    <div class="cluster-label">Flink 集群 (Flink Cluster)</div>
+
+                    <!-- JobManager -->
+                    <div id="job-manager" class="component main-component job-manager">
+                        <div class="label">作业管理器 (JobManager) [Master]</div>
+                        <div class="description">集群的协调者，负责作业调度、资源管理和故障恢复。[5, 9]</div>
+                        <div class="job-manager-inner">
+                            <div id="dispatcher" class="component sub-component">
+                                <div class="label">分发器 (Dispatcher)</div>
+                                <div class="description">接收作业提交，启动 JobMaster，并提供 WebUI。[2, 11]</div>
+                            </div>
+                            <div id="resource-manager" class="component sub-component">
+                                <div class="label">资源管理器 (ResourceManager)</div>
+                                <div class="description">负责资源分配和管理（TaskSlots）。[7, 13]</div>
+                            </div>
+                            <div id="job-master" class="component sub-component">
+                                <div class="label">作业主节点 (JobMaster)</div>
+                                <div class="description">每个作业有一个，负责管理该作业的执行。[11, 13]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TaskManagers -->
+                    <div class="task-managers">
+                        <div id="tm1" class="component main-component task-manager">
+                            <div class="label">任务管理器 (TaskManager) [Worker]</div>
+                            <div class="description">执行具体的数据处理任务，是真正的工作节点。[5, 10]</div>
+                            <div class="task-slots">
+                                <div class="task-slot">Task Slot <div class="task-component">Task</div>
+                                </div>
+                                <div class="task-slot">Task Slot <div class="task-component">Task</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tm2" class="component main-component task-manager">
+                            <div class="label">任务管理器 (TaskManager) [Worker]</div>
+                            <div class="description">每个 TaskManager 包含一个或多个任务槽（TaskSlot）。[7, 16]</div>
+                            <div class="task-slots">
+                                <div class="task-slot">Task Slot <div class="task-component">Task</div>
+                                </div>
+                                <div class="task-slot">Task Slot</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 10px; font-size: 0.9em;">
+            <h4>执行流程说明：</h4>
+            <ol>
+                <li><b>提交作业</b>: 客户端将用户代码编译成一个逻辑数据流图（JobGraph），并提交给 JobManager 中的 Dispatcher。[1, 15]</li>
+                <li><b>启动 JobMaster</b>: Dispatcher 收到作业后，为该作业启动一个 JobMaster 进程。[11, 13]</li>
+                <li><b>请求资源</b>: JobMaster 向 ResourceManager 请求执行作业所需的资源（即 TaskSlots）。[15]</li>
+                <li><b>分配资源</b>: ResourceManager 从已注册的 TaskManager 中分配可用的 TaskSlots 给 JobMaster。[13]</li>
+                <li><b>部署任务</b>: JobMaster 将 JobGraph 转化为物理执行图（ExecutionGraph），并将具体的计算任务（Tasks）部署到分配到的 TaskSlots 上。[16]
+                </li>
+                <li><b>执行与报告</b>: TaskManager 上的任务开始执行数据处理。它们会向 JobMaster 汇报心跳和任务状态，JobMaster
+                    同时协调检查点（Checkpoint）以保证容错性。[2, 10]</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>2. Flink 作业数据流 (Job Dataflow)</h2>
+        <p>在一个 Flink 程序中，数据从一个或多个源开始，经过一系列转换操作，最后被发送到一个或多个目的地（Sink）。[19] 这种结构形成了一个有向无环图（DAG）。</p>
+        <div class="diagram" id="dataflow-diagram">
+            <div class="flow-step">
+                <div class="component flow-item source">
+                    <div class="label">数据源 (Source)</div>
+                </div>
+                <div class="description">如 Kafka, 文件系统 [8]</div>
+            </div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-step">
+                <div class="component flow-item transform">
+                    <div class="label">转换 (Map)</div>
+                </div>
+                <div class="description">一对一转换 [17]</div>
+            </div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-step">
+                <div class="component flow-item transform">
+                    <div class="label">转换 (KeyBy)</div>
+                </div>
+                <div class="description">按 Key 分区</div>
+            </div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-step">
+                <div class="component flow-item transform">
+                    <div class="label">转换 (Window)</div>
+                </div>
+                <div class="description">时间窗口聚合 [1]</div>
+            </div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-step">
+                <div class="component flow-item sink">
+                    <div class="label">数据汇 (Sink)</div>
+                </div>
+                <div class="description">如数据库, Kafka [8]</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>3. 什么是变更数据捕获 (CDC)?</h3>
+        <p>变更数据捕获（Change Data Capture, CDC）是一种设计模式，用于确定和跟踪数据发生的变化，以便后续可以对这些变化做出响应。在 Flink 的场景下，Flink CDC 连接器能够以极低的延迟从
+            MySQL、PostgreSQL、MongoDB 等数据库中捕获行级别的变更，并将它们作为数据流进行处理。这种方式避免了传统的双重写入或轮询查询数据库带来的开销和延迟。</p>
+        <div class="diagram" id="cdc-diagram">
+            <div class="cdc-step">
+                <div class="cdc-item cdc-db">源数据库</div>
+                <div class="label">1. 数据变更</div>
+                <div class="description">应用执行 INSERT, UPDATE, DELETE 操作。</div>
+            </div>
+            <div class="cdc-arrow">&rarr;</div>
+            <div class="cdc-step">
+                <div class="cdc-item cdc-log">事务日志<br>(Binlog)</div>
+                <div class="label">2. 记录日志</div>
+                <div class="description">数据库将变更写入其事务日志中。</div>
+            </div>
+            <div class="cdc-arrow">&rarr;</div>
+            <div class="cdc-step">
+                <div class="cdc-item cdc-flink">Flink CDC</div>
+                <div class="label">3. 捕获变更</div>
+                <div class="description">Flink CDC 连接器读取日志，将变更转化为事件流。</div>
+            </div>
+            <div class="cdc-arrow">&rarr;</div>
+            <div class="cdc-step">
+                <div class="cdc-item cdc-downstream">下游系统</div>
+                <div class="label">4. 数据同步</div>
+                <div class="description">Flink 处理后写入数据仓库、搜索引擎或缓存。</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const svg = document.getElementById('svg-arrows');
+            const container = document.getElementById('runtime-diagram-container');
+
+            function drawArrow(fromId, toId, labelText, options = {}) {
+                const fromElem = document.getElementById(fromId);
+                const toElem = document.getElementById(toId);
+                if (!fromElem || !toElem) return;
+
+                const fromRect = fromElem.getBoundingClientRect();
+                const toRect = toElem.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+
+                const startX = fromRect.left + fromRect.width / 2 - containerRect.left;
+                const startY = fromRect.bottom - containerRect.top;
+                const endX = toRect.left + toRect.width / 2 - containerRect.left;
+                const endY = toRect.top - containerRect.top;
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const d = `M ${startX} ${startY} C ${startX} ${startY + 40}, ${endX} ${endY - 40}, ${endX} ${endY}`;
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'arrow');
+
+                const label = document.createElement('div');
+                label.setAttribute('class', 'arrow-label');
+                label.innerText = labelText;
+
+                const midX = (startX + endX) / 2;
+                const midY = (startY + endY) / 2;
+
+                label.style.left = `${midX + (options.offsetX || 0)}px`;
+                label.style.top = `${midY + (options.offsetY || 0)}px`;
+
+                if (!document.getElementById('arrowhead')) {
+                    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+                    marker.setAttribute('id', 'arrowhead');
+                    marker.setAttribute('viewBox', '0 0 10 10');
+                    marker.setAttribute('refX', '8');
+                    marker.setAttribute('refY', '5');
+                    marker.setAttribute('markerWidth', '6');
+                    marker.setAttribute('markerHeight', '6');
+                    marker.setAttribute('orient', 'auto-start-reverse');
+                    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    polygon.setAttribute('points', '0 0, 10 5, 0 10');
+                    polygon.style.fill = '#e63946';
+                    marker.appendChild(polygon);
+                    defs.appendChild(marker);
+                    svg.appendChild(defs);
+                }
+
+                svg.appendChild(path);
+                container.appendChild(label);
+            }
+
+            function drawBidirectionalArrow(elem1Id, elem2Id, label1, label2, options = {}) {
+                const elem1 = document.getElementById(elem1Id);
+                const elem2 = document.getElementById(elem2Id);
+                if (!elem1 || !elem2) return;
+
+                const rect1 = elem1.getBoundingClientRect();
+                const rect2 = elem2.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+
+                const x1 = rect1.left + rect1.width / 2 - containerRect.left;
+                const y1 = rect1.top - containerRect.top;
+                const x2 = rect2.left + rect2.width / 2 - containerRect.left;
+                const y2 = rect2.top - containerRect.top;
+
+                const pathUp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathUp.setAttribute('d', `M ${x2 - 10} ${y2} C ${x2 - 30} ${y2 - 30}, ${x1 - 30} ${y1 + 30}, ${x1} ${y1 + rect1.height}`);
+                pathUp.setAttribute('class', 'arrow');
+                svg.appendChild(pathUp);
+
+                const labelUp = document.createElement('div');
+                labelUp.className = 'arrow-label';
+                labelUp.innerText = label1;
+                labelUp.style.left = `${(x1 + x2) / 2 - 60}px`;
+                labelUp.style.top = `${(y1 + y2) / 2 + 20}px`;
+                container.appendChild(labelUp);
+
+                const pathDown = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathDown.setAttribute('d', `M ${x1 + 10} ${y1 + rect1.height} C ${x1 + 30} ${y1 + 30}, ${x2 + 30} ${y2 - 30}, ${x2} ${y2}`);
+                pathDown.setAttribute('class', 'arrow');
+                svg.appendChild(pathDown);
+
+                const labelDown = document.createElement('div');
+                labelDown.className = 'arrow-label';
+                labelDown.innerText = label2;
+                labelDown.style.left = `${(x1 + x2) / 2 + 20}px`;
+                labelDown.style.top = `${(y1 + y2) / 2 - 20}px`;
+                container.appendChild(labelDown);
+            }
+
+            function redrawArrows() {
+                // Clear previous arrows before redrawing
+                const existingArrows = svg.querySelectorAll('.arrow, .arrow-label');
+                existingArrows.forEach(el => el.remove());
+                const existingLabels = container.querySelectorAll('.arrow-label');
+                existingLabels.forEach(el => el.remove());
+
+
+                // Draw arrows
+                drawArrow('client', 'dispatcher', '1. 提交作业', { offsetY: -20 });
+                drawArrow('dispatcher', 'job-master', '2. 启动 JobMaster', { offsetX: -30, offsetY: -20 });
+                drawBidirectionalArrow('job-master', 'resource-manager', '4. 分配 Slots', '3. 请求 Slots');
+                drawArrow('job-master', 'tm1', '5. 部署任务', { offsetX: -50, offsetY: -30 });
+                drawArrow('job-master', 'tm2', '5. 部署任务', { offsetX: 30, offsetY: -30 });
+
+                const tm1 = document.getElementById('tm1');
+                const jobMaster = document.getElementById('job-master');
+                if (tm1 && jobMaster) {
+                    const tm1Rect = tm1.getBoundingClientRect();
+                    const jmRect = jobMaster.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    const startX = tm1Rect.left - containerRect.left;
+                    const startY = tm1Rect.top + tm1Rect.height / 2 - containerRect.top;
+                    const endX = jmRect.right - containerRect.left;
+                    const endY = jmRect.bottom - containerRect.top;
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', `M ${startX} ${startY} C ${startX - 50} ${startY}, ${endX + 50} ${endY}, ${endX} ${endY}`);
+                    path.setAttribute('class', 'arrow');
+                    svg.appendChild(path);
+                    const label = document.createElement('div');
+                    label.className = 'arrow-label';
+                    label.innerText = '6. 报告状态/心跳';
+                    label.style.left = `${startX - 120}px`;
+                    label.style.top = `${startY - 10}px`;
+                    container.appendChild(label);
+                }
+            }
+
+            // Use a timeout to ensure the layout is stable before drawing arrows
+            setTimeout(redrawArrows, 100);
+            window.addEventListener('resize', redrawArrows);
+        });
+    </script>
+
+</body>
+
+</html>

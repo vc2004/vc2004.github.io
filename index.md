@@ -73,6 +73,7 @@ Self-learning data sciences.
 - **[epoll技术图解]** [epoll技术图解](/learning/epoll.html)
 - **[eBPF 技术图解]** [eBPF 技术图解](/learning/eBPF.html)
 - **[AWS Well-Architected Framework]** [AWS Well-Architected Framework](/learning/AWS_Well_Architecture.html)
+ - **[Flink 与 CDC]** [Flink 与 CDC](/learning/flink_and_cdc.html)
 
 ## Revisit the Classic Literature
 
