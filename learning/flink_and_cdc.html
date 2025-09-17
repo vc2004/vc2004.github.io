@@ -306,7 +306,7 @@
 
     <div class="container">
         <h1>Apache Flink 架构与 CDC 图解</h1>
-        <p>Apache Flink 是一个为无界和有界数据流提供数据驱动、有状态计算的框架和分布式处理引擎。它的架构遵循主从模式（Master-Slave）。[3, 10] 下图详细解释了其核心组件和工作流程。</p>
+        <p>Apache Flink 是一个为无界和有界数据流提供数据驱动、有状态计算的框架和分布式处理引擎。它的架构遵循主从模式（Master-Slave）。</p>
     </div>
 
     <div class="container">
@@ -328,19 +328,19 @@
                     <!-- JobManager -->
                     <div id="job-manager" class="component main-component job-manager">
                         <div class="label">作业管理器 (JobManager) [Master]</div>
-                        <div class="description">集群的协调者，负责作业调度、资源管理和故障恢复。[5, 9]</div>
+                        <div class="description">集群的协调者，负责作业调度、资源管理和故障恢复。</div>
                         <div class="job-manager-inner">
                             <div id="dispatcher" class="component sub-component">
                                 <div class="label">分发器 (Dispatcher)</div>
-                                <div class="description">接收作业提交，启动 JobMaster，并提供 WebUI。[2, 11]</div>
+                                <div class="description">接收作业提交，启动 JobMaster，并提供 WebUI。</div>
                             </div>
                             <div id="resource-manager" class="component sub-component">
                                 <div class="label">资源管理器 (ResourceManager)</div>
-                                <div class="description">负责资源分配和管理（TaskSlots）。[7, 13]</div>
+                                <div class="description">负责资源分配和管理（TaskSlots）。</div>
                             </div>
                             <div id="job-master" class="component sub-component">
                                 <div class="label">作业主节点 (JobMaster)</div>
-                                <div class="description">每个作业有一个，负责管理该作业的执行。[11, 13]</div>
+                                <div class="description">每个作业有一个，负责管理该作业的执行。</div>
                             </div>
                         </div>
                     </div>
@@ -349,7 +349,7 @@
                     <div class="task-managers">
                         <div id="tm1" class="component main-component task-manager">
                             <div class="label">任务管理器 (TaskManager) [Worker]</div>
-                            <div class="description">执行具体的数据处理任务，是真正的工作节点。[5, 10]</div>
+                            <div class="description">执行具体的数据处理任务，是真正的工作节点。</div>
                             <div class="task-slots">
                                 <div class="task-slot">Task Slot <div class="task-component">Task</div>
                                 </div>
@@ -359,7 +359,7 @@
                         </div>
                         <div id="tm2" class="component main-component task-manager">
                             <div class="label">任务管理器 (TaskManager) [Worker]</div>
-                            <div class="description">每个 TaskManager 包含一个或多个任务槽（TaskSlot）。[7, 16]</div>
+                            <div class="description">每个 TaskManager 包含一个或多个任务槽（TaskSlot）。</div>
                             <div class="task-slots">
                                 <div class="task-slot">Task Slot <div class="task-component">Task</div>
                                 </div>
@@ -373,34 +373,33 @@
         <div style="padding: 10px; font-size: 0.9em;">
             <h4>执行流程说明：</h4>
             <ol>
-                <li><b>提交作业</b>: 客户端将用户代码编译成一个逻辑数据流图（JobGraph），并提交给 JobManager 中的 Dispatcher。[1, 15]</li>
-                <li><b>启动 JobMaster</b>: Dispatcher 收到作业后，为该作业启动一个 JobMaster 进程。[11, 13]</li>
-                <li><b>请求资源</b>: JobMaster 向 ResourceManager 请求执行作业所需的资源（即 TaskSlots）。[15]</li>
-                <li><b>分配资源</b>: ResourceManager 从已注册的 TaskManager 中分配可用的 TaskSlots 给 JobMaster。[13]</li>
-                <li><b>部署任务</b>: JobMaster 将 JobGraph 转化为物理执行图（ExecutionGraph），并将具体的计算任务（Tasks）部署到分配到的 TaskSlots 上。[16]
+                <li><b>提交作业</b>: 客户端将用户代码编译成一个逻辑数据流图（JobGraph），并提交给 JobManager 中的 Dispatcher。</li>
+                <li><b>启动 JobMaster</b>: Dispatcher 收到作业后，为该作业启动一个 JobMaster 进程。</li>
+                <li><b>请求资源</b>: JobMaster 向 ResourceManager 请求执行作业所需的资源（即 TaskSlots）。</li>
+                <li><b>分配资源</b>: ResourceManager 从已注册的 TaskManager 中分配可用的 TaskSlots 给 JobMaster。</li>
+                <li><b>部署任务</b>: JobMaster 将 JobGraph 转化为物理执行图（ExecutionGraph），并将具体的计算任务（Tasks）部署到分配到的 TaskSlots 上。</li>
+                <li><b>执行与报告</b>: TaskManager 上的任务开始执行数据处理。它们会向 JobMaster 汇报心跳和任务状态，JobMaster 同时协调检查点（Checkpoint）以保证容错性。
                 </li>
-                <li><b>执行与报告</b>: TaskManager 上的任务开始执行数据处理。它们会向 JobMaster 汇报心跳和任务状态，JobMaster
-                    同时协调检查点（Checkpoint）以保证容错性。[2, 10]</li>
             </ol>
         </div>
     </div>
 
     <div class="container">
         <h2>2. Flink 作业数据流 (Job Dataflow)</h2>
-        <p>在一个 Flink 程序中，数据从一个或多个源开始，经过一系列转换操作，最后被发送到一个或多个目的地（Sink）。[19] 这种结构形成了一个有向无环图（DAG）。</p>
+        <p>在一个 Flink 程序中，数据从一个或多个源开始，经过一系列转换操作，最后被发送到一个或多个目的地（Sink）。这种结构形成了一个有向无环图（DAG）。</p>
         <div class="diagram" id="dataflow-diagram">
             <div class="flow-step">
                 <div class="component flow-item source">
                     <div class="label">数据源 (Source)</div>
                 </div>
-                <div class="description">如 Kafka, 文件系统 [8]</div>
+                <div class="description">如 Kafka, 文件系统</div>
             </div>
             <div class="flow-arrow">&rarr;</div>
             <div class="flow-step">
                 <div class="component flow-item transform">
                     <div class="label">转换 (Map)</div>
                 </div>
-                <div class="description">一对一转换 [17]</div>
+                <div class="description">一对一转换</div>
             </div>
             <div class="flow-arrow">&rarr;</div>
             <div class="flow-step">
@@ -414,14 +413,14 @@
                 <div class="component flow-item transform">
                     <div class="label">转换 (Window)</div>
                 </div>
-                <div class="description">时间窗口聚合 [1]</div>
+                <div class="description">时间窗口聚合</div>
             </div>
             <div class="flow-arrow">&rarr;</div>
             <div class="flow-step">
                 <div class="component flow-item sink">
                     <div class="label">数据汇 (Sink)</div>
                 </div>
-                <div class="description">如数据库, Kafka [8]</div>
+                <div class="description">如数据库, Kafka</div>
             </div>
         </div>
     </div>
