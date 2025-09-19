@@ -1,4 +1,4 @@
-# Basic Information 
+# Basic Information
 title: Liang DONG (looking for a job)
 position: Chief Engineer
 email: vc2004 (at) gmail.com
@@ -16,7 +16,7 @@ nav_items:
     url: "/"
   - title: "Documentation"
     url: "/docs/"
-    
+
 # Collections
 collections:
   docs:
@@ -45,13 +45,13 @@ defaults:
 # If you don't need one of them, you can comment out or delete the corresponding line
 github_link: https://github.com/vc2004/
 linkedin: https://www.linkedin.com/in/liang-dong-9391895b/
-twitter: 
-medium: 
-scholar: 
-researchgate: 
-orcid: 
-zhihu: 
-weibo: 
+twitter:
+medium:
+scholar:
+researchgate:
+orcid:
+zhihu:
+weibo:
 
 # Site Settings
 show_downloads: false
@@ -68,8 +68,8 @@ keywords: Online resume
 description: Online resume for Liang.
 canonical: https://vc2004.github.io/
 
-# Images (e.g., your profile picture and your website's favicon) 
-# "favicon" and "favicon_dark" are used for the light and dark modes, respectively. 
+# Images (e.g., your profile picture and your website's favicon)
+# "favicon" and "favicon_dark" are used for the light and dark modes, respectively.
 avatar: /assets/img/avatar.png
 favicon: /assets/img/favicon.png
 favicon_dark: /assets/img/favicon-dark.png
@@ -100,7 +100,7 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
   syntax_highlighter_opts:
-    css_class: 'highlight'
+    css_class: "highlight"
     block:
       line_numbers: true
       start_line: 1
@@ -118,3 +118,4 @@ exclude:
   - LICENSE
   - minimal-light.gemspec
   - html_source_file/
+  - vendor/

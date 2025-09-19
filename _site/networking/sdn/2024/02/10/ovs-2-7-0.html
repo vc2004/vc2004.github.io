@@ -149,7 +149,25 @@
 
 <p>OVN 2.7 在原来版本 DVR 的基础上支持 Distributed NAT，这是比较有意思的新 feature，需要测试一下。。</p>
 
-<pre><code>diff --git a/NEWS b/NEWS
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="rouge-code"><pre>diff --git a/NEWS b/NEWS
 index 3006f77..89bb026 100644
 --- a/NEWS
 +++ b/NEWS
@@ -167,11 +185,55 @@ index 3006f77..89bb026 100644
 +       Gratuitous ARP for NAT addresses on a distributed logical
 +       router is not yet supported, but will be added in a future
 +       version.
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>这个 commit 里描述了这个新功能</p>
 
-<pre><code>commit ec29ac9c2a44cf809ddd8716d7b4f209c8970385
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+</pre></td><td class="rouge-code"><pre>commit ec29ac9c2a44cf809ddd8716d7b4f209c8970385
 Author: Mickey Spiegel &lt;mickeys.dev@gmail.com&gt;
 Date:   Thu Jan 26 17:31:08 2017 -0800
 
@@ -215,7 +277,7 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
 
     Signed-off-by: Mickey Spiegel &lt;mickeys.dev@gmail.com&gt;
     Signed-off-by: Gurucharan Shetty &lt;guru@ovn.org&gt;
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <h3 id="policy-routing">Policy Routing</h3>
 
@@ -225,13 +287,19 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
 
 <p>其次根据原文描述，对 K8S 有独特的作用..</p>
 
-<pre><code>    This is very useful for a specific use case of Kubernetes.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>    This is very useful for a specific use case of Kubernetes.
     When traffic is initiated inside a container heading to outside world,
     we want to be able to send such traffic outside the gateway router
     residing in the same host as that of the container. Since each
     host gets a specific subnet, we can use source IP address based
     policy routing to decide on the gateway router.
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <h2 id="ovs-的一些新功能">OVS 的一些新功能</h2>
 
@@ -239,7 +307,20 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
 
 <p>在 NEWS 里看到 DPDK 去掉了 experimental tag, commit log 里也看到很多相关 patch，这个应该是这个版本花大力气测试了.</p>
 
-<pre><code>    - DPDK:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre>    - DPDK:
       * New option 'n_rxq_desc' and 'n_txq_desc' fields for DPDK interfaces
         which set the number of rx and tx descriptors to use for the given port.
       * Support for DPDK v16.11.
@@ -252,7 +333,7 @@ Date:   Thu Jan 26 17:31:08 2017 -0800
         specified.
       * Virtual DPDK Poll Mode Driver (vdev PMD) support.
       * Removed experimental tag.
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>值得一说的是 userspace conntrack 看起来还没有支持 fragmentation. (这块代码貌似都是从 freebsd 拉过来改的）</p>
 

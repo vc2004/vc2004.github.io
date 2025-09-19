@@ -154,12 +154,25 @@
 
 <p>Turn off irqbalance if any, note it may cause performance issue on other Hardware/IO devices.</p>
 
-<pre><code>/etc/init.d/irqbalance stop
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>/etc/init.d/irqbalance stop
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>The Rx queue could be checked by -l and modified by -L</p>
 
-<pre><code># ethtool -l eth4
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre># ethtool -l eth4
 Channel parameters for eth4:
 Pre-set maximums:
 RX:        0
@@ -171,11 +184,22 @@ RX:        0
 TX:        0
 Other:        1
 Combined:    32
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>Check the interrupt number related to the eth0</p>
 
-<pre><code># egrep "CPU0|eth0" /proc/interrupts
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre># egrep "CPU0|eth0" /proc/interrupts
             CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       CPU8       CPU9       CPU10      CPU11      CPU12      CPU13      CPU14      CPU15      CPU16      CPU17      CPU18      CPU19      CPU20      CPU21      CPU22      CPU23      CPU24      CPU25      CPU26      CPU27      CPU28      CPU29      CPU30      CPU31
  148:     347358          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  IR-PCI-MSI-edge      eth0
  150:         18    1152920          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  IR-PCI-MSI-edge      eth0-fp-0
@@ -186,12 +210,13 @@ Combined:    32
  155:         11          0          0          0          0          0      75379          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  IR-PCI-MSI-edge      eth0-fp-5
  156:          8          0          0          0          0          0          0     123974          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  IR-PCI-MSI-edge      eth0-fp-6
  157:          5          0          0          0          0          0          0          0     277624          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0  IR-PCI-MSI-edge      eth0-fp-7
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>Echo the cpu bit mask to related interrupt number</p>
 
-<pre><code>echo 00000001 &gt; /proc/irq/148/smp_affinity
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>echo 00000001 &gt; /proc/irq/148/smp_affinity
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>Tips: MAC native calculator is very good at calculating cpu bit mask.</p>
 
@@ -199,7 +224,34 @@ Combined:    32
 
 <p>Interrupt Coalescence (IC) is the number of usec waited or frames gathered to issue a hardware interrupt. A small value or big value both has side affects. If latency is preferred over throughput, eg. the realtime streaming traffic, a small value or be disabled would be benefit. Otherwise for large throughput, a larger value should be selected.</p>
 
-<pre><code>ethtool -c eth0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+</pre></td><td class="rouge-code"><pre>ethtool -c eth0
 Coalesce parameters for eth0:
 Adaptive RX: off  TX: off
 stats-block-usecs: 999936
@@ -226,11 +278,12 @@ rx-usecs-high: 0
 rx-frame-high: 0
 tx-usecs-high: 0
 tx-frame-high: 0
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>Some cards support adaptive changing the parameters, just turn on the adapter rx and tx.</p>
-<pre><code>ethtool -C eth0 adaptive-rx on adaptive-tx on
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>ethtool -C eth0 adaptive-rx on adaptive-tx on
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <h3 id="numa">NUMA</h3>
 
@@ -248,7 +301,32 @@ tx-frame-high: 0
 
 <p>So it is important to decide which cpu to pin Tx/Rx netsurf application, otherwise you might get a drop</p>
 
-<pre><code># python cpu_layout.py --status
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="rouge-code"><pre># python cpu_layout.py --status
 ============================================================
 Core and Socket Information (as reported by '/proc/cpuinfo')
 ============================================================
@@ -273,11 +351,23 @@ Core 5 [5, 21]         [13, 29]
 Core 6 [6, 22]         [14, 30]
 
 Core 7 [7, 23]         [15, 31]
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>For best performance on NUMA, check which NUMA node the PCIe are connected to</p>
 
-<pre><code># lspci -tv
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre># lspci -tv
  \-[0000:00]-+-00.0  Intel Corporation Haswell-E DMI2
              +-01.0-[02]--
              +-01.1-[05]--
@@ -289,7 +379,7 @@ Core 7 [7, 23]         [15, 31]
 
 # cat /sys/devices/pci0000\:00/0000\:00\:02.0/local_cpus
 00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00ff00ff
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>0xFF00FF is CPU0-7 &amp; 16-23, so it is better to set the affinity on CPU0-7 or CPU16-23.</p>
 
@@ -299,11 +389,15 @@ Core 7 [7, 23]         [15, 31]
 
 <p>To maximise the CPU frequency to handle the network loads, it could be set through OS.</p>
 
-<pre><code>cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 powersave
 
 echo performance &gt; /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
       </div>
 

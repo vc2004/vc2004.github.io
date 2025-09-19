@@ -148,9 +148,11 @@
   <li>
     <p>BBR hardcode 了无视20%以下的丢包，这个其实有比较大的问题，不知道最新的代码 patch 了没有。</p>
 
-    <pre><code> +/* If lost/delivered ratio &gt; 20%, interval is "lossy" and we may be policed: */
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre> +/* If lost/delivered ratio &gt; 20%, interval is "lossy" and we may be policed: */
  +static const u32 bbr_lt_loss_thresh = 50;
-</code></pre>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
   </li>
   <li>比较重要的一点，BBR 在无视丢包的情况下，会竞争吃掉 CUBIC 和其他 BBR 的带宽。</li>
   <li>BBR 不应该和 Loss-based CUBIC 比较，实际上应该和Delay-based Vegas 比较，当然 Vegas 自己也有挺多的问题。</li>
