@@ -6,7 +6,7 @@ layout: homepage
 
 Chief Engineer leading research in 4G/5G communications technologies research projects, specializing in 5G data plane and virtualization, with 19 years of experience in IP and telecom networks (2G-5G), Software-Defined Networking (SDN), cloud computing, and network function virtualization.
 
-<p style="text-align: center;"><a href="/learning/Deep%20Sea%20Spectrum.html">My 20-Year Competence Map 深海光谱</a></p>
+<p style="text-align: center;"><a href="/learning/Deep%20Sea%20Spectrum.html">My 20-Year Competence Map (深海光谱配色）</a></p>
 
 <div class="competence-embed">
   <iframe id="competence-iframe" src="/learning/Deep%20Sea%20Spectrum.html?embed=1" style="width:100%; border:0;" loading="lazy" title="My 20-Year Competence Map (深海光谱配色)"></iframe>
@@ -24,7 +24,7 @@ Chief Engineer leading research in 4G/5G communications technologies research pr
 - **[epoll技术图解]** [epoll技术图解](/learning/epoll.html)
 - **[eBPF 技术图解]** [eBPF 技术图解](/learning/eBPF.html)
 - **[AWS Well-Architected Framework]** [AWS Well-Architected Framework](/learning/AWS_Well_Architecture.html)
- - **[Flink 与 CDC]** [Flink 与 CDC](/learning/flink_and_cdc.html)
+- **[Flink 与 CDC]** [Flink 与 CDC](/learning/flink_and_cdc.html)
 - **[网络加速方案比较]** [网络加速方案比较](/learning/Accelerated%20Path.html)
 
 ## Revisit the Classic Literature
