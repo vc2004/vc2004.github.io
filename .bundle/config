@@ -1,0 +1,2 @@
+# This file is checked into the repository to ensure local installs use vendor/bundle
+BUNDLE_PATH: "vendor/bundle"
