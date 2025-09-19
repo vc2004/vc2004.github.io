@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Interactive Competence Map v5.3 (Enhanced Palette)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h1 {
+            color: #1a2a4d;
+            margin-bottom: 20px;
+        }
+
+        #competenceCanvas {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            height: auto;
+        }
+
+        #competenceCanvas.interactive {
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            -webkit-backdrop-filter: blur(3px);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 25px 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 550px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slide-down 0.3s ease-out;
+        }
+
+        @keyframes slide-down {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Embed mode: remove title, margins, and extras to keep only the canvas */
+        body.embed {
+            background-color: transparent;
+            padding: 0;
+            min-height: initial;
+            display: block;
+        }
+
+        body.embed .container {
+            max-width: none;
+            width: fit-content;
+            margin: 0;
+            text-align: left;
+        }
+
+        body.embed h1 {
+            display: none;
+        }
+
+        body.embed #competenceCanvas {
+            box-shadow: none;
+            border-radius: 0;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>My 20-Year Competence Map (v5.3 - Enhanced Palette)</h1>
+        <canvas id="competenceCanvas" width="900" height="700"></canvas>
+    </div>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        // Enable embed mode when query param embed=1
+        (function () {
+            try {
+                var params = new URLSearchParams(window.location.search);
+                if (params.get('embed') === '1') {
+                    document.body.classList.add('embed');
+                    document.title = '';
+                }
+            } catch (e) { /* no-op */ }
+        })();
+
+        const canvas = document.getElementById('competenceCanvas');
+        const ctx = canvas.getContext('2d');
+        const modal = document.getElementById('infoModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const closeBtn = document.querySelector('.close-btn');
+
+        let competences = [
+            { text: 'eBPF', weight: 10, description: 'A revolutionary kernel technology that allows sandboxed programs to run without changing kernel code. It is crucial for high-performance networking, security, and observability, forming the foundation for projects like Cilium.' },
+            { text: 'Cilium', weight: 10, description: 'An open-source project based on eBPF that provides networking, observability, and security for cloud-native environments. It achieves high performance by manipulating network policies and load balancing directly in the Linux kernel.' },
+            { text: 'Transformer', weight: 10, description: 'A deep learning architecture that revolutionized the field of Natural Language Processing (NLP). Known for its use of self-attention mechanisms, it is the foundational technology behind most modern Large Language Models (LLMs), including GPT and BERT.' },
+            { text: 'XDP', weight: 9.5, description: 'eXpress Data Path, an eBPF-based technology for processing packets as early as possible in the network driver. It offers extreme network performance, often used for DDoS mitigation and high-speed load balancers.' },
+            { text: 'Golang', weight: 9.5, description: 'A statically typed, compiled programming language developed by Google. Due to its high concurrency performance and simple syntax, it has become the de facto standard language for the cloud-native landscape (e.g., Docker, Kubernetes).' },
+            { text: 'Kubernetes', weight: 9, description: 'An open-source container orchestration platform for automating the deployment, scaling, and management of containerized applications. It is the core of modern cloud-native application infrastructure.' },
+            { text: 'Calico', weight: 9, description: 'A widely used open-source networking and network policy provider. It uses the BGP protocol to provide efficient, scalable network connectivity and security policies for Kubernetes clusters.' },
+            { text: 'Prometheus', weight: 9, description: 'An open-source monitoring and alerting toolkit known for its powerful multi-dimensional data model and query language (PromQL). It is the de facto standard for cloud-native monitoring.' },
+            { text: 'Docker', weight: 9, description: 'An open-source application containerization engine that allows developers to package an application with its dependencies into a portable container. Docker greatly promoted the adoption of container technology and microservices.' },
+            { text: 'Python', weight: 9, description: 'A high-level, general-purpose programming language known for its simple syntax and powerful ecosystem. It is widely used in network automation, data science, web development, and DevOps.' },
+            { text: 'UPF', weight: 8.5, description: 'User Plane Function, a key network function in the 5G Core network responsible for routing, forwarding, and policy enforcement of user data traffic. It is central to the implementation of CUPS (Control and User Plane Separation).' },
+            { text: '5G', weight: 8.5, description: 'The fifth generation of mobile communication technology, offering higher data rates, lower latency, and massive connectivity. Its Service-Based Architecture (SBA) and network slicing are key innovations.' },
+            { text: 'Grafana', weight: 8.5, description: 'An open-source analytics and visualization platform, often used with data sources like Prometheus and Elasticsearch to create beautiful, feature-rich dashboards for monitoring and data analysis.' },
+            { text: 'Ansible', weight: 8.5, description: 'An open-source IT automation tool that uses YAML to describe automation tasks. It is very popular for configuration management and application deployment due to its agentless and simple nature.' },
+            { text: 'AI 101', weight: 8.5, description: 'Represents a foundational understanding of Artificial Intelligence, including key concepts like machine learning, deep learning, neural networks, and the different types of AI (e.g., generative, predictive). It is the essential knowledge base for leveraging AI in any technical domain.' },
+            { text: 'Cloud Computing', weight: 8, description: 'The on-demand delivery of IT resources over the Internet, including servers, storage, databases, networking, and software. It has changed how IT infrastructure is built and consumed.' },
+            { text: 'SD-WAN', weight: 8, description: 'Software-Defined Wide Area Network, which uses software to separate network control from hardware to optimize enterprise branch connectivity to data centers or clouds with lower cost and higher flexibility.' },
+            { text: 'Elasticsearch', weight: 8, description: 'A distributed search and analytics engine based on Lucene. It is often combined with Logstash and Kibana as the ELK/Elastic Stack for log aggregation, full-text search, and data analytics.' },
+            { text: 'KVM', weight: 7.5, description: 'Kernel-based Virtual Machine, an open-source virtualization infrastructure built into the Linux kernel. It allows the kernel to function as a hypervisor and is the mainstream virtualization technology for cloud platforms like OpenStack.' },
+            { text: 'Qemu', weight: 7.5, description: 'A generic and open-source machine emulator and virtualizer. When used with KVM, QEMU emulates hardware devices while KVM accelerates CPU and memory virtualization.' },
+            { text: 'OVN', weight: 7, description: 'Open Virtual Network, an open-source network virtualization system designed for OVS. It provides rich virtual network services like switching, routing, and firewalls for virtual machines and containers.' },
+            { text: 'OVS', weight: 7, description: 'Open vSwitch, a production quality, multilayer virtual switch. It is designed to enable massive network automation through programmatic extension, while still supporting standard management interfaces and protocols.' },
+            { text: 'DPDK', weight: 7, description: 'Data Plane Development Kit, a set of libraries and drivers for accelerating packet processing. It achieves high performance by bypassing the kernel network stack and processing packets directly in user space.' },
+            { text: 'VPP', weight: 7, description: 'Vector Packet Processing, a high-performance packet-processing framework open-sourced by Cisco. It achieves extremely high performance by processing a batch (vector) of packets at a time.' },
+            { text: 'VXLAN', weight: 7, description: 'Virtual Extensible LAN, a network virtualization technology that creates large-scale virtual networks by encapsulating Layer 2 Ethernet frames over an existing Layer 3 network. It is fundamental to modern data centers.' },
+            { text: 'Firewall', weight: 6.5, description: 'A network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. It serves as the first line of defense in network security.' },
+            { text: 'Linux Networking', weight: 6, description: 'Refers to the networking capabilities implemented and managed within the Linux OS, including the network stack, routing, and firewall (Netfilter/iptables). It is the foundation for all network virtualization technologies.' },
+            { text: 'BGP', weight: 6, description: 'Border Gateway Protocol, the core routing protocol of the internet, used to exchange routing and reachability information between autonomous systems (AS). It also plays a crucial role in data center networking.' },
+            { text: 'SDN', weight: 6, description: 'Software-Defined Networking, a network architecture approach that decouples the network control plane from the data plane, allowing network control to become directly programmable and enabling automation.' },
+            { text: 'OpenStack', weight: 6, description: 'An open-source cloud computing platform that provides IaaS (Infrastructure as a Service) solutions, controlling large pools of compute, storage, and networking resources throughout a data center.' },
+            { text: 'TSN', weight: 6, description: 'Time-Sensitive Networking, a set of IEEE 802 standards designed to provide deterministic services over Ethernet, guaranteeing low latency and high reliability, primarily for industrial and automotive networks.' },
+            { text: 'Neuron', weight: 6, description: 'An industrial IoT connectivity server designed to address the unified access problem of device communication in the context of Industry 4.0.' },
+            { text: 'Openflow', weight: 5.5, description: 'A communications protocol that gives access to the forwarding plane of a network switch or router over the network. It is a key component in early SDN architectures.' },
+            { text: '802.1Qbv', weight: 5.5, description: 'A TSN standard that defines a time-aware shaper. It provides deterministic latency by scheduling traffic to be transmitted in predefined time windows.' },
+            { text: '802.1CB', weight: 5.5, description: 'A TSN standard that defines frame replication and elimination for reliability. It provides seamless redundancy by sending duplicate packets to achieve high availability.' },
+            { text: '4G', weight: 5, description: 'The fourth generation of mobile communication technology, represented by LTE (Long-Term Evolution). It was the first to implement an all-IP network and significantly increased data transfer rates.' },
+            { text: 'MPLS', weight: 5, description: 'Multi-Protocol Label Switching, a routing technique in telecommunications networks that directs data using short path labels rather than long network addresses.' },
+            { text: 'IMS', weight: 5, description: 'IP Multimedia Subsystem, an architectural framework for delivering multimedia services over IP networks. It is the technical foundation for services like VoLTE (Voice over LTE).' },
+            { text: 'HSS', weight: 5, description: 'Home Subscriber Server, the main user database in 4G/LTE networks. It stores user subscription information, authentication data, and location information.' },
+            { text: 'Router', weight: 4, description: 'A networking device that forwards data packets between computer networks. It operates at the network layer (Layer 3) and uses IP addresses to determine a packet\'s destination.' },
+            { text: 'Switch', weight: 4, description: 'A networking device that connects multiple devices and forwards data in a network. It operates at the data link layer (Layer 2) and uses MAC addresses to send frames to the correct port.' },
+            { text: 'gPTP', weight: 4, description: 'Generalized Precision Time Protocol (IEEE 802.1AS), the protocol used by TSN for precise time synchronization among network devices.' },
+            { text: 'IEEE1588', weight: 4, description: 'Precision Time Protocol (PTP), used to achieve precise clock synchronization in computer networks. It is a key technology in many industries, including telecommunications and industrial control.' },
+            { text: '802.1AS', weight: 4, description: 'The time synchronization standard for TSN, which is a specific profile of IEEE 1588 (PTP) designed for providing high-precision clock synchronization in local area networks.' },
+            { text: 'OSPF', weight: 3.5, description: 'Open Shortest Path First, a widely used interior gateway protocol (IGP) for calculating routes within a single Autonomous System (AS).' },
+            { text: 'VRRP', weight: 3.5, description: 'Virtual Router Redundancy Protocol, a network protocol that increases the availability of the default gateway by providing one or more backup routers.' },
+            { text: '3G', weight: 3, description: 'The third generation of mobile communication technology, which enabled global roaming and provided enough bandwidth to support early mobile internet applications (e.g., WCDMA).' },
+            { text: 'Cisco', weight: 3, description: 'A worldwide leader in IT and networking that supplies networking hardware, software, and services. Its equipment and certification system have had a profound impact on the industry.' },
+            { text: 'Juniper', weight: 3, description: 'A leading manufacturer of networking equipment known for its high-performance routers, switches, and security products. Its operating system is Junos OS.' },
+            { text: 'Netscreen', weight: 3, description: 'An early and well-known brand of firewall and VPN appliances, later acquired by Juniper. Its ScreenOS holds a significant place in firewall history.' },
+            { text: 'SGSN', weight: 2.5, description: 'Serving GPRS Support Node, a key network function in 2G/3G networks responsible for handling data sessions and mobility management for mobile users.' },
+            { text: 'GGSN', weight: 2.5, description: 'Gateway GPRS Support Node, the gateway node in 2G/3G networks that connects the mobile core network to external IP networks like the internet.' },
+            { text: 'EDGE', weight: 2, description: 'Enhanced Data rates for GSM Evolution. As a 2.5G/2.75G technology, it provided higher data transfer rates on top of GPRS.' },
+            { text: 'GPRS', weight: 2, description: 'General Packet Radio Service, a packet-switching technology on 2G networks that marked the beginning of "always-on" mobile data services.' },
+            { text: 'Netgear', weight: 2, description: 'A well-known manufacturer of networking equipment, with products widely covering the home and small-to-medium business markets, such as routers, switches, and NAS.' },
+            { text: '2G', weight: 1, description: 'The second generation of mobile communication technology, marked by digital voice calls (e.g., GSM). It was the beginning of the mobile data era with GPRS/EDGE.' }
+        ];
+
+        competences.sort((a, b) => b.weight - a.weight);
+
+        let drawnItems = [];
+
+        // --- NEW: Enhanced "Deep Ocean Spectrum" Color Scheme ---
+        function getColor(weight) {
+            if (weight >= 9.5) return '#1abc9c'; // Bright Turquoise (Pinnacle)
+            if (weight >= 9.0) return '#3498db'; // Bright Blue (Modern Core)
+            if (weight >= 8.0) return '#16a085'; // Sea Green (Important Tools)
+            if (weight >= 6.0) return '#27ae60'; // Emerald Green (Established)
+            if (weight >= 4.0) return '#34495e'; // Slate Blue (Foundational)
+            return '#95a5a6';                   // Muted Gray (Legacy)
+        }
+
+        function doesOverlap(rect, existingRects) {
+            for (const existing of existingRects) {
+                if (rect.x < existing.x + existing.width && rect.x + rect.width > existing.x &&
+                    rect.y < existing.y + existing.height && rect.y + rect.height > existing.y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function drawCompetences() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawnItems = [];
+            const existingRects = [];
+            const canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 };
+
+            competences.forEach(competence => {
+                const fontSize = competence.weight * 4 + 12;
+                ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`;
+
+                const textMetrics = ctx.measureText(competence.text);
+                const textWidth = textMetrics.width;
+                const textHeight = fontSize;
+
+                const rotation = Math.random() > 0.7 ? Math.PI / 2 : 0;
+                const rotatedWidth = Math.abs(textWidth * Math.cos(rotation)) + Math.abs(textHeight * Math.sin(rotation));
+                const rotatedHeight = Math.abs(textWidth * Math.sin(rotation)) + Math.abs(textHeight * Math.cos(rotation));
+
+                let placed = false;
+                let attempts = 0;
+                const maxAttempts = 6000;
+                let spiralAngle = Math.random() * 2 * Math.PI;
+                let spiralRadius = 0;
+
+                while (!placed && attempts < maxAttempts) {
+                    const x = canvasCenter.x + spiralRadius * Math.cos(spiralAngle);
+                    const y = canvasCenter.y + spiralRadius * Math.sin(spiralAngle);
+
+                    const currentRect = {
+                        x: x - rotatedWidth / 2,
+                        y: y - rotatedHeight / 2,
+                        width: rotatedWidth,
+                        height: rotatedHeight
+                    };
+
+                    if (currentRect.x > 5 && currentRect.y > 5 &&
+                        currentRect.x + currentRect.width < canvas.width - 5 &&
+                        currentRect.y + currentRect.height < canvas.height - 5 &&
+                        !doesOverlap(currentRect, existingRects)) {
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.rotate(rotation);
+                        ctx.fillStyle = getColor(competence.weight);
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(competence.text, 0, 0);
+                        ctx.restore();
+
+                        drawnItems.push({ competence, rect: currentRect });
+                        existingRects.push(currentRect);
+                        placed = true;
+                    }
+
+                    spiralAngle += 0.2;
+                    spiralRadius += 0.3;
+                    attempts++;
+                }
+            });
+        }
+
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        function isInside(pos, rect) {
+            return pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y;
+        }
+
+        canvas.addEventListener('mousemove', function (e) {
+            const mousePos = getMousePos(canvas, e);
+            let onWord = false;
+            for (const item of drawnItems) {
+                if (isInside(mousePos, item.rect)) {
+                    onWord = true;
+                    break;
+                }
+            }
+            canvas.classList.toggle('interactive', onWord);
+        });
+
+        canvas.addEventListener('click', function (e) {
+            const mousePos = getMousePos(canvas, e);
+            for (let i = drawnItems.length - 1; i >= 0; i--) {
+                const item = drawnItems[i];
+                if (isInside(mousePos, item.rect)) {
+                    modalTitle.textContent = item.competence.text;
+                    modalTitle.style.color = getColor(item.competence.weight);
+                    modalDescription.textContent = item.competence.description;
+                    modal.style.display = 'block';
+                    return;
+                }
+            }
+        });
+
+        closeBtn.onclick = function () {
+            modal.style.display = 'none';
+        }
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        drawCompetences();
+        // notify parent to resize iframe precisely
+        try {
+            if (window.parent && window !== window.parent) {
+                var canvasRect = canvas.getBoundingClientRect();
+                window.parent.postMessage({ type: 'competence-embed-size', height: Math.ceil(canvasRect.height || canvas.height) }, '*');
+                setTimeout(function () {
+                    var r = canvas.getBoundingClientRect();
+                    window.parent.postMessage({ type: 'competence-embed-size', height: Math.ceil(r.height || canvas.height) }, '*');
+                }, 300);
+            }
+        } catch (e) { /* no-op */ }
+    </script>
+
+</body>
+
+</html>

@@ -8,46 +8,10 @@ Chief Engineer leading research in 4G/5G communications technologies research pr
 
 Self-learning data sciences.
 
-<div class="skills-section">
-  <div class="skill-item">
-    <div class="skill-name">Networking</div>
-    <div class="skill-rating s-plus">
-      <span class="skill-level">S+</span>
-      <div class="skill-bar"></div>
-    </div>
-  </div>
-  
-  <div class="skill-item">
-    <div class="skill-name">Programming</div>
-    <div class="skill-rating a">
-      <span class="skill-level">A</span>
-      <div class="skill-bar"></div>
-    </div>
-  </div>
-  
-  <div class="skill-item">
-    <div class="skill-name">Data Science</div>
-    <div class="skill-rating b-plus">
-      <span class="skill-level">B+</span>
-      <div class="skill-bar"></div>
-    </div>
-  </div>
-  
-  <div class="skill-item">
-    <div class="skill-name">Arts</div>
-    <div class="skill-rating b">
-      <span class="skill-level">B</span>
-      <div class="skill-bar"></div>
-    </div>
-  </div>
-  
-  <div class="skill-item">
-    <div class="skill-name">汉语言文学</div>
-    <div class="skill-rating b-plus">
-      <span class="skill-level">B+</span>
-      <div class="skill-bar"></div>
-    </div>
-  </div>
+<p style="text-align: center;"><a href="/learning/Deep%20Sea%20Spectrum.html">My 20-Year Competence Map 深海光谱</a></p>
+
+<div class="competence-embed">
+  <iframe id="competence-iframe" src="/learning/Deep%20Sea%20Spectrum.html?embed=1" style="width:100%; border:0;" loading="lazy" title="My 20-Year Competence Map 深海光谱"></iframe>
 </div>
 
 ## Development & Research Interests
@@ -114,4 +78,63 @@ h2:contains("重读经典") + ul li a {
   font-family: 'Noto Serif SC', serif !important;
 }
 </style>
+
+<style>
+.competence-embed{
+  margin: 10px 0 0 0;
+}
+.competence-embed iframe{
+  display: block;
+}
+.competence-embed + h2{
+  margin-top: 12px;
+}
+@media (max-width: 768px){
+  .competence-embed iframe{
+    height: auto;
+  }
+}
+</style>
+
+<script>
+  // Auto-resize iframe to match inner canvas height
+  document.addEventListener('DOMContentLoaded', function(){
+    var iframe = document.getElementById('competence-iframe');
+    if(!iframe) return;
+    function resize() {
+      try{
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        if(!doc) return;
+        var canvas = doc.getElementById('competenceCanvas');
+        if(canvas){
+          var rect = canvas.getBoundingClientRect();
+          var h = Math.ceil(rect.height || canvas.height);
+          iframe.style.height = h + 'px';
+        } else {
+          // fallback to document height
+          var body = doc.body, html = doc.documentElement;
+          var h = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+          iframe.style.height = h + 'px';
+        }
+      }catch(e){ /* cross-origin safe */ }
+    }
+    iframe.addEventListener('load', function(){
+      resize();
+      // Re-check after a tick to ensure scripts finished drawing
+      setTimeout(resize, 300);
+    });
+    // Recalculate on window resize
+    window.addEventListener('resize', function(){ setTimeout(resize, 100); });
+
+    // Listen for precise size from child
+    window.addEventListener('message', function(ev){
+      try{
+        var data = ev.data || {};
+        if(data.type === 'competence-embed-size' && typeof data.height === 'number'){
+          iframe.style.height = Math.max(100, data.height) + 'px';
+        }
+      }catch(e){ /* no-op */ }
+    });
+  });
+</script>
 
