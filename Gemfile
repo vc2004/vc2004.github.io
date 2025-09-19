@@ -7,3 +7,5 @@ gem "webrick", "~> 1.8"
 gem "kramdown-parser-gfm"
 
 gem "rouge"
+
+gem "rexml", ">= 3.4.2"
