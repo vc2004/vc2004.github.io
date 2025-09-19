@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络加速架构深度比较</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #0d47a1;
+            border-bottom: 3px solid #1976d2;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .diagram-container {
+            border: 1px solid #b0bec5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            background: #eceff1;
+            position: relative;
+        }
+
+        .diagram-title {
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #263238;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .subsection-title {
+            font-size: 1.3em;
+            color: #37474f;
+            text-align: center;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #b0bec5;
+        }
+
+        .host-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .host {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #78909c;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .host-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background: #78909c;
+            color: white;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .space {
+            padding: 15px;
+            margin: 0;
+            border-top: 1px dashed #90a4ae;
+            position: relative;
+        }
+
+        .space-user {
+            background-color: #e3f2fd;
+        }
+
+        .space-kernel {
+            background-color: #fffde7;
+        }
+
+        .space-hw {
+            background-color: #e8f5e9;
+        }
+
+        .space-title {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #546e7a;
+        }
+
+        .component {
+            background: #fafafa;
+            border: 1px solid #cfd8dc;
+            border-radius: 5px;
+            padding: 8px 12px;
+            margin: 10px auto;
+            font-size: 0.95em;
+            text-align: center;
+            position: relative;
+            width: 80%;
+        }
+
+        .bypassed {
+            text-decoration: line-through;
+            color: #9e9e9e;
+            background-color: #f5f5f5;
+        }
+
+        .rdma-emphasis {
+            border-color: #d81b60;
+            border-width: 2px;
+        }
+
+        .dpdk-emphasis {
+            border-color: #f4511e;
+            border-width: 2px;
+        }
+
+        .xdp-emphasis {
+            border-color: #39b54a;
+            border-width: 2px;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .arrow-line {
+            stroke: #c62828;
+            stroke-width: 2.0;
+            fill: none;
+        }
+
+        .arrow-label {
+            position: absolute;
+            background: white;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #c62828;
+            border: 1px solid #fbe9e7;
+            z-index: 11;
+        }
+
+        .control-path {
+            stroke-dasharray: 6, 4;
+            stroke: #0277bd;
+            fill: none;
+            marker-end: url(#arrowhead-control);
+            stroke-width: 2.5;
+        }
+
+        .control-label {
+            position: absolute;
+            background: white;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #0277bd;
+            border: 1px solid #e1f5fe;
+            z-index: 11;
+        }
+
+        .packet-diagram {
+            display: flex;
+            border: 2px solid #546e7a;
+            border-radius: 6px;
+            margin: 20px auto;
+            width: 95%;
+            max-width: 800px;
+            text-align: center;
+            font-size: 0.9em;
+            overflow: hidden;
+        }
+
+        .packet-part {
+            padding: 10px 5px;
+            border-right: 1px solid #90a4ae;
+            flex-grow: 1;
+        }
+
+        .packet-part:last-child {
+            border-right: none;
+        }
+
+        .p-eth {
+            background: #bbdefb;
+        }
+
+        .p-ip {
+            background: #c8e6c9;
+        }
+
+        .p-udp {
+            background: #fff9c4;
+        }
+
+        .p-rdma {
+            background: #f8bbd0;
+            font-weight: bold;
+        }
+
+        .p-crc {
+            background: #cfd8dc;
+        }
+
+        .note {
+            text-align: center;
+            font-size: 0.9em;
+            color: #546e7a;
+            margin-top: 15px;
+            padding: 10px;
+            background: #eceff1;
+            border-radius: 6px;
+        }
+
+        .legend-container {
+            border: 1px solid #b0bec5;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            background: #fafafa;
+        }
+
+        .legend-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #37474f;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .legend-swatch {
+            width: 40px;
+            height: 10px;
+            margin-right: 15px;
+            border-radius: 3px;
+        }
+
+        .swatch-red {
+            background: #c62828;
+        }
+
+        .swatch-blue {
+            background: #0277bd;
+            border: 1px dashed #0277bd;
+        }
+
+        .swatch-orange {
+            background: #FF9800;
+        }
+
+        .swatch-green {
+            background: #4CAF50;
+        }
+
+        @media (max-width: 900px) {
+            .host-container {
+                flex-direction: column;
+            }
+
+            .packet-diagram {
+                flex-wrap: wrap;
+            }
+
+            .packet-part {
+                min-width: 50px;
+                border-right: none;
+                border-bottom: 1px solid #90a4ae;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <h1>网络加速架构深度比较</h1>
+        <p>以下图表详细对比了传统TCP/IP、RDMA、DPDK和XDP四种网络处理架构。所有图例均遵循行业标准画法，以英文标注核心组件，并清晰描绘了数据流路径。</p>
+
+        <div class="legend-container">
+            <div class="legend-title">图例 (Legend)</div>
+            <div class="legend-item">
+                <div class="legend-swatch swatch-red"></div><span><b>数据路径 (Data Path):</b> 代表实际业务数据包的流动路径。</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-swatch swatch-blue"></div><span><b>控制路径 (Control Path):</b> 代表配置、管理和设置等非数据操作的路径
+                    (如内存注册、加载程序)。</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-swatch swatch-orange"></div><span><b>AF_XDP 零拷贝路径:</b>
+                    一种特殊的数据路径，表示数据绕过内核协议栈直接到达用户态。</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-swatch swatch-green"></div><span><b>内核协议栈路径:</b> 表示数据被送入内核 TCP/IP 协议栈进行常规处理。</span>
+            </div>
+        </div>
+
+        <svg width="0" height="0" style="position:absolute;">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto"
+                    markerUnits="strokeWidth">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#c62828" />
+                </marker>
+                <marker id="arrowhead-control" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#0277bd" />
+                </marker>
+                <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto"
+                    markerUnits="strokeWidth">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#FF9800" />
+                </marker>
+                <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto"
+                    markerUnits="strokeWidth">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#4CAF50" />
+                </marker>
+                <path id="mid-arrow" d="M -5 -4 L 5 0 L -5 4 z" fill="#c62828" />
+            </defs>
+        </svg>
+
+        <!-- TCP/IP -->
+        <div class="diagram-container" id="tcp-diagram">
+            <h2 id="tcp">图 1: 传统 TCP/IP 数据路径 (Baseline)</h2>
+            <div class="diagram-title">Traditional TCP/IP Path</div>
+            <div class="host-container">
+                <div class="host">
+                    <div class="host-title">Host A (Sender)</div>
+                    <div class="space space-user" id="tcp-uspace-a"><span class="space-title">User Space</span>
+                        <div class="component" id="tcp-app-a">Application</div>
+                        <div class="component" id="tcp-ubuf-a">User Buffer</div>
+                    </div>
+                    <div class="space space-kernel" id="tcp-kspace-a"><span class="space-title">Kernel Space</span>
+                        <div class="component" id="tcp-sock-a">Socket API (write)</div>
+                        <div class="component" id="tcp-kbuf-a">Socket Buffer</div>
+                        <div class="component" id="tcp-stack-a">TCP/IP Stack</div>
+                        <div class="component" id="tcp-drv-a">NIC Driver</div>
+                    </div>
+                    <div class="space space-hw" id="tcp-hwspace-a"><span class="space-title">Hardware</span>
+                        <div class="component" id="tcp-nic-a">NIC</div>
+                    </div>
+                </div>
+                <div class="host">
+                    <div class="host-title">Host B (Receiver)</div>
+                    <div class="space space-user" id="tcp-uspace-b"><span class="space-title">User Space</span>
+                        <div class="component" id="tcp-app-b">Application</div>
+                        <div class="component" id="tcp-ubuf-b">User Buffer</div>
+                    </div>
+                    <div class="space space-kernel" id="tcp-kspace-b"><span class="space-title">Kernel Space</span>
+                        <div class="component" id="tcp-sock-b">Socket API (read)</div>
+                        <div class="component" id="tcp-kbuf-b">Socket Buffer</div>
+                        <div class="component" id="tcp-stack-b">TCP/IP Stack</div>
+                        <div class="component" id="tcp-drv-b">NIC Driver</div>
+                    </div>
+                    <div class="space space-hw" id="tcp-hwspace-b"><span class="space-title">Hardware</span>
+                        <div class="component" id="tcp-nic-b">NIC</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RDMA -->
+        <div class="diagram-container" id="rdma-diagram">
+            <h2 id="rdma">图 2: RDMA (Remote Direct Memory Access)</h2>
+            <div class="diagram-title">RDMA Path (e.g., RoCEv2)</div>
+            <div class="host-container">
+                <div class="host">
+                    <div class="host-title">Host A</div>
+                    <div class="space space-user"><span class="space-title">User Space</span>
+                        <div class="component" id="rdma-app-a">Application</div>
+                        <div class="component rdma-emphasis" id="rdma-mem-a">Registered Memory</div>
+                    </div>
+                    <div class="space space-kernel"><span class="space-title">Kernel Space</span>
+                        <div class="component" id="rdma-verb-a">Verbs API</div>
+                        <div class="component bypassed">TCP/IP Stack</div>
+                    </div>
+                    <div class="space space-hw"><span class="space-title">Hardware</span>
+                        <div class="component rdma-emphasis" id="rdma-nic-a">RNIC</div>
+                    </div>
+                </div>
+                <div class="host">
+                    <div class="host-title">Host B</div>
+                    <div class="space space-user"><span class="space-title">User Space</span>
+                        <div class="component" id="rdma-app-b">Application</div>
+                        <div class="component rdma-emphasis" id="rdma-mem-b">Registered Memory</div>
+                    </div>
+                    <div class="space space-kernel"><span class="space-title">Kernel Space</span>
+                        <div class="component" id="rdma-verb-b">Verbs API</div>
+                        <div class="component bypassed">TCP/IP Stack</div>
+                    </div>
+                    <div class="space space-hw"><span class="space-title">Hardware</span>
+                        <div class="component rdma-emphasis" id="rdma-nic-b">RNIC</div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-label" style="top: 280px; left: 12%;">1. Control Path</div>
+            <div class="arrow-label" style="top: 320px; left: 45%;">2. Data Path</div>
+            <h3 class="subsection-title">RoCEv2 协议封装示例</h3>
+            <div class="packet-diagram">
+                <div class="packet-part p-eth">Ethernet Header</div>
+                <div class="packet-part p-ip">IP Header</div>
+                <div class="packet-part p-udp">UDP Header</div>
+                <div class="packet-part p-rdma">InfiniBand BTH + Payload</div>
+                <div class="packet-part p-crc">ICRC + FCS</div>
+            </div>
+            <p style="text-align:center; margin:10px 0 0 0; font-size:0.9em;">RoCEv2 数据包在以太网上传输时，其核心报文被封装在 UDP/IP 包内。
+            </p>
+        </div>
+
+        <!-- DPDK -->
+        <div class="diagram-container" id="dpdk-diagram">
+            <h2 id="dpdk">图 3: DPDK (Data Plane Development Kit)</h2>
+            <div class="diagram-title">DPDK Path</div>
+            <div class="host-container" style="justify-content: center;">
+                <div class="host" style="max-width: 600px;">
+                    <div class="host-title">Single Host</div>
+                    <div class="space space-user"><span class="space-title">User Space</span>
+                        <div class="component dpdk-emphasis" id="dpdk-app">DPDK Application</div>
+                        <div class="component" id="dpdk-mem">DPDK Mempool</div>
+                        <div class="component dpdk-emphasis" id="dpdk-pmd">Poll Mode Driver (PMD)</div>
+                    </div>
+                    <div class="space space-kernel"><span class="space-title">Kernel Space (Bypassed)</span>
+                        <div class="component bypassed">TCP/IP Stack</div>
+                        <div class="component bypassed" id="dpdk-kdrv">Kernel NIC Driver (unbound)</div>
+                    </div>
+                    <div class="space space-hw"><span class="space-title">Hardware</span>
+                        <div class="component" id="dpdk-cpu">Dedicated CPU Core(s)</div>
+                        <div class="component" id="dpdk-nic">NIC</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- XDP -->
+        <div class="diagram-container" id="xdp-diagram">
+            <h2 id="xdp">图 4: XDP (eXpress Data Path)</h2>
+            <div class="diagram-title">XDP Paths & Actions</div>
+            <div class="host-container" style="justify-content: center;">
+                <div class="host" style="max-width: 600px;">
+                    <div class="host-title">Single Host</div>
+                    <div class="space space-user"><span class="space-title">User Space</span>
+                        <div class="component" id="xdp-ctrl">Control Plane App (via libbpf)</div>
+                        <div class="component" id="xdp-sock">AF_XDP Socket (UMEM)</div>
+                    </div>
+                    <div class="space space-kernel"><span class="space-title">Kernel Space</span>
+                        <div class="component" id="xdp-stack">TCP/IP Stack</div>
+                        <div class="component xdp-emphasis" id="xdp-prog">XDP Program (eBPF)</div>
+                        <div class="component" id="xdp-kdrv">NIC Driver</div>
+                    </div>
+                    <div class="space space-hw"><span class="space-title">Hardware</span>
+                        <div class="component" id="xdp-nic">NIC</div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-label" style="top: 250px; left: 35%;">1. 加载eBPF决策程序</div>
+            <div class="arrow-label" style="top: 450px; left: 25%; color: #4CAF50; border-color: #e8f5e9;">**XDP_PASS**
+            </div>
+            <div class="arrow-label" style="top: 520px; left: 60%; color: #f44336; border-color: #ffebee;">**XDP_DROP /
+                TX**</div>
+            <div class="arrow-label" style="top: 350px; left: 30%; color: #FF9800; border-color: #fff3e0;">**AF_XDP:
+                零拷贝旁路**</div>
+            <div class="note">
+                <b>关键点:</b> 位于内核的 <b>XDP Program (eBPF)</b> 做出快速决策，然后通过 <b>AF_XDP</b>
+                将数据包<b>零拷贝</b>到用户态的共享内存(UMEM)，完全绕过协议栈。
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const OFFSET_LEFT = 25;
+            const OFFSET_RIGHT = 25;
+
+            function getAbsCoords(elementId, containerElem) {
+                if (!containerElem) return null;
+                const elem = document.getElementById(elementId);
+                if (!elem) return null;
+                const rect = elem.getBoundingClientRect();
+                const containerRect = containerElem.getBoundingClientRect();
+                return {
+                    x: rect.left - containerRect.left,
+                    y: rect.top - containerRect.top,
+                    width: rect.width,
+                    height: rect.height,
+                    cx: rect.left - containerRect.left + rect.width / 2,
+                    cy: rect.top - containerRect.top + rect.height / 2,
+                    top: rect.top - containerRect.top,
+                    bottom: rect.bottom - containerRect.top,
+                    left: rect.left - containerRect.left,
+                    right: rect.right - containerRect.left,
+                };
+            }
+
+            function drawArrow(containerElem, startId, endId, options = {}) {
+                const start = getAbsCoords(startId, containerElem);
+                const end = getAbsCoords(endId, containerElem);
+                if (!start || !end) return;
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.classList.add('arrow');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                let d;
+
+                const x_left_start = start.left + OFFSET_LEFT;
+                const x_right_start = start.right - OFFSET_RIGHT;
+
+                switch (options.curve) {
+                    case 'outbound-c': // RDMA send
+                        d = `M ${start.left} ${start.cy} H ${start.left - 40} V ${end.cy} H ${end.left}`;
+                        break;
+                    case 'inbound-c': // RDMA receive
+                        d = `M ${start.left} ${start.cy} H ${start.left - 40} V ${end.cy} H ${end.left}`;
+                        break;
+                    case 'down-control':
+                        d = `M ${x_right_start} ${start.bottom} V ${end.cy} H ${end.right}`;
+                        break;
+                    case 'side':
+                        d = `M ${start.right} ${start.cy} H ${end.left}`;
+                        break;
+                    case 'loop':
+                        const c1x = start.right + 60, c1y = start.cy + 50, c2x = end.right + 60, c2y = end.cy - 50;
+                        d = `M ${start.right} ${start.cy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${end.right} ${end.cy}`;
+                        break;
+                    default: // Straight vertical
+                        const is_up = start.cy > end.cy;
+                        d = `M ${x_left_start} ${is_up ? start.top : start.bottom} L ${x_left_start} ${is_up ? end.bottom : end.top}`;
+                }
+
+                path.setAttribute('d', d);
+
+                if (options.control) {
+                    path.classList.add('control-path');
+                } else {
+                    path.classList.add('arrow-line');
+                    let markerId = '#arrowhead';
+                    if (options.color === '#4CAF50') markerId = '#arrowhead-green';
+                    if (options.color === '#FF9800') markerId = '#arrowhead-orange';
+                    path.setAttribute('marker-end', `url(${markerId})`);
+                }
+                if (options.color) { path.style.stroke = options.color; }
+
+                svg.appendChild(path);
+                containerElem.appendChild(svg);
+            }
+
+            function drawVerticalTcpPath(containerElem, hostSuffix) {
+                const ubuf = getAbsCoords('tcp-ubuf-' + hostSuffix, containerElem);
+                const nic = getAbsCoords('tcp-nic-' + hostSuffix, containerElem);
+                const uspace = getAbsCoords('tcp-uspace-' + hostSuffix, containerElem);
+                if (!ubuf || !nic || !uspace) return;
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.classList.add('arrow');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.classList.add('arrow-line');
+
+                const arrow_y = uspace.bottom;
+                const x_pos = ubuf.left + OFFSET_LEFT;
+
+                let path_d, arrow_transform;
+                if (hostSuffix === 'a') { // Sender
+                    path_d = `M ${x_pos} ${ubuf.cy} V ${nic.cy}`;
+                    arrow_transform = `translate(${x_pos}, ${arrow_y}) rotate(90)`;
+                } else { // Receiver
+                    path_d = `M ${x_pos} ${nic.cy} V ${ubuf.cy}`;
+                    arrow_transform = `translate(${x_pos}, ${arrow_y}) rotate(-90)`;
+                }
+
+                path.setAttribute('d', path_d);
+
+                const midArrow = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+                midArrow.setAttribute('href', '#mid-arrow');
+                midArrow.setAttribute('transform', arrow_transform);
+
+                svg.appendChild(path);
+                svg.appendChild(midArrow);
+                containerElem.appendChild(svg);
+            }
+
+            function redrawAllArrows() {
+                document.querySelectorAll('.arrow').forEach(el => el.remove());
+
+                const tcpContainer = document.getElementById('tcp-diagram');
+                const rdmaContainer = document.getElementById('rdma-diagram');
+                const dpdkContainer = document.getElementById('dpdk-diagram');
+                const xdpContainer = document.getElementById('xdp-diagram');
+
+                // TCP Arrows
+                if (tcpContainer) {
+                    drawVerticalTcpPath(tcpContainer, 'a');
+                    drawVerticalTcpPath(tcpContainer, 'b');
+                    drawArrow(tcpContainer, 'tcp-nic-a', 'tcp-nic-b', { curve: 'side' });
+                }
+
+                // RDMA Arrows
+                if (rdmaContainer) {
+                    drawArrow(rdmaContainer, 'rdma-app-a', 'rdma-verb-a', { control: true, curve: 'down-control' });
+                    drawArrow(rdmaContainer, 'rdma-app-b', 'rdma-verb-b', { control: true, curve: 'down-control' });
+                    drawArrow(rdmaContainer, 'rdma-mem-a', 'rdma-nic-a', { curve: 'outbound-c' });
+                    drawArrow(rdmaContainer, 'rdma-nic-a', 'rdma-nic-b', { curve: 'side' });
+                    drawArrow(rdmaContainer, 'rdma-nic-b', 'rdma-mem-b', { curve: 'inbound-c' });
+                }
+
+                // DPDK Arrows
+                if (dpdkContainer) {
+                    drawArrow(dpdkContainer, 'dpdk-nic', 'dpdk-pmd', {}); // Default vertical
+                    drawArrow(dpdkContainer, 'dpdk-cpu', 'dpdk-pmd', { curve: 'loop' });
+                }
+
+                // XDP Arrows
+                if (xdpContainer) {
+                    drawArrow(xdpContainer, 'xdp-ctrl', 'xdp-prog', { control: true, curve: 'down-control' });
+                    drawArrow(xdpContainer, 'xdp-nic', 'xdp-prog', {}); // Default vertical
+                    drawArrow(xdpContainer, 'xdp-prog', 'xdp-stack', { color: '#4CAF50' }); // Default vertical
+
+                    const xdpProg = getAbsCoords('xdp-prog', xdpContainer);
+                    const xdpSock = getAbsCoords('xdp-sock', xdpContainer);
+                    const xdpStack = getAbsCoords('xdp-stack', xdpContainer);
+                    if (xdpProg && xdpSock && xdpStack) {
+                        const bypassSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        bypassSvg.classList.add('arrow');
+                        const bypassPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+                        const bypass_x = xdpStack.left - 20;
+                        const d_bypass = `M ${xdpProg.left} ${xdpProg.cy} L ${bypass_x} ${xdpProg.cy} L ${bypass_x} ${xdpSock.cy} L ${xdpSock.left} ${xdpSock.cy}`;
+
+                        bypassPath.setAttribute('d', d_bypass);
+                        bypassPath.style.stroke = '#FF9800';
+                        bypassPath.style.strokeWidth = '2.0';
+                        bypassPath.style.fill = 'none';
+                        bypassPath.setAttribute('marker-end', 'url(#arrowhead-orange)');
+
+                        bypassSvg.appendChild(bypassPath);
+                        xdpContainer.appendChild(bypassSvg);
+                    }
+
+                    if (xdpProg) {
+                        const xdpDropArrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        xdpDropArrow.classList.add('arrow');
+                        xdpDropArrow.innerHTML = `<path class="arrow-line" style="stroke: #f44336; marker-end: url(#arrowhead);" d="M ${xdpProg.cx} ${xdpProg.cy} l 50 50"></path>`;
+                        xdpContainer.appendChild(xdpDropArrow);
+                    }
+                }
+            }
+
+            redrawAllArrows();
+            window.addEventListener('resize', redrawAllArrows);
+        });
+    </script>
+</body>
+
+</html>
