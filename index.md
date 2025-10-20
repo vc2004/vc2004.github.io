@@ -26,6 +26,7 @@ Chief Engineer leading research in 4G/5G communications technologies research pr
 - **[AWS Well-Architected Framework]** [AWS Well-Architected Framework](/learning/AWS_Well_Architecture.html)
 - **[Flink 与 CDC]** [Flink 与 CDC](/learning/flink_and_cdc.html)
 - **[网络加速方案比较]** [网络加速方案比较](/learning/Accelerated%20Path.html)
+- **[PTP 精密时间同步与纳秒级延迟测量]** [PTP 精密时间同步与纳秒级延迟测量](/learning/ptp_and_single_path_latency.html)
 
 ## Revisit the Classic Literature
 
