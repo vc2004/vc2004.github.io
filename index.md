@@ -27,6 +27,8 @@ Chief Engineer leading research in 4G/5G communications technologies research pr
 - **[Flink 与 CDC]** [Flink 与 CDC](/learning/flink_and_cdc.html)
 - **[网络加速方案比较]** [网络加速方案比较](/learning/Accelerated%20Path.html)
 - **[PTP 精密时间同步与纳秒级延迟测量]** [PTP 精密时间同步与纳秒级延迟测量](/learning/ptp_and_single_path_latency.html)
+- **[Linux网络包接收(RX)路径与时间戳]** [Linux网络包接收(RX)路径与时间戳](/learning/RX_Kernel_Path.html)
+- **[Linux网络包发送(TX)路径与时间戳]** [Linux网络包发送(TX)路径与时间戳](/learning/TX_Kernel_Path.html)
 
 ## Revisit the Classic Literature
 

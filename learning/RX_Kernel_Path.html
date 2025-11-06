@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux网络包接收(RX)路径与时间戳 </title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px 40px;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            color: #343a40;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-top: 40px;
+            border-color: #6c757d;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: #f1f3f5;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            margin-right: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .hw-color {
+            background-color: #e9ecef;
+        }
+
+        .kernel-color {
+            background-color: #e7f5ff;
+        }
+
+        .user-color {
+            background-color: #e6f9f0;
+        }
+
+        .flow-diagram {
+            position: relative;
+        }
+
+        .space {
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            /* Changed from margin-bottom */
+            position: relative;
+        }
+
+        .space-hw {
+            border-color: #adb5bd;
+            background-color: #f8f9fa;
+        }
+
+        .space-kernel {
+            border-color: #90cfff;
+            background-color: #f1f9ff;
+        }
+
+        .space-user {
+            border-color: #8ce9b8;
+            background-color: #f3fdf7;
+        }
+
+        .space-label {
+            position: absolute;
+            top: -14px;
+            left: 20px;
+            background-color: #ffffff;
+            padding: 0 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .hw-label {
+            color: #495057;
+        }
+
+        .kernel-label {
+            color: #0056b3;
+        }
+
+        .user-label {
+            color: #147d4c;
+        }
+
+        .step {
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .step h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+            color: #495057;
+        }
+
+        .step p {
+            margin: 0;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #28a745;
+            /* Changed color for upward flow */
+            margin: -5px 0;
+            font-weight: bold;
+        }
+
+        .timestamp-box {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+            background: #fffbe6;
+            border: 2px dashed #ffc107;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .timestamp-box h4 {
+            margin: 0 0 5px 0;
+            font-size: 1em;
+            color: #856404;
+            text-align: center;
+        }
+
+        .timestamp-box p {
+            margin: 0;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        .timestamp-arrow {
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 20px solid #ffc107;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .timestamp-box {
+                position: relative;
+                width: auto;
+                right: auto;
+                top: auto;
+                transform: none;
+                margin-top: 15px;
+                margin-left: 10px;
+                border-left: 4px solid #ffc107;
+                border-top: 1px solid #ffc107;
+                border-right: 1px solid #ffc107;
+                border-bottom: 1px solid #ffc107;
+            }
+
+            .timestamp-arrow {
+                display: none;
+            }
+        }
+
+        .explanation {
+            background: #fdfdfe;
+            border-left: 4px solid #007bff;
+            padding: 15px 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Linux网络包接收(RX)路径与时间戳 (自下而上)</h1>
+
+        <div class="legend">
+            <div class="legend-item"><span class="legend-color user-color"></span>用户空间</div>
+            <div class="legend-item"><span class="legend-color kernel-color"></span>内核空间</div>
+            <div class="legend-item"><span class="legend-color hw-color"></span>硬件</div>
+        </div>
+
+        <div class="flow-diagram">
+            <!-- 3. User Space -->
+            <div class="space space-user">
+                <div class="space-label user-label">用户空间</div>
+                <div class="step">
+                    <h3>11. 应用处理</h3>
+                    <p>应用程序从<code class="code">recvmsg()</code>返回，获得数据包内容和精确的接收时间戳，可以进行后续的业务逻辑处理。</p>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step">
+                    <h3>10. 数据与时间戳拷贝</h3>
+                    <p>内核响应系统调用，将Socket接收缓冲区中的数据拷贝到用户提供的buffer中，并将存储的硬件/软件时间戳通过控制消息(<code
+                            class="code">cmsg</code>)拷贝给应用程序。</p>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step">
+                    <h3>9. 应用发起系统调用</h3>
+                    <p>应用程序调用<code class="code">recvmsg()</code>系统调用来读取数据。使用<code
+                            class="code">recvmsg()</code>是因为它能同时接收数据和“控制消息”(ancillary data)。</p>
+                </div>
+            </div>
+
+            <!-- 2. Kernel Space -->
+            <div class="space space-kernel">
+                <div class="space-label kernel-label">内核空间</div>
+                <div class="step">
+                    <h3>8. 放入Socket接收队列</h3>
+                    <p>根据IP和端口号，内核找到匹配的Socket，并将数据包放入该Socket的接收缓冲区(<code
+                            class="code">sk_receive_queue</code>)。时间戳作为元数据与数据包一同存储。</p>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step">
+                    <h3>7. 协议栈处理</h3>
+                    <p>包含时间戳的<code class="code">sk_buff</code>被传递给<code class="code">netif_receive_skb()</code>或<code
+                            class="code">gro_receive()</code>，进入通用网络协议栈。它会依次经过L2(链路层), L3(IP层), L4(TCP/UDP层)的处理。</p>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step" style="position: relative;">
+                    <h3>6. NAPI Poll & sk_buff创建</h3>
+                    <p>在软中断上下文(<code class="code">NET_RX_SOFTIRQ</code>)中，驱动的<code class="code">poll</code>函数被调用。它从Ring
+                        Buffer中取出数据包，为其创建一个核心数据结构<code class="code">sk_buff</code>。</p>
+                    <div class="timestamp-box">
+                        <div class="timestamp-arrow"></div>
+                        <h4>捕获点: 软件时间戳</h4>
+                        <p><code>SOF_TIMESTAMPING_RX_SOFTWARE</code></p>
+                        <p>内核调用<code class="code">ktime_get_real()</code>获取系统时钟，记录下软件层面的接收时间。此时包已完全进入内核掌控。</p>
+                    </div>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step">
+                    <h3>5. 中断处理 & NAPI调度</h3>
+                    <p>CPU响应中断，执行简短的驱动中断处理程序。它会禁用中断并调度NAPI（软中断），将耗时的工作延迟处理。</p>
+                </div>
+            </div>
+
+            <!-- 1. Hardware -->
+            <div class="space space-hw">
+                <div class="space-label hw-label">硬件 (NIC)</div>
+                <div class="step">
+                    <h3>4. 发送中断 (IRQ)</h3>
+                    <p>数据写入完成后，NIC向CPU发起一个硬件中断，通知有新数据到达。</p>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step">
+                    <h3>3. DMA传输</h3>
+                    <p>NIC通过DMA引擎将数据包内容和附带的硬件时间戳写入内核预先分配的内存区域（Ring Buffer）。</p>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step" style="position: relative;">
+                    <h3>2. 帧解析与时间戳</h3>
+                    <p>NIC的PHY/MAC层解析信号，识别出以太网帧的边界 (如SFD: Start Frame Delimiter)。</p>
+                    <div class="timestamp-box">
+                        <div class="timestamp-arrow"></div>
+                        <h4>捕获点: 硬件时间戳</h4>
+                        <p><code>SOF_TIMESTAMPING_RX_HARDWARE</code></p>
+                        <p>NIC内部时钟在识别到帧的特定点时，记录下当前时间。这是**最精确**的时间戳。</p>
+                    </div>
+                </div>
+                <div class="arrow">↑</div>
+                <div class="step">
+                    <h3>1. 物理信号接收</h3>
+                    <p>网卡从物理介质（如网线、光纤）接收到电信号或光信号。</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>时间戳捕获点深度解析</h2>
+
+        <div class="explanation">
+            <h3>SOF_TIMESTAMPING_RX_HARDWARE</h3>
+            <ul>
+                <li><strong>位置</strong>: 网卡硬件内部。</li>
+                <li><strong>时机</strong>: 在数据包的物理信号被识别为有效帧的瞬间（例如，在Start Frame Delimiter之后）。</li>
+                <li><strong>原理</strong>: 网卡使用其自身的、通常由PTP硬件时钟(PHC)同步的高精度晶振来记录时间。这个时间戳与数据包一起通过DMA写入内存。</li>
+                <li><strong>精度</strong>: <strong>最高</strong>。因为它不受操作系统调度延迟、中断处理延迟等任何软件因素的影响。这是进行纳秒级精确测量的基础。</li>
+                <li><strong>依赖</strong>: 需要网卡硬件和驱动程序都支持硬件时间戳（例如，Intel的ixgbe, i40e等驱动）。</li>
+            </ul>
+        </div>
+
+        <div class="explanation" style="border-color: #ffc107;">
+            <h3>SOF_TIMESTAMPING_RX_SOFTWARE</h3>
+            <ul>
+                <li><strong>位置</strong>: 内核的软中断处理函数中（通常是<code class="code">__netif_receive_skb_core</code>函数）。</li>
+                <li><strong>时机</strong>: 在驱动程序通过NAPI机制将数据包从DMA缓冲区中取出，并为其创建了<code
+                        class="code">sk_buff</code>之后，即将递交给上层协议栈之前。</li>
+                <li><strong>原理</strong>: 内核调用<code class="code">ktime_get_real()</code>获取当前系统时钟，并将其记录在<code
+                        class="code">sk_buff</code>的特定字段中。</li>
+                <li><strong>精度</strong>:
+                    <strong>较高，但低于硬件时间戳</strong>。它的精度会受到从硬件中断发生到软中断被调度执行之间的延迟（Jitter）影响。这个延迟通常在微秒级别，但在高负载系统上可能会更大。</li>
+                <li><strong>依赖</strong>: 只需要内核支持即可，对网卡硬件没有特殊要求，通用性更强。</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux网络包发送(TX)路径与时间戳</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #343a40;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .main-flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .space-group {
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 50px 20px 20px 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .space-label {
+            position: absolute;
+            top: -1px;
+            left: 20px;
+            background-color: #fff;
+            padding: 2px 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+            border-radius: 0 0 6px 6px;
+            border: 2px solid;
+            border-top: none;
+        }
+
+        .user-space {
+            border-color: #007bff;
+            background-color: #e7f3ff;
+        }
+
+        .user-space .space-label {
+            color: #004085;
+            border-color: #007bff;
+        }
+
+        .kernel-space {
+            border-color: #fd7e14;
+            background-color: #fff8e1;
+        }
+
+        .kernel-space .space-label {
+            color: #856404;
+            border-color: #fd7e14;
+        }
+
+        .hardware-space {
+            border-color: #28a745;
+            background-color: #e9f7ef;
+        }
+
+        .hardware-space .space-label {
+            color: #155724;
+            border-color: #28a745;
+        }
+
+        .flow-box {
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 15px 20px;
+            width: 85%;
+            margin: 0 auto 20px auto;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .flow-box h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.1em;
+            color: #495057;
+        }
+
+        .flow-box p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        .flow-box code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            color: #c82333;
+        }
+
+        .netfilter-box {
+            background-color: #f0eaff;
+            border: 2px dashed #6f42c1;
+        }
+
+        .netfilter-box h3 {
+            color: #5a32a3;
+        }
+
+        .netfilter-box p {
+            color: #493b63;
+        }
+
+        .qdisc-box {
+            background-color: #d4edda;
+            border: 2px dashed #155724;
+        }
+
+        .qdisc-box h3 {
+            color: #155724;
+        }
+
+        .qdisc-box p {
+            color: #0c3b1a;
+        }
+
+        .flow-arrow {
+            font-size: 24px;
+            color: #adb5bd;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .flow-arrow-final {
+            font-size: 30px;
+            font-weight: bold;
+            color: #212529;
+            margin: -5px 0 5px 0;
+            text-align: center;
+        }
+
+        .timestamp-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            width: 90%;
+        }
+
+        .timestamp-box h3 {
+            color: #c82333;
+            font-weight: bold;
+        }
+
+        .timestamp-box h3::before {
+            content: '🕒 ';
+        }
+
+        .timestamp-box p {
+            color: #594400;
+        }
+
+        .latency-note {
+            background-color: #e9ecef;
+            border: 1px dashed #6c757d;
+            border-radius: 6px;
+            padding: 10px 15px;
+            width: 80%;
+            margin: 0 auto 20px auto;
+            text-align: center;
+            font-style: italic;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+
+            .flow-box,
+            .timestamp-box,
+            .latency-note,
+            .netfilter-box,
+            .qdisc-box {
+                width: 100%;
+            }
+
+            .space-group {
+                padding: 45px 10px 10px 10px;
+            }
+
+            .space-label {
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Linux网络包发送(TX)路径与时间戳</h1>
+            <div class="main-flow-container">
+
+                <!-- User Space -->
+                <div class="space-group user-space">
+                    <div class="space-label">用户空间</div>
+                    <div class="flow-box">
+                        <h3>1. 应用程序</h3>
+                        <p>通过套接字(Socket) API，调用 <code>send()</code> 或 <code>sendmsg()</code> 发送数据。</p>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-final">↓</div>
+
+                <!-- Kernel Space -->
+                <div class="space-group kernel-space">
+                    <div class="space-label">内核空间</div>
+                    <div class="flow-box">
+                        <h3>2. 系统调用接口</h3>
+                        <p>CPU从用户态切换到内核态，拷贝数据并创建 <code>sk_buff</code>。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <h3>3. 传输层 (TCP/UDP)</h3>
+                        <p>添加TCP或UDP头部。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <h3>4. 网络层 (IP)</h3>
+                        <p>添加IP头部。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box netfilter-box">
+                        <h3>🛡️ 5. Netfilter Hook 1: conntrack & 'OUTPUT' Chain</h3>
+                        <p><b>conntrack:</b> 建立/更新连接状态 (e.g., <code>NEW</code>,
+                            <code>ESTABLISHED</code>)。<br><b>iptables:</b> 应用 <code>filter</code> 表的 <code>OUTPUT</code>
+                            链规则 (包过滤)。
+                        </p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <h3>6. 路由决策</h3>
+                        <p>内核根据路由表，决定数据包的下一跳和出口网络接口。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box netfilter-box">
+                        <h3>🛡️ 7. Netfilter Hook 2: 'POSTROUTING' Chain</h3>
+                        <p><b>iptables:</b> 应用 <code>nat</code> 表的 <code>POSTROUTING</code>
+                            链规则。<b>这里是执行源地址转换(SNAT)的地方。</b></p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <h3>8. 链路层 (Neighbor)</h3>
+                        <p>ARP解析，添加以太网头部。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box qdisc-box">
+                        <h3>🚦 9. 流量控制 (Qdisc)</h3>
+                        <p>数据包进入与网卡关联的排队规则(Qdisc)等待发送。<b>这里进行流量整形、调度和优先级管理。</b></p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box timestamp-box">
+                        <h3>📍 10. 软件时间戳捕获 (SOF_TIMESTAMPING_TX_SOFTWARE)</h3>
+                        <p>在数据包进入Qdisc后，传递给驱动前，内核获取当前时间，记录在 <code>sk_buff</code> 中。这是通用协议栈的最后一站。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <h3>11. 驱动程序处理</h3>
+                        <p>网卡驱动程序从Qdisc中取出数据包，准备通过DMA将其传输到网卡硬件的缓冲区。<strong>控制权即将移交硬件。</strong></p>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-final">↓</div>
+
+                <div class="latency-note">
+                    <strong>主要延迟来源 (µs级别):</strong> PCIe总线延迟, DMA传输, 网卡固件处理
+                </div>
+
+                <div class="flow-arrow-final">↓</div>
+
+                <!-- Hardware Space -->
+                <div class="space-group hardware-space">
+                    <div class="space-label">硬件 (NIC)</div>
+                    <div class="flow-box">
+                        <h3>12. DMA传输与硬件排队</h3>
+                        <p>网卡的DMA引擎从主机内存中抓取数据包，存放到网卡板载的FIFO发送队列中。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box">
+                        <h3>13. 物理层发送 (PHY)</h3>
+                        <p>数据包从FIFO队列取出，通过物理层(PHY)芯片编码，转换为电/光信号发送到网络介质上。</p>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-box timestamp-box">
+                        <h3>📍 14. 硬件时间戳捕获 (SOF_TIMESTAMPING_TX_HARDWARE)</h3>
+                        <p><strong>位置:</strong> 当数据包的第一个比特位(Bit) 通过物理层(PHY)
+                            芯片，正要被发送到网线/光纤上的那一精确瞬间，由网卡上的专用硬件时钟捕获。<br><strong>这是物理层面的离开时刻。</strong></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
